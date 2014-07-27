@@ -12,6 +12,13 @@ namespace Niche.Commandline.Tests
     public class CamelCaseTests
     {
         [Test]
+        public void ToDashedName_givenNull_throwsException()
+        {
+            Assert.Throws<ArgumentNullException>(
+                () => CamelCase.ToDashedName(null));
+        }
+
+        [Test]
         public void ToDashedName_givenEmptyIdentifier_returnsEmptyString()
         {
             var camelCase = string.Empty;
@@ -81,6 +88,13 @@ namespace Niche.Commandline.Tests
             var camelCase = "SubmitXML";
             var dashedName = CamelCase.ToDashedName(camelCase);
             Assert.That(dashedName, Is.EqualTo("submit-xml"));
+        }
+
+        [Test]
+        public void ToShortName_givenNull_throwsException()
+        {
+            Assert.Throws<ArgumentNullException>(
+                () => CamelCase.ToShortName(null));
         }
 
         [Test]

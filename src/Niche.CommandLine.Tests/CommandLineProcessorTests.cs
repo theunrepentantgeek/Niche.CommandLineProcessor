@@ -42,6 +42,32 @@ namespace Niche.CommandLine.Tests
         }
 
         [Test]
+        public void Configure_givenNullAndAction_throwsException()
+        {
+            var arguments = new List<string>();
+            var processor = new CommandLineProcessor(arguments);
+            string subject;
+            Assert.Throws<ArgumentNullException>(
+                () =>
+                {
+                    processor.Configure(null, arg => { subject = arg; });
+                });
+        }
+
+        [Test]
+        public void Configure_givenNullAction_throwsException()
+        {
+            var arguments = new List<string>();
+            var driver = new SampleDriver(); 
+            var processor = new CommandLineProcessor(arguments);
+            Assert.Throws<ArgumentNullException>(
+                () =>
+                {
+                    processor.Configure(driver, null);
+                });
+        }
+
+        [Test]
         public void Configure_withLongFormSwitch_callsMethod()
         {
             var arguments = new List<string> { "--help" };

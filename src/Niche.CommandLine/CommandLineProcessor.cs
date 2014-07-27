@@ -66,6 +66,11 @@ namespace Niche.CommandLine
                 throw new ArgumentNullException("driver");
             }
 
+            if (handler == null)
+            {
+                throw new ArgumentNullException("handler");
+            }
+
             var options = new Dictionary<string, CommandLineOptionBase>();
             CommandLineSwitch.ConfigureSwitches(driver, options);
             CommandLineParameter.ConfigureParameters(driver, options);

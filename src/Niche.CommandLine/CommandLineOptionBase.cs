@@ -33,7 +33,7 @@ namespace Niche.CommandLine
         /// <param name="value">String value to convert</param>
         /// <param name="desiredType">Desired type to return</param>
         /// <returns>Converted value</returns>
-        protected static object ConvertValue(string value, Type desiredType)
+        public static object ConvertValue(string value, Type desiredType)
         {
             try
             {
@@ -44,23 +44,8 @@ namespace Niche.CommandLine
                           : Convert.ChangeType(value, desiredType, CultureInfo.InvariantCulture);
                 return result;
             }
-            catch (NotSupportedException ex)
-            {
-                ReportConversionError(value, desiredType, ex);
-            }
-            catch (InvalidCastException ex)
-            {
-                ReportConversionError(value, desiredType, ex);
-            }
-            catch (FormatException ex)
-            {
-                ReportConversionError(value, desiredType, ex);
-            }
-            catch (OverflowException ex)
-            {
-                ReportConversionError(value, desiredType, ex);
-            }
-            catch (ArgumentNullException ex)
+            // Have to catch Exception 'cause that's what is thrown!
+            catch (Exception ex)
             {
                 ReportConversionError(value, desiredType, ex);
             }

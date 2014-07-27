@@ -30,7 +30,7 @@ namespace Niche.CommandLine.Tests
             Assert.Throws<ArgumentNullException>(
                 () =>
                 {
-                    new CommandLineParameter(null, method);
+                    new CommandLineParameter(driver, null);
                 });
         }
 
@@ -70,6 +70,16 @@ namespace Niche.CommandLine.Tests
             var driver = new SampleDriver();
             var method = driver.GetType().GetMethod("Help");
             Assert.That(CommandLineParameter.IsParameter(method), Is.False);
+        }
+
+        [Test]
+        public void Activate_givenNull_throwsException()
+        {
+            var driver = new SampleDriver();
+            var method = driver.GetType().GetMethod("Find");
+            var commandLineParameter = new CommandLineParameter(driver, method);
+            Assert.Throws<ArgumentNullException>(
+            () => commandLineParameter.Activate(null));
         }
 
         [Test]
