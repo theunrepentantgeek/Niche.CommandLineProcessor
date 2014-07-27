@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace Niche.CommandLine
 {
     /// <summary>
-    ///  Wrapper class that handles a simple switch - something without a parameter
+    ///  Wrapper class that handles a simple switch - something without a value
     /// </summary>
     public class CommandLineSwitch
     {
