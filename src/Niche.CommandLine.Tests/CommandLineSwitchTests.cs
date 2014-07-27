@@ -116,5 +116,30 @@ namespace Niche.CommandLine.Tests
             var commandLineSwitch = new CommandLineSwitch(driver, method);
             Assert.That(commandLineSwitch.LongName, Is.EqualTo("--help"));
         }
+
+        [Test]
+        public void ConfigureSwitches_givenNullInstance_throwsException()
+        {
+            var options = new Dictionary<string, CommandLineOptionBase>();
+            Assert.Throws<ArgumentNullException>(
+            () => CommandLineSwitch.ConfigureSwitches(null, options));
+        }
+
+        [Test]
+        public void ConfigureSwitches_givenNullOptions_throwsException()
+        {
+            var driver = new SampleDriver();
+            Assert.Throws<ArgumentNullException>(
+            () => CommandLineSwitch.ConfigureSwitches(driver, null));
+        }
+
+        [Test]
+        public void ConfigureSwitches_givenInstance_configuresOptions()
+        {
+            var driver = new SampleDriver();
+            var options = new Dictionary<string, CommandLineOptionBase>();
+            CommandLineSwitch.ConfigureSwitches(driver, options);
+            Assert.That(options.Count, Is.EqualTo(2));
+        }
     }
 }

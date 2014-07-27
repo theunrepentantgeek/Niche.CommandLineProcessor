@@ -48,41 +48,22 @@ namespace Niche.CommandLine
                 throw new ArgumentNullException("driver");
             }
 
-            InitializeSwitches(driver);
+            var options = new Dictionary<string, CommandLineOptionBase>();
+            CommandLineSwitch.ConfigureSwitches(driver, options);
 
-            CommandLineSwitch s;
+            CommandLineOptionBase option;
             var queue = new Queue<string>(mArguments);
             while (queue.Count > 0)
             {
                 var a = queue.Dequeue();
-                if (mSwitches.TryGetValue(a, out s))
+                if (options.TryGetValue(a, out option))
                 {
-                    s.Activate(queue);
+                    option.Activate(queue);
                     continue;
                 }
             }
         }
 
-        private void InitializeSwitches(object driver)
-        {
-            var methods
-                = driver.GetType().GetMethods();
-
-            var switches
-                = methods.Where(CommandLineSwitch.IsSwitch)
-                    .Select(m => new CommandLineSwitch(driver, m))
-                    .ToList();
-
-            foreach (var s in switches)
-            {
-                mSwitches[s.ShortName] = s;
-                mSwitches[s.LongName] = s;
-            }
-        }
-
         private readonly List<string> mArguments = new List<string>();
-
-        private readonly Dictionary<string, CommandLineSwitch> mSwitches
-            = new Dictionary<string, CommandLineSwitch>();
     }
 }

@@ -42,6 +42,32 @@ namespace Niche.CommandLine
                 && method.GetCustomAttribute<DescriptionAttribute>() != null;
         }
 
+        public static void ConfigureSwitches(object instance, Dictionary<string, CommandLineOptionBase> options)
+        {
+            if (instance == null)
+            {
+                throw new ArgumentNullException("instance");
+            }
+
+            if (options == null)
+            {
+                throw new ArgumentNullException("options");
+            }
+
+            var methods = instance.GetType().GetMethods();
+
+            var switches
+                = methods.Where(IsSwitch)
+                    .Select(m => new CommandLineSwitch(instance, m))
+                    .ToList();
+
+            foreach (var s in switches)
+            {
+                options[s.ShortName] = s;
+                options[s.LongName] = s;
+            }
+        }
+
         public CommandLineSwitch(object instance, MethodInfo method)
         {
             if (instance == null)
