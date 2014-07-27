@@ -50,6 +50,7 @@ namespace Niche.CommandLine
 
             var options = new Dictionary<string, CommandLineOptionBase>();
             CommandLineSwitch.ConfigureSwitches(driver, options);
+            CommandLineParameter.ConfigureParameters(driver, options);
 
             CommandLineOptionBase option;
             var queue = new Queue<string>(mArguments);

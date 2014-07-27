@@ -102,5 +102,29 @@ namespace Niche.CommandLine.Tests
             Assert.That(commandLineSwitch.LongName, Is.EqualTo("--find"));
         }
 
+        [Test]
+        public void ConfigureParameters_givenNullInstance_throwsException()
+        {
+            var options = new Dictionary<string, CommandLineOptionBase>();
+            Assert.Throws<ArgumentNullException>(
+            () => CommandLineParameter.ConfigureParameters(null, options));
+        }
+
+        [Test]
+        public void ConfigureParameters_givenNullOptions_throwsException()
+        {
+            var driver = new SampleDriver();
+            Assert.Throws<ArgumentNullException>(
+            () => CommandLineParameter.ConfigureParameters(driver, null));
+        }
+
+        [Test]
+        public void ConfigureParameters_givenInstance_configuresOptions()
+        {
+            var driver = new SampleDriver();
+            var options = new Dictionary<string, CommandLineOptionBase>();
+            CommandLineParameter.ConfigureParameters(driver, options);
+            Assert.That(options.Count, Is.EqualTo(2));
+        }
     }
 }
