@@ -111,7 +111,7 @@ namespace Niche.CommandLine
                 parameters[0] = ConvertValue(parameter, mParameterInfo.ParameterType);
             }
 
-            mMethod.Invoke(mInstance, new []{parameter});
+            mMethod.Invoke(mInstance, parameters);
         }
 
         private readonly MethodInfo mMethod;

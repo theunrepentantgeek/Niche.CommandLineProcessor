@@ -13,6 +13,8 @@ namespace Niche.CommandLine.Tests
 
         public List<string> Searches { get; private set; }
 
+        public int Repeats { get; private set; }
+
         public SampleDriver()
         {
             Searches = new List<string>();
@@ -45,7 +47,11 @@ namespace Niche.CommandLine.Tests
             // Nothing
         }
 
-
+        [Description("Specify how many repetitions")]
+        public void Repeat(int count)
+        {
+            Repeats = count;
+        }
 
     }
 }

@@ -41,7 +41,25 @@ namespace Niche.CommandLine
         /// Configure the passed driver instance using available arguments
         /// </summary>
         /// <param name="driver">Instance to configure.</param>
-        public void Configure(object driver)
+        /// <returns>List of unprocessed arguments</returns>
+        public IList<string> Configure(object driver)
+        {
+            if (driver == null)
+            {
+                throw new ArgumentNullException("driver");
+            }
+
+            var result = new List<string>();
+            Configure(driver, a => result.Add(a));
+            return result;
+        }
+
+        /// <summary>
+        /// Configure the passed driver instance using available arguments
+        /// </summary>
+        /// <param name="driver">Instance to configure.</param>
+        /// <param name="handler">Handler for unrecognised arguments</param>
+        public void Configure(object driver, Action<string> handler)
         {
             if (driver == null)
             {
@@ -56,12 +74,14 @@ namespace Niche.CommandLine
             var queue = new Queue<string>(mArguments);
             while (queue.Count > 0)
             {
-                var a = queue.Dequeue();
-                if (options.TryGetValue(a, out option))
+                var arg = queue.Dequeue();
+                if (options.TryGetValue(arg, out option))
                 {
                     option.Activate(queue);
                     continue;
                 }
+
+                handler(arg);
             }
         }
 

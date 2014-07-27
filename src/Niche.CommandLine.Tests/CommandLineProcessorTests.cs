@@ -60,5 +60,56 @@ namespace Niche.CommandLine.Tests
             processor.Configure(driver);
             Assert.That(driver.ShowHelp, Is.True);
         }
+
+        [Test]
+        public void Configure_withLongFormParameter_callsMethods()
+        {
+            var arguments = new List<string> { "--find", "fu" };
+            var driver = new SampleDriver();
+            var processor = new CommandLineProcessor(arguments);
+            processor.Configure(driver);
+            Assert.That(driver.Searches, Is.EquivalentTo(new List<string> { "fu" }));
+        }
+
+        [Test]
+        public void Configure_withShortFormParameter_callsMethod()
+        {
+            var arguments = new List<string> { "-f", "fu" };
+            var driver = new SampleDriver();
+            var processor = new CommandLineProcessor(arguments);
+            processor.Configure(driver);
+            Assert.That(driver.Searches, Is.EquivalentTo(new List<string> { "fu" }));
+        }
+
+        [Test]
+        public void Configure_withParameterRequiringConversion_callsMethod()
+        {
+            var arguments = new List<string> { "-r", "4" };
+            var driver = new SampleDriver();
+            var processor = new CommandLineProcessor(arguments);
+            processor.Configure(driver);
+            Assert.That(driver.Repeats, Is.EqualTo(4));
+        }
+
+        [Test]
+        public void Configure_withUnexpectedOption_returnsInLists()
+        {
+            var arguments = new List<string> { "snafu" };
+            var driver = new SampleDriver();
+            var processor = new CommandLineProcessor(arguments);
+            var unprocessed = processor.Configure(driver);
+            Assert.That(unprocessed, Is.EquivalentTo(new List<string> { "snafu" }));
+        }
+
+        [Test]
+        public void Configure_withUnexpectedOption_callsAction()
+        {
+            var arguments = new List<string> { "snafu" };
+            var driver = new SampleDriver();
+            var processor = new CommandLineProcessor(arguments);
+            var subject = string.Empty;
+            processor.Configure(driver, arg => { subject = arg; });
+            Assert.That(subject, Is.EqualTo("snafu"));
+        }
     }
 }
