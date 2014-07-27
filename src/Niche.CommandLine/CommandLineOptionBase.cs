@@ -33,7 +33,7 @@ namespace Niche.CommandLine
         /// <param name="value">String value to convert</param>
         /// <param name="desiredType">Desired type to return</param>
         /// <returns>Converted value</returns>
-        protected object ConvertValue(string value, Type desiredType)
+        protected static object ConvertValue(string value, Type desiredType)
         {
             try
             {
@@ -74,7 +74,7 @@ namespace Niche.CommandLine
         /// <param name="value">Value we tried to convert.</param>
         /// <param name="desiredType">Type we try to convert to.</param>
         /// <param name="exception">Conversion exception.</param>
-        private void ReportConversionError(string value, Type desiredType, Exception exception)
+        private static void ReportConversionError(string value, Type desiredType, Exception exception)
         {
             string message
                 = string.Format(

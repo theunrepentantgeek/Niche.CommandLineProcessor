@@ -9,45 +9,52 @@ namespace Niche.CommandLine
     public interface IConsoleLogger
     {
         /// <summary>
+        /// Write an action message to the console
+        /// </summary>
+        /// <param name="messageTemplate">Template for the message to write.</param>
+        /// <param name="parameters">Parameters to substitute in the template.</param>
+        void WriteActionLine(string messageTemplate, params string[] parameters);
+
+        /// <summary>
         /// Write a success message to the console
         /// </summary>
-        /// <param name="template">Template for the message to write.</param>
+        /// <param name="messageTemplate">Template for the message to write.</param>
         /// <param name="parameters">Parameters to substitute in the template.</param>
-        void WriteSuccessLine(string template, params string[] parameters);
+        void WriteSuccessLine(string messageTemplate, params string[] parameters);
 
         /// <summary>
         /// Write an error to the console
         /// </summary>
-        /// <param name="template">Template for the message to write.</param>
+        /// <param name="messageTemplate">Template for the message to write.</param>
         /// <param name="parameters">Parameters to substitute in the template.</param>
-        void WriteErrorLine(string template, params string[] parameters);
+        void WriteErrorLine(string messageTemplate, params string[] parameters);
 
         /// <summary>
         /// Write a warning to the console
         /// </summary>
-        /// <param name="template">Template for the message to write.</param>
+        /// <param name="messageTemplate">Template for the message to write.</param>
         /// <param name="parameters">Parameters to substitute in the template.</param>
-        void WriteWarningLine(string template, params string[] parameters);
+        void WriteWarningLine(string messageTemplate, params string[] parameters);
 
         /// <summary>
         /// Write an information message to the console
         /// </summary>
-        /// <param name="template">Template for the message to write.</param>
+        /// <param name="messageTemplate">Template for the message to write.</param>
         /// <param name="parameters">Parameters to substitute in the template.</param>
-        void WriteInformationLine(string template, params string[] parameters);
+        void WriteInformationLine(string messageTemplate, params string[] parameters);
 
         /// <summary>
         /// Write a detail message to the console
         /// </summary>
-        /// <param name="template">Template for the message to write.</param>
+        /// <param name="messageTemplate">Template for the message to write.</param>
         /// <param name="parameters">Parameters to substitute in the template.</param>
-        void WriteDetailLine(string template, params string[] parameters);
+        void WriteDetailLine(string messageTemplate, params string[] parameters);
 
         /// <summary>
         /// Write a debug message to the console
         /// </summary>
-        /// <param name="template">Template for the message to write.</param>
+        /// <param name="messageTemplate">Template for the message to write.</param>
         /// <param name="parameters">Parameters to substitute in the template.</param>
-        void WriteDebugLine(string template, params string[] parameters);
+        void WriteDebugLine(string messageTemplate, params string[] parameters);
     }
 }
