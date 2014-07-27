@@ -11,6 +11,13 @@ namespace Niche.CommandLine.Tests
     {
         public bool ShowHelp { get; private set; }
 
+        public List<string> Searches { get; private set; }
+
+        public SampleDriver()
+        {
+            Searches = new List<string>();
+        }
+
         /// <summary>
         /// This is a switch method
         /// </summary>
@@ -27,7 +34,7 @@ namespace Niche.CommandLine.Tests
         [Description("Find")]
         public void Find(string term)
         {
-            // Nothing
+            Searches.Add(term);
         }
 
         /// <summary>

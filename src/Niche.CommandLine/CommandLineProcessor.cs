@@ -51,11 +51,13 @@ namespace Niche.CommandLine
             InitializeSwitches(driver);
 
             CommandLineSwitch s;
-            foreach(var a in mArguments)
+            var queue = new Queue<string>(mArguments);
+            while (queue.Count > 0)
             {
+                var a = queue.Dequeue();
                 if (mSwitches.TryGetValue(a, out s))
                 {
-                    s.Activate();
+                    s.Activate(queue);
                     continue;
                 }
             }

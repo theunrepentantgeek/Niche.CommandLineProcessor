@@ -43,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CamelCaseTests.cs" />
+    <Compile Include="CommandLineParameterTests.cs" />
     <Compile Include="CommandLineProcessorTests.cs" />
     <Compile Include="CommandLineSwitchTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

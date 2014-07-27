@@ -65,6 +65,14 @@ namespace Niche.CommandLine.Tests
         }
 
         [Test]
+        public void IsSwitch_givenParameterMethod_returnsFalse()
+        {
+            var driver = new SampleDriver();
+            var method = driver.GetType().GetMethod("Find");
+            Assert.That(CommandLineSwitch.IsSwitch(method), Is.False);
+        }
+
+        [Test]
         public void IsSwitch_givenMethodMissingDescription_returnsFalse()
         {
             var driver = new SampleDriver();
@@ -86,7 +94,8 @@ namespace Niche.CommandLine.Tests
             var driver = new SampleDriver();
             var method = driver.GetType().GetMethod("Help");
             var commandLineSwitch = new CommandLineSwitch(driver, method);
-            commandLineSwitch.Activate();
+            var arguments = new Queue<string>();
+            commandLineSwitch.Activate(arguments);
             Assert.That(driver.ShowHelp, Is.True);
         }
 

@@ -40,6 +40,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CamelCase.cs" />
+    <Compile Include="CommandLineOptionBase.cs" />
+    <Compile Include="CommandLineParameter.cs" />
     <Compile Include="CommandLineProcessor.cs" />
     <Compile Include="CommandLineSwitch.cs" />
     <Compile Include="ConsoleLogger.cs" />
