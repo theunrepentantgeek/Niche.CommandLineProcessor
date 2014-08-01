@@ -19,7 +19,7 @@ namespace Niche.CommandLine
         /// </summary>
         public CommandLineProcessor(IEnumerable<string> arguments)
             : this(arguments, new ConsoleLogger())
-        {
+       { 
             // Nothing
         }
 

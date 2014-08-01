@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Niche.CommandLine", "src\Ni
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Niche.CommandLine.Tests", "src\Niche.CommandLine.Tests\Niche.CommandLine.Tests.csproj", "{D7ADFA05-1E88-4122-B70F-4E161376637E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Niche.CommandLine.Demo", "src\Niche.CommandLine.Demo\Niche.CommandLine.Demo.csproj", "{82DB94B3-F29B-4A57-9ECC-8665F9EEB9E7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Analysis|Any CPU = Analysis|Any CPU
@@ -26,6 +28,12 @@ Global
 		{D7ADFA05-1E88-4122-B70F-4E161376637E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D7ADFA05-1E88-4122-B70F-4E161376637E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D7ADFA05-1E88-4122-B70F-4E161376637E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{82DB94B3-F29B-4A57-9ECC-8665F9EEB9E7}.Analysis|Any CPU.ActiveCfg = Release|Any CPU
+		{82DB94B3-F29B-4A57-9ECC-8665F9EEB9E7}.Analysis|Any CPU.Build.0 = Release|Any CPU
+		{82DB94B3-F29B-4A57-9ECC-8665F9EEB9E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{82DB94B3-F29B-4A57-9ECC-8665F9EEB9E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{82DB94B3-F29B-4A57-9ECC-8665F9EEB9E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{82DB94B3-F29B-4A57-9ECC-8665F9EEB9E7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
