@@ -21,6 +21,15 @@ namespace Niche.CommandLine.Tests
         }
 
         [Test]
+        public void Constructor_givenArguments_populatesArguments()
+        {
+            var arguments = new List<string> { "--help" };
+            var driver = new SampleDriver();
+            var processor = new CommandLineProcessor(arguments);
+            Assert.That(processor.Arguments, Has.Count.EqualTo(1));
+        }
+
+        [Test]
         public void Configure_givenNull_throwsException()
         {
             var arguments = new List<string>();
@@ -29,32 +38,6 @@ namespace Niche.CommandLine.Tests
                 () =>
                 {
                     processor.Configure(null);
-                });
-        }
-
-        [Test]
-        public void Configure_givenNullAndAction_throwsException()
-        {
-            var arguments = new List<string>();
-            var processor = new CommandLineProcessor(arguments);
-            string subject;
-            Assert.Throws<ArgumentNullException>(
-                () =>
-                {
-                    processor.Configure(null, arg => { subject = arg; });
-                });
-        }
-
-        [Test]
-        public void Configure_givenNullAction_throwsException()
-        {
-            var arguments = new List<string>();
-            var driver = new SampleDriver(); 
-            var processor = new CommandLineProcessor(arguments);
-            Assert.Throws<ArgumentNullException>(
-                () =>
-                {
-                    processor.Configure(driver, null);
                 });
         }
 
@@ -109,24 +92,13 @@ namespace Niche.CommandLine.Tests
         }
 
         [Test]
-        public void Configure_withUnexpectedOption_returnsInLists()
+        public void Configure_withUnexpectedOption_leavesOptionInList()
         {
             var arguments = new List<string> { "snafu" };
             var driver = new SampleDriver();
             var processor = new CommandLineProcessor(arguments);
-            var unprocessed = processor.Configure(driver);
-            Assert.That(unprocessed, Is.EquivalentTo(new List<string> { "snafu" }));
-        }
-
-        [Test]
-        public void Configure_withUnexpectedOption_callsAction()
-        {
-            var arguments = new List<string> { "snafu" };
-            var driver = new SampleDriver();
-            var processor = new CommandLineProcessor(arguments);
-            var subject = string.Empty;
-            processor.Configure(driver, arg => { subject = arg; });
-            Assert.That(subject, Is.EqualTo("snafu"));
+            processor.Configure(driver);
+            Assert.That(processor.Arguments, Is.EquivalentTo(new List<string> { "snafu" }));
         }
     }
 }

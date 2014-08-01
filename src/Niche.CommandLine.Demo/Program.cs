@@ -13,7 +13,7 @@ namespace Niche.CommandLine.Demo
         {
             var processor = new CommandLineProcessor(args);
             var driver = new Driver();
-            var files = processor.Configure(driver);
+            processor.Configure(driver);
 
 
         }

@@ -9,6 +9,14 @@ namespace Niche.CommandLine
     public class CommandLineProcessor
     {
         /// <summary>
+        /// Gets the list of arguments not already processed
+        /// </summary>
+        public IEnumerable<string> Arguments
+        {
+            get { return mArguments; }
+        }
+
+        /// <summary>
         /// Initializes a new instance of the CommandLineProcessor class
         /// </summary>
         /// <param name="arguments"></pparam>
@@ -26,34 +34,11 @@ namespace Niche.CommandLine
         /// Configure the passed driver instance using available arguments
         /// </summary>
         /// <param name="driver">Instance to configure.</param>
-        /// <returns>List of unprocessed arguments</returns>
-        public IList<string> Configure(object driver)
+        public void Configure(object driver)
         {
             if (driver == null)
             {
                 throw new ArgumentNullException("driver");
-            }
-
-            var result = new List<string>();
-            Configure(driver, a => result.Add(a));
-            return result;
-        }
-
-        /// <summary>
-        /// Configure the passed driver instance using available arguments
-        /// </summary>
-        /// <param name="driver">Instance to configure.</param>
-        /// <param name="handler">Handler for unrecognised arguments</param>
-        public void Configure(object driver, Action<string> handler)
-        {
-            if (driver == null)
-            {
-                throw new ArgumentNullException("driver");
-            }
-
-            if (handler == null)
-            {
-                throw new ArgumentNullException("handler");
             }
 
             var options = new Dictionary<string, CommandLineOptionBase>();
@@ -62,6 +47,7 @@ namespace Niche.CommandLine
 
             CommandLineOptionBase option;
             var queue = new Queue<string>(mArguments);
+            mArguments.Clear();
             while (queue.Count > 0)
             {
                 var arg = queue.Dequeue();
@@ -71,7 +57,7 @@ namespace Niche.CommandLine
                     continue;
                 }
 
-                handler(arg);
+                mArguments.Add(arg);
             }
         }
 
