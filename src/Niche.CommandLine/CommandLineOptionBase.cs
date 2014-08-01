@@ -49,28 +49,15 @@ namespace Niche.CommandLine
             // Have to catch Exception 'cause that's what is thrown!
             catch (Exception ex)
             {
-                ReportConversionError(value, desiredType, ex);
+                string message
+               = string.Format(
+                   CultureInfo.InvariantCulture,
+                   "Failed to convert \"{0}\" to {1}: {2}",
+                   value,
+                   desiredType.Name,
+                   ex.Message);
+                throw new InvalidOperationException(message);
             }
-
-            return null;
-        }
-
-        /// <summary>
-        /// Report a problem converting a value to the desired type
-        /// </summary>
-        /// <param name="value">Value we tried to convert.</param>
-        /// <param name="desiredType">Type we try to convert to.</param>
-        /// <param name="exception">Conversion exception.</param>
-        private static void ReportConversionError(string value, Type desiredType, Exception exception)
-        {
-            string message
-                = string.Format(
-                    CultureInfo.InvariantCulture,
-                    "Failed to convert \"{0}\" to {1}: {2}",
-                    value,
-                    desiredType.Name,
-                    exception.Message);
-            throw new InvalidOperationException(message);
         }
     }
 }
