@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -33,6 +34,7 @@ namespace Niche.CommandLine
         /// <param name="value">String value to convert</param>
         /// <param name="desiredType">Desired type to return</param>
         /// <returns>Converted value</returns>
+        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
         public static object ConvertValue(string value, Type desiredType)
         {
             try

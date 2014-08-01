@@ -21,15 +21,6 @@ namespace Niche.CommandLine.Tests
         }
 
         [Test]
-        public void Constructor_givenLogger_willUseIt()
-        {
-            var arguments = new List<string>();
-            var logger = new ConsoleLogger();
-            var processor = new CommandLineProcessor(arguments, logger);
-            Assert.That(processor.Logger, Is.EqualTo(logger));
-        }
-
-        [Test]
         public void Configure_givenNull_throwsException()
         {
             var arguments = new List<string>();

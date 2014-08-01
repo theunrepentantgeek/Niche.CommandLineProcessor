@@ -8,32 +8,17 @@ namespace Niche.CommandLine
 {
     public class CommandLineProcessor
     {
-        public IConsoleLogger Logger
-        {
-            get;
-            private set;
-        }
-
         /// <summary>
         /// Initializes a new instance of the CommandLineProcessor class
         /// </summary>
+        /// <param name="arguments"></pparam>
         public CommandLineProcessor(IEnumerable<string> arguments)
-            : this(arguments, new ConsoleLogger())
-       { 
-            // Nothing
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the CommandLineProcessor class
-        /// </summary>
-        public CommandLineProcessor(IEnumerable<string> arguments, IConsoleLogger logger)
         {
             if (arguments == null)
             {
                 throw new ArgumentNullException("arguments");
             }
 
-            Logger = logger;
             mArguments = arguments.ToList();
         }
 
