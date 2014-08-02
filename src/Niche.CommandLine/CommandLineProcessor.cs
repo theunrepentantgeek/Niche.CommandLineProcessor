@@ -76,7 +76,7 @@ namespace Niche.CommandLine
 
                 if (IsOption(arg))
                 {
-                    var message = string.Format(CultureInfo.CurrentCulture, "Option {0} was not expected", arg);
+                    var message = string.Format(CultureInfo.CurrentCulture, "{0}\twas not expected.", arg);
                     mErrors.Add(message);
                     continue;
                 }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Niche.CommandLine
 {
-    public class ConsoleLogger
+    public class ConsoleLogger : ILogger
     {
         /// <summary>
         /// Write details of an action

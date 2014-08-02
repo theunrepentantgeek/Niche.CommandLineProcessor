@@ -11,9 +11,19 @@ namespace Niche.CommandLine.Demo
     {
         static void Main(string[] args)
         {
+            var logger = new ConsoleLogger();
+
             var processor = new CommandLineProcessor(args);
             var driver = new Driver();
             processor.Configure(driver);
+
+            // If we had any errors, output the list and then exit
+            if (processor.HasErrors)
+            {
+                logger.Failure(processor.Errors);
+                return;
+            }
+
 
 
         }
