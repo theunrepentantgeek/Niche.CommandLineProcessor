@@ -55,7 +55,6 @@
     <Compile Include="CommandLineProcessor.cs" />
     <Compile Include="CommandLineSwitch.cs" />
     <Compile Include="ConsoleLogger.cs" />
-    <Compile Include="IConsoleLogger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
