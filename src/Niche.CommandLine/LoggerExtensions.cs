@@ -130,31 +130,20 @@ namespace Niche.CommandLine
         {
             var parts = lines.Select(l => l.Split('\t')).ToList();
             var columns = parts.Max(c => c.Length);
-            
-            // Calculate Widths
-            var widths = new int[columns];
-            foreach(var line in parts)
-            {
-                int index = 0;
-                foreach(var cell in line)
-                {
-                    widths[index] = Math.Max(widths[index], cell.Length+1);
-                    index++;
-                }
-            }
 
             // Create a format string
             var f = new StringBuilder();
-            int column = 0;
-            foreach(var w in widths)
+            for (int c = 0; c < columns; c++)
             {
-                f.AppendFormat("{{{0},-{1}}}", column++, w);
+                var width = parts.Where(p => p.Length > c).Max(p => p[c].Length);
+                var fragment = string.Format("{{{0},-{1}}}", c, width + 1);
+                f.Append(fragment);
             }
             var format = f.ToString();
 
             // Create the result
             var result = new List<string>();
-            foreach(var line in parts)
+            foreach (var line in parts)
             {
                 result.Add(string.Format(format, line).TrimEnd());
             }
