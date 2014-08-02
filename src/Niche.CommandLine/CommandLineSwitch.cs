@@ -19,6 +19,11 @@ namespace Niche.CommandLine
         public string ShortName { get; private set; }
 
         /// <summary>
+        /// Gets the other short form of this switch
+        /// </summary>
+        public string AlternateShortName { get; private set; }
+
+        /// <summary>
         /// Gets the long form of this switch
         /// </summary>
         public string LongName { get; private set; }
@@ -64,6 +69,7 @@ namespace Niche.CommandLine
             foreach (var s in switches)
             {
                 options[s.ShortName] = s;
+                options[s.AlternateShortName] = s;
                 options[s.LongName] = s;
             }
         }
@@ -89,6 +95,7 @@ namespace Niche.CommandLine
             mMethod = method;
 
             ShortName = "-" + CamelCase.ToShortName(method.Name);
+            AlternateShortName = "/" + CamelCase.ToShortName(method.Name);
             LongName = "--" + CamelCase.ToDashedName(method.Name);
         }
 

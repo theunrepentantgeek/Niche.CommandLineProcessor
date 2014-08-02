@@ -139,7 +139,7 @@ namespace Niche.CommandLine.Tests
             var driver = new SampleDriver();
             var options = new Dictionary<string, CommandLineOptionBase>();
             CommandLineSwitch.ConfigureSwitches(driver, options);
-            Assert.That(options.Count, Is.EqualTo(2));
+            Assert.That(options.Count, Is.EqualTo(3));
         }
     }
 }
