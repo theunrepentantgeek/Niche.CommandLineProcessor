@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,6 +15,22 @@ namespace Niche.CommandLine
         public IEnumerable<string> Arguments
         {
             get { return mArguments; }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether we have any errors
+        /// </summary>
+        public bool HasErrors
+        {
+            get { return mErrors.Any(); }
+        }
+
+        /// <summary>
+        /// Gets a list of errors already encountered
+        /// </summary>
+        public IEnumerable<string> Errors
+        {
+            get { return mErrors; }
         }
 
         /// <summary>
@@ -57,10 +74,35 @@ namespace Niche.CommandLine
                     continue;
                 }
 
+                if (IsOption(arg))
+                {
+                    var message = string.Format(CultureInfo.CurrentCulture, "Option {0} was not expected", arg);
+                    mErrors.Add(message);
+                    continue;
+                }
+
                 mArguments.Add(arg);
             }
         }
 
+        /// <summary>
+        /// Test to see if the passed argument is an option
+        /// </summary>
+        /// <param name="argument">Argument to test</param>
+        /// <returns>True if the argument is an option, false otherwise.</returns>
+        private bool IsOption(string argument)
+        {
+            if (argument == null)
+            {
+                throw new ArgumentNullException("argument");
+            }
+
+            return argument.StartsWith("-", StringComparison.Ordinal)
+                || argument.StartsWith("/", StringComparison.Ordinal);
+        }
+
         private readonly List<string> mArguments = new List<string>();
+
+        private readonly List<string> mErrors = new List<string>();
     }
 }

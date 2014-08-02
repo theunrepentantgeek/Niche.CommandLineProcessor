@@ -37,6 +37,16 @@ namespace Niche.CommandLine
         [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
         public static object ConvertValue(string value, Type desiredType)
         {
+            if (desiredType==null)
+            {
+                throw new ArgumentNullException("desiredType");
+            }
+
+            if (value == null)
+            {
+                return null;
+            }
+
             try
             {
                 var converter = TypeDescriptor.GetConverter(desiredType);

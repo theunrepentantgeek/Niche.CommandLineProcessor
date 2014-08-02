@@ -62,6 +62,16 @@ namespace Niche.CommandLine.Tests
         }
 
         [Test]
+        public void Configure_withAlternateShortFormSwitch_callsMethod()
+        {
+            var arguments = new List<string> { "/h" };
+            var driver = new SampleDriver();
+            var processor = new CommandLineProcessor(arguments);
+            processor.Configure(driver);
+            Assert.That(driver.ShowHelp, Is.True);
+        }
+
+        [Test]
         public void Configure_withLongFormParameter_callsMethods()
         {
             var arguments = new List<string> { "--find", "fu" };
@@ -82,6 +92,16 @@ namespace Niche.CommandLine.Tests
         }
 
         [Test]
+        public void Configure_withAlternateShortFormParameter_callsMethod()
+        {
+            var arguments = new List<string> { "/f", "fu" };
+            var driver = new SampleDriver();
+            var processor = new CommandLineProcessor(arguments);
+            processor.Configure(driver);
+            Assert.That(driver.Searches, Is.EquivalentTo(new List<string> { "fu" }));
+        }
+
+        [Test]
         public void Configure_withParameterRequiringConversion_callsMethod()
         {
             var arguments = new List<string> { "-r", "4" };
@@ -92,13 +112,23 @@ namespace Niche.CommandLine.Tests
         }
 
         [Test]
-        public void Configure_withUnexpectedOption_leavesOptionInList()
+        public void Configure_withUnexpectedArgument_leavesItInList()
         {
             var arguments = new List<string> { "snafu" };
             var driver = new SampleDriver();
             var processor = new CommandLineProcessor(arguments);
             processor.Configure(driver);
             Assert.That(processor.Arguments, Is.EquivalentTo(new List<string> { "snafu" }));
+        }
+
+        [Test]
+        public void Configure_withUnexpectedOption_generatesError()
+        {
+            var arguments = new List<string> { "-s" };
+            var driver = new SampleDriver();
+            var processor = new CommandLineProcessor(arguments);
+            processor.Configure(driver);
+            Assert.That(processor.HasErrors, Is.True);
         }
     }
 }
