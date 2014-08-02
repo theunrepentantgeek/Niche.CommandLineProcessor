@@ -69,9 +69,7 @@ namespace Niche.CommandLine
 
             foreach (var s in parameters)
             {
-                options[s.ShortName] = s;
-                options[s.AlternateShortName] = s;
-                options[s.LongName] = s;
+                s.AddTo(options);
             }
         }
 
@@ -119,6 +117,17 @@ namespace Niche.CommandLine
             }
 
             mMethod.Invoke(mInstance, parameters);
+        }
+
+        /// <summary>
+        /// Add triggers to activate this option to the passed dictionary
+        /// </summary>
+        /// <param name="dictionary">Dictionary that collects our triggers</param>
+        public override void AddTo(Dictionary<string, CommandLineOptionBase> dictionary)
+        {
+            dictionary[ShortName] = this;
+            dictionary[AlternateShortName] = this;
+            dictionary[LongName] = this;
         }
 
         private readonly MethodInfo mMethod;

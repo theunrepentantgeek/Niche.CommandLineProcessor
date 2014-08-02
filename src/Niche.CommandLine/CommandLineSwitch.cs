@@ -68,9 +68,7 @@ namespace Niche.CommandLine
 
             foreach (var s in switches)
             {
-                options[s.ShortName] = s;
-                options[s.AlternateShortName] = s;
-                options[s.LongName] = s;
+                s.AddTo(options);
             }
         }
 
@@ -105,6 +103,17 @@ namespace Niche.CommandLine
         public override void Activate(Queue<string> arguments)
         {
             mMethod.Invoke(mInstance, null);
+        }
+
+        /// <summary>
+        /// Add triggers to activate this option to the passed dictionary
+        /// </summary>
+        /// <param name="dictionary">Dictionary that collects our triggers</param>
+        public override void AddTo(Dictionary<string, CommandLineOptionBase> dictionary)
+        {
+            dictionary[ShortName] = this;
+            dictionary[AlternateShortName] = this;
+            dictionary[LongName] = this;
         }
 
         private readonly object mInstance;
