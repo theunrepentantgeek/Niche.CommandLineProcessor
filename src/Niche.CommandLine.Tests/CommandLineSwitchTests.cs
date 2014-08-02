@@ -122,7 +122,7 @@ namespace Niche.CommandLine.Tests
         {
             var options = new Dictionary<string, CommandLineOptionBase>();
             Assert.Throws<ArgumentNullException>(
-            () => CommandLineSwitch.ConfigureSwitches(null, options));
+                () => CommandLineSwitch.ConfigureSwitches(null, options));
         }
 
         [Test]
@@ -130,7 +130,7 @@ namespace Niche.CommandLine.Tests
         {
             var driver = new SampleDriver();
             Assert.Throws<ArgumentNullException>(
-            () => CommandLineSwitch.ConfigureSwitches(driver, null));
+                () => CommandLineSwitch.ConfigureSwitches(driver, null));
         }
 
         [Test]

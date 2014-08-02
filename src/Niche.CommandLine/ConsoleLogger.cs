@@ -10,76 +10,60 @@ namespace Niche.CommandLine
     public class ConsoleLogger
     {
         /// <summary>
-        /// Write an action message to the console
+        /// Write details of an action
         /// </summary>
-        /// <param name="messageTemplate">Template for the message to write.</param>
-        /// <param name="parameters">Parameters to substitute in the template.</param>
-        public void WriteActionLine(string messageTemplate, params string[] parameters)
+        /// <param name="message">The message to write.</param>
+        public void Action(string message)
         {
-            WriteMessage(ConsoleColor.White, ActionMarker, messageTemplate, parameters);
+            WriteMessage(ConsoleColor.White, ActionMarker, message);
         }
 
         /// <summary>
-        /// Write a success message to the console
+        /// Write details of a successful action
         /// </summary>
-        /// <param name="messageTemplate">Template for the message to write.</param>
-        /// <param name="parameters">Parameters to substitute in the template.</param>
-        public void WriteSuccessLine(string messageTemplate, params string[] parameters)
+        /// <param name="message">The message to write.</param>
+        public void Success(string message)
         {
-            WriteMessage(ConsoleColor.Green, SuccessMarker, messageTemplate, parameters);
+            WriteMessage(ConsoleColor.Green, SuccessMarker, message);
         }
 
         /// <summary>
-        /// Write an error to the console
+        /// Write details of a failed action
         /// </summary>
-        /// <param name="messageTemplate">Template for the message to write.</param>
-        /// <param name="parameters">Parameters to substitute in the template.</param>
-        public void WriteErrorLine(string messageTemplate, params string[] parameters)
+        /// <param name="message">The message to write.</param>
+        public void Failure(string message)
         {
-            WriteMessage(ConsoleColor.Red, FailureMarker, messageTemplate, parameters);
+            WriteMessage(ConsoleColor.Red, FailureMarker, message);
         }
 
         /// <summary>
-        /// Write a warning to the console
+        /// Write a warning
         /// </summary>
-        /// <param name="messageTemplate">Template for the message to write.</param>
-        /// <param name="parameters">Parameters to substitute in the template.</param>
-        public void WriteWarningLine(string messageTemplate, params string[] parameters)
+        /// <param name="message">The message to write.</param>
+        public void Warning(string message)
         {
-            WriteMessage(ConsoleColor.Yellow, WarningMarker, messageTemplate, parameters);
+            WriteMessage(ConsoleColor.Yellow, WarningMarker, message);
         }
 
         /// <summary>
-        /// Write an information message to the console
+        /// Write information
         /// </summary>
-        /// <param name="messageTemplate">Template for the message to write.</param>
-        /// <param name="parameters">Parameters to substitute in the template.</param>
-        public void WriteInformationLine(string messageTemplate, params string[] parameters)
+        /// <param name="message">The message to write.</param>
+        public void Information(string message)
         {
-            WriteMessage(ConsoleColor.White, InformationMarker, messageTemplate, parameters);
+            WriteMessage(ConsoleColor.Gray, InformationMarker, message);
         }
 
         /// <summary>
-        /// Write a detail message to the console
+        /// Write detailed information
         /// </summary>
-        /// <param name="messageTemplate">Template for the message to write.</param>
-        /// <param name="parameters">Parameters to substitute in the template.</param>
-        public void WriteDetailLine(string messageTemplate, params string[] parameters)
+        /// <param name="message">The message to write.</param>
+        public void Detail(string message)
         {
-            WriteMessage(ConsoleColor.Gray, DetailMarker, messageTemplate, parameters);
+            WriteMessage(ConsoleColor.DarkGray, DetailMarker, message);
         }
 
-        /// <summary>
-        /// Write a debug message to the console
-        /// </summary>
-        /// <param name="messageTemplate">Template for the message to write.</param>
-        /// <param name="parameters">Parameters to substitute in the template.</param>
-        public void WriteDebugLine(string messageTemplate, params string[] parameters)
-        {
-            WriteMessage(ConsoleColor.DarkGray, Space, messageTemplate, parameters);
-        }
-
-        private static void WriteMessage(ConsoleColor color, char prefix, string messageTemplate, string[] parameters)
+        private static void WriteMessage(ConsoleColor color, char prefix, string message)
         {
             var foreground = Console.ForegroundColor;
             try
@@ -87,7 +71,7 @@ namespace Niche.CommandLine
                 Console.ForegroundColor = color;
                 Console.Write(prefix);
                 Console.Write(Space);
-                Console.WriteLine(string.Format(CultureInfo.CurrentCulture, messageTemplate, parameters));
+                Console.WriteLine(message);
             }
             finally
             {
