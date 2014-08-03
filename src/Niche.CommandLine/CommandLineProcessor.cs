@@ -64,13 +64,17 @@ namespace Niche.CommandLine
             foreach(var s in CommandLineSwitch.CreateSwitches(driver))
             {
                 s.AddOptionsTo(options);
+                s.AddHelpTo(mHelp);
             }
 
             // Create Parameters
             foreach(var p in CommandLineParameter.CreateParameters(driver))
             {
                 p.AddOptionsTo(options);
+                p.AddHelpTo(mHelp);
             }
+
+            mHelp.Sort();
 
             CommandLineOptionBase option;
             var queue = new Queue<string>(mArguments);
