@@ -12,6 +12,7 @@ namespace Niche.CommandLine.Demo
         static void Main(string[] args)
         {
             var logger = new ConsoleLogger();
+            logger.ConsoleBanner();
 
             var processor = new CommandLineProcessor(args);
             var driver = new Driver();
