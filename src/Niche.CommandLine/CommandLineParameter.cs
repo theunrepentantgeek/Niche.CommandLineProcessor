@@ -48,16 +48,11 @@ namespace Niche.CommandLine
         }
 
 
-        public static void ConfigureParameters(object instance, Dictionary<string, CommandLineOptionBase> options)
+        public static IEnumerable<CommandLineParameter> CreateParameters(object instance)
         {
             if (instance == null)
             {
                 throw new ArgumentNullException("instance");
-            }
-
-            if (options == null)
-            {
-                throw new ArgumentNullException("options");
             }
 
             var methods = instance.GetType().GetMethods();
@@ -67,12 +62,8 @@ namespace Niche.CommandLine
                     .Select(m => new CommandLineParameter(instance, m))
                     .ToList();
 
-            foreach (var s in parameters)
-            {
-                s.AddTo(options);
-            }
+            return parameters;
         }
-
         public CommandLineParameter(object instance, MethodInfo method)
         {
             if (instance == null)
@@ -125,6 +116,11 @@ namespace Niche.CommandLine
         /// <param name="dictionary">Dictionary that collects our triggers</param>
         public override void AddTo(Dictionary<string, CommandLineOptionBase> dictionary)
         {
+            if (dictionary == null)
+            {
+                throw new ArgumentNullException("dictionary");
+            }
+
             dictionary[ShortName] = this;
             dictionary[AlternateShortName] = this;
             dictionary[LongName] = this;

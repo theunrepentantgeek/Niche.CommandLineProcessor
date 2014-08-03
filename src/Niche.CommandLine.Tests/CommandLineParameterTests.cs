@@ -115,26 +115,27 @@ namespace Niche.CommandLine.Tests
         [Test]
         public void ConfigureParameters_givenNullInstance_throwsException()
         {
-            var options = new Dictionary<string, CommandLineOptionBase>();
             Assert.Throws<ArgumentNullException>(
-            () => CommandLineParameter.ConfigureParameters(null, options));
+            () => CommandLineParameter.CreateParameters(null));
         }
 
         [Test]
-        public void ConfigureParameters_givenNullOptions_throwsException()
+        public void AddTo_givenNull_throwsException()
         {
             var driver = new SampleDriver();
+            var commandLineParameter = CommandLineParameter.CreateParameters(driver).First();
             Assert.Throws<ArgumentNullException>(
-            () => CommandLineParameter.ConfigureParameters(driver, null));
+                () => commandLineParameter.AddTo(null));
         }
 
         [Test]
-        public void ConfigureParameters_givenInstance_configuresOptions()
+        public void AddTo_givenDictionary_AddsEntries()
         {
             var driver = new SampleDriver();
+            var commandLineParameter = CommandLineParameter.CreateParameters(driver).First();
             var options = new Dictionary<string, CommandLineOptionBase>();
-            CommandLineParameter.ConfigureParameters(driver, options);
-            Assert.That(options.Count, Is.EqualTo(6));
+            commandLineParameter.AddTo(options);
+            Assert.That(options.Count, Is.EqualTo(3));
         }
     }
 }
