@@ -14,12 +14,20 @@ namespace Niche.CommandLine.Demo
     {
         public bool IsVerbose { get; private set; }
 
+        public bool ShowHelp { get; private set; }
+
         public IList<string> SearchTerms { get { return mSearchTerms; } }
 
         [Description("Verbose output")]
         public void Verbose()
         {
             IsVerbose = true;
+        }
+
+        [Description("Display option help")]
+        public void Help()
+        {
+            ShowHelp = true;
         }
 
         [Description("Find items by keyword")]
