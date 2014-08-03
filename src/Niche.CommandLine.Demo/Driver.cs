@@ -23,9 +23,9 @@ namespace Niche.CommandLine.Demo
         }
 
         [Description("Find items by keyword")]
-        public void Find(string search)
+        public void Find(string keyword)
         {
-            mSearchTerms.Add(search);
+            mSearchTerms.Add(keyword);
         }
 
         private readonly List<string> mSearchTerms = new List<string>();

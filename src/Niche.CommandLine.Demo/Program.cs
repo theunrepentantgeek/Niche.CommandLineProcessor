@@ -20,12 +20,12 @@ namespace Niche.CommandLine.Demo
             // If we had any errors, output the list and then exit
             if (processor.HasErrors)
             {
-                logger.Failure(processor.Errors);
+                logger.Failure(processor.Errors, " ");
                 return;
             }
 
             logger.Information("Available commandline options:");
-            logger.Detail(processor.Help);
+            logger.Detail(processor.Help, "   ");
 
         }
     }
