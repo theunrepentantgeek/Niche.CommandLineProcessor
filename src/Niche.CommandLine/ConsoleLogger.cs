@@ -84,7 +84,7 @@ namespace Niche.CommandLine
         private const char FailureMarker = 'x';
         private const char WarningMarker = '!';
         private const char InformationMarker = '-';
-        private const char DetailMarker = '.';
+        private const char DetailMarker = ' ';
         private const char Space = ' ';
     }
 }
