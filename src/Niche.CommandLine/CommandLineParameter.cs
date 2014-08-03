@@ -138,7 +138,7 @@ namespace Niche.CommandLine
                 throw new ArgumentNullException("help");
             }
 
-            var text = string.Format("{0} {3}\t{1} {3}\t{2}", LongName, ShortName, Description, mParameterInfo.ParameterType.Name);
+            var text = string.Format("{0} <{3}>\t{1} <{3}>\t{2}", LongName, ShortName, Description, mParameterInfo.Name);
             help.Add(text);
         }
 
