@@ -25,7 +25,7 @@ namespace Niche.CommandLine
         /// Write details of several actions, using tabs to create a table
         /// </summary>
         /// <param name="messages">The messages to write.</param>
-        public static void Action(this ILogger logger, IEnumerable<string> messages)
+        public static void Action(this ILogger logger, IEnumerable<string> messages, string separator)
         {
             foreach (var line in Tablefy(messages))
             {
@@ -47,7 +47,7 @@ namespace Niche.CommandLine
         /// Write details of several successful actions, using tabs to create a table
         /// </summary>
         /// <param name="messages">The messages to write.</param>
-        public static void Success(this ILogger logger, IEnumerable<string> messages)
+        public static void Success(this ILogger logger, IEnumerable<string> messages, string separator)
         {
             foreach (var line in Tablefy(messages))
             {
@@ -69,7 +69,7 @@ namespace Niche.CommandLine
         /// Write details of several failed actions, using tabs to create a table
         /// </summary>
         /// <param name="messages">The messages to write.</param>
-        public static void Failure(this ILogger logger, IEnumerable<string> messages)
+        public static void Failure(this ILogger logger, IEnumerable<string> messages, string separator)
         {
             foreach (var line in Tablefy(messages))
             {
@@ -91,7 +91,7 @@ namespace Niche.CommandLine
         /// Write several warnings, using tabs to create a table
         /// </summary>
         /// <param name="messages">The messages to write.</param>
-        public static void Warning(this ILogger logger, IEnumerable<string> messages)
+        public static void Warning(this ILogger logger, IEnumerable<string> messages, string separator)
         {
             foreach (var line in Tablefy(messages))
             {
@@ -113,7 +113,7 @@ namespace Niche.CommandLine
         /// Write pieces of information
         /// </summary>
         /// <param name="messages">The messages to write.</param>
-        public static void Information(this ILogger logger, IEnumerable<string> messages)
+        public static void Information(this ILogger logger, IEnumerable<string> messages, string separator)
         {
             foreach (var line in Tablefy(messages))
             {
@@ -135,7 +135,7 @@ namespace Niche.CommandLine
         /// Write detailed pieces of information
         /// </summary>
         /// <param name="messages">The messages to write.</param>
-        public static void Detail(this ILogger logger, IEnumerable<string> messages)
+        public static void Detail(this ILogger logger, IEnumerable<string> messages, string separator)
         {
             foreach (var line in Tablefy(messages))
             {
@@ -158,7 +158,7 @@ namespace Niche.CommandLine
             for (int c = 0; c < columns; c++)
             {
                 var width = parts.Where(p => p.Length > c).Max(p => p[c].Length);
-                var fragment = string.Format("{{{0},-{1}}}", c, width + 1);
+                var fragment = string.Format("{{{0},-{1}}}{2}", c, width, "   ");
                 f.Append(fragment);
             }
             var format = f.ToString();

@@ -31,7 +31,7 @@ namespace Niche.CommandLine.Tests
         {
             var original = new List<string> { "alpha\tbeta\tgamma" };
             var result = LoggerExtensions.Tablefy(original);
-            Assert.That(result.Single(), Is.EqualTo("alpha beta gamma"));
+            Assert.That(result.Single(), Is.EqualTo("alpha   beta   gamma"));
         }
 
         [Test]
@@ -39,7 +39,7 @@ namespace Niche.CommandLine.Tests
         {
             var original = new List<string> { "alpha\tbeta\tgamma", "one\ttwo\tthree" };
             var result = LoggerExtensions.Tablefy(original);
-            var expected = new List<string>{"alpha beta gamma", "one   two  three"};
+            var expected = new List<string>{"alpha   beta   gamma", "one     two    three"};
             Assert.That(result, Is.EquivalentTo(expected));
         }
     }
