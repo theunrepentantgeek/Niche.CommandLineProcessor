@@ -24,7 +24,8 @@ namespace Niche.CommandLine.Demo
                 return;
             }
 
-
+            logger.Information("Available commandline options:");
+            logger.Detail(processor.Help);
 
         }
     }

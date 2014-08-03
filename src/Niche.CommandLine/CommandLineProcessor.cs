@@ -34,6 +34,14 @@ namespace Niche.CommandLine
         }
 
         /// <summary>
+        /// Gets a list of help text for display
+        /// </summary>
+        public IEnumerable<string> Help
+        {
+            get { return mHelp; }
+        }
+
+        /// <summary>
         /// Initializes a new instance of the CommandLineProcessor class
         /// </summary>
         /// <param name="arguments"></pparam>
