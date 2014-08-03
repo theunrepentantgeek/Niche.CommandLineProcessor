@@ -120,21 +120,21 @@ namespace Niche.CommandLine.Tests
         }
 
         [Test]
-        public void AddTo_givenNull_throwsException()
+        public void AddOptionsTo_givenNull_throwsException()
         {
             var driver = new SampleDriver();
             var commandLineParameter = CommandLineParameter.CreateParameters(driver).First();
             Assert.Throws<ArgumentNullException>(
-                () => commandLineParameter.AddTo(null));
+                () => commandLineParameter.AddOptionsTo(null));
         }
 
         [Test]
-        public void AddTo_givenDictionary_AddsEntries()
+        public void AddOptionsTo_givenDictionary_AddsEntries()
         {
             var driver = new SampleDriver();
             var commandLineParameter = CommandLineParameter.CreateParameters(driver).First();
             var options = new Dictionary<string, CommandLineOptionBase>();
-            commandLineParameter.AddTo(options);
+            commandLineParameter.AddOptionsTo(options);
             Assert.That(options.Count, Is.EqualTo(3));
         }
     }

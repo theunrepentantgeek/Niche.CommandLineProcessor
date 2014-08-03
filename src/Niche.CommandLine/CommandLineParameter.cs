@@ -114,7 +114,7 @@ namespace Niche.CommandLine
         /// Add triggers to activate this option to the passed dictionary
         /// </summary>
         /// <param name="dictionary">Dictionary that collects our triggers</param>
-        public override void AddTo(Dictionary<string, CommandLineOptionBase> dictionary)
+        public override void AddOptionsTo(Dictionary<string, CommandLineOptionBase> dictionary)
         {
             if (dictionary == null)
             {

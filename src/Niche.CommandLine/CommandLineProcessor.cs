@@ -63,13 +63,13 @@ namespace Niche.CommandLine
             // Create Switches
             foreach(var s in CommandLineSwitch.CreateSwitches(driver))
             {
-                s.AddTo(options);
+                s.AddOptionsTo(options);
             }
 
             // Create Parameters
             foreach(var p in CommandLineParameter.CreateParameters(driver))
             {
-                p.AddTo(options);
+                p.AddOptionsTo(options);
             }
 
             CommandLineOptionBase option;
