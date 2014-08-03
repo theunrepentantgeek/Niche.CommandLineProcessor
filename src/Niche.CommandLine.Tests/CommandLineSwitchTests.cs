@@ -120,25 +120,26 @@ namespace Niche.CommandLine.Tests
         [Test]
         public void ConfigureSwitches_givenNullInstance_throwsException()
         {
-            var options = new Dictionary<string, CommandLineOptionBase>();
             Assert.Throws<ArgumentNullException>(
-                () => CommandLineSwitch.ConfigureSwitches(null, options));
+                () => CommandLineSwitch.CreateSwitches(null));
         }
 
         [Test]
-        public void ConfigureSwitches_givenNullOptions_throwsException()
+        public void AddTo_givenNull_throwsException()
         {
             var driver = new SampleDriver();
+            var commandLineSwitch = CommandLineSwitch.CreateSwitches(driver).First();
             Assert.Throws<ArgumentNullException>(
-                () => CommandLineSwitch.ConfigureSwitches(driver, null));
+                () => commandLineSwitch.AddTo(null));
         }
 
         [Test]
-        public void ConfigureSwitches_givenInstance_configuresOptions()
+        public void AddTo_givenDictionary_AddsEntries()
         {
             var driver = new SampleDriver();
+            var commandLineSwitch = CommandLineSwitch.CreateSwitches(driver).First();
             var options = new Dictionary<string, CommandLineOptionBase>();
-            CommandLineSwitch.ConfigureSwitches(driver, options);
+            commandLineSwitch.AddTo(options);
             Assert.That(options.Count, Is.EqualTo(3));
         }
     }

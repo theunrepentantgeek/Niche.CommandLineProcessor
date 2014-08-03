@@ -47,16 +47,11 @@ namespace Niche.CommandLine
                 && method.GetCustomAttribute<DescriptionAttribute>() != null;
         }
 
-        public static void ConfigureSwitches(object instance, Dictionary<string, CommandLineOptionBase> options)
+        public static IEnumerable<CommandLineSwitch> CreateSwitches(object instance)
         {
             if (instance == null)
             {
                 throw new ArgumentNullException("instance");
-            }
-
-            if (options == null)
-            {
-                throw new ArgumentNullException("options");
             }
 
             var methods = instance.GetType().GetMethods();
@@ -66,10 +61,7 @@ namespace Niche.CommandLine
                     .Select(m => new CommandLineSwitch(instance, m))
                     .ToList();
 
-            foreach (var s in switches)
-            {
-                s.AddTo(options);
-            }
+            return switches;
         }
 
         public CommandLineSwitch(object instance, MethodInfo method)
@@ -111,6 +103,11 @@ namespace Niche.CommandLine
         /// <param name="dictionary">Dictionary that collects our triggers</param>
         public override void AddTo(Dictionary<string, CommandLineOptionBase> dictionary)
         {
+            if (dictionary == null)
+            {
+                throw new ArgumentNullException("dictionary");
+            }
+
             dictionary[ShortName] = this;
             dictionary[AlternateShortName] = this;
             dictionary[LongName] = this;
