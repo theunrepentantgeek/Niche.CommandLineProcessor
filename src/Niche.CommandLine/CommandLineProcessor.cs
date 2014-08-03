@@ -59,8 +59,18 @@ namespace Niche.CommandLine
             }
 
             var options = new Dictionary<string, CommandLineOptionBase>();
-            CommandLineSwitch.ConfigureSwitches(driver, options);
-            CommandLineParameter.ConfigureParameters(driver, options);
+            
+            // Create Switches
+            foreach(var s in CommandLineSwitch.CreateSwitches(driver))
+            {
+                s.AddTo(options);
+            }
+
+            // Create Parameters
+            foreach(var p in CommandLineParameter.CreateParameters(driver))
+            {
+                p.AddTo(options);
+            }
 
             CommandLineOptionBase option;
             var queue = new Queue<string>(mArguments);
@@ -104,5 +114,7 @@ namespace Niche.CommandLine
         private readonly List<string> mArguments = new List<string>();
 
         private readonly List<string> mErrors = new List<string>();
+
+        private readonly List<string> mHelp = new List<string>();
     }
 }
