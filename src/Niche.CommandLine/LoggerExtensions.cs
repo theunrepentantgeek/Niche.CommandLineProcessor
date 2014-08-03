@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -11,6 +12,32 @@ namespace Niche.CommandLine
     /// </summary>
     public static class LoggerExtensions
     {
+        public static void ConsoleBanner(this ILogger logger)
+        {
+            var assembly = Assembly.GetEntryAssembly();
+
+            var heading = new StringBuilder();
+            
+            var title = assembly.GetCustomAttribute<AssemblyTitleAttribute>();
+            if (title != null && !String.IsNullOrWhiteSpace(title.Title))
+            {
+                heading.Append(title.Title);
+            }
+            else
+            {
+                heading.Append(assembly.GetName().Name);
+            }
+
+            var version = assembly.GetName().Version;
+            if (version !=null)
+            {
+                heading.Append(" v");
+                heading.Append(version.ToString(4));
+            }
+
+            logger.Heading(heading.ToString());
+        }
+
         /// <summary>
         /// Write details of an action
         /// </summary>

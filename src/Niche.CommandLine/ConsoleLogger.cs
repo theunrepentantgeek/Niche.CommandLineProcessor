@@ -10,6 +10,17 @@ namespace Niche.CommandLine
     public class ConsoleLogger : ILogger
     {
         /// <summary>
+        /// Display a heading
+        /// </summary>
+        /// <param name="heading"></param>
+        public void Heading(string heading)
+        {
+            WriteMessage(ConsoleColor.DarkGray, new string('-', heading.Length + 4));
+            WriteMessage(ConsoleColor.White, "  " + heading);
+            WriteMessage(ConsoleColor.DarkGray, new string('-', heading.Length + 4));
+        }
+
+        /// <summary>
         /// Write details of an action
         /// </summary>
         /// <param name="message">The message to write.</param>
@@ -65,12 +76,15 @@ namespace Niche.CommandLine
 
         private static void WriteMessage(ConsoleColor color, char prefix, string message)
         {
+            WriteMessage(color, string.Format("{0} {1}", prefix, message));
+        }
+
+        private static void WriteMessage(ConsoleColor color, string message)
+        {
             var foreground = Console.ForegroundColor;
             try
             {
                 Console.ForegroundColor = color;
-                Console.Write(prefix);
-                Console.Write(Space);
                 Console.WriteLine(message);
             }
             finally

@@ -9,6 +9,12 @@ namespace Niche.CommandLine
     public interface ILogger
     {
         /// <summary>
+        /// Display a heading
+        /// </summary>
+        /// <param name="heading"></param>
+        void Heading(string heading);
+
+        /// <summary>
         /// Write details of an action
         /// </summary>
         /// <param name="message">The message to write.</param>
