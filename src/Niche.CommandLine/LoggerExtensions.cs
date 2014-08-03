@@ -122,6 +122,28 @@ namespace Niche.CommandLine
         }
 
         /// <summary>
+        /// Write detailed information
+        /// </summary>
+        /// <param name="messageTemplate">Template for the message to write.</param>
+        /// <param name="parameters">Parameters to substitute in the template.</param>
+        public static void Detail(this ILogger logger, string messageTemplate, params string[] parameters)
+        {
+            logger.Detail(string.Format(messageTemplate, parameters));
+        }
+
+        /// <summary>
+        /// Write detailed pieces of information
+        /// </summary>
+        /// <param name="messages">The messages to write.</param>
+        public static void Detail(this ILogger logger, IEnumerable<string> messages)
+        {
+            foreach (var line in Tablefy(messages))
+            {
+                logger.Detail(line);
+            }
+        }
+
+        /// <summary>
         /// Format a series of lines as a "table", based on use of tabs to separate columns
         /// </summary>
         /// <param name="lines"></param>
