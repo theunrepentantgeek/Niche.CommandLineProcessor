@@ -65,6 +65,7 @@ namespace Niche.CommandLine
             return parameters;
         }
         public CommandLineParameter(object instance, MethodInfo method)
+            : base(method)
         {
             if (instance == null)
             {
@@ -124,6 +125,21 @@ namespace Niche.CommandLine
             dictionary[ShortName] = this;
             dictionary[AlternateShortName] = this;
             dictionary[LongName] = this;
+        }
+
+        /// <summary>
+        /// Add help text to the passed list
+        /// </summary>
+        /// <param name="help">List to capture the help text</param>
+        public override void AddHelpTo(IList<string> help)
+        {
+            if (help == null)
+            {
+                throw new ArgumentNullException("help");
+            }
+
+            var text = string.Format("{0} {3}\t{1} {3}\t{2}", LongName, ShortName, Description, mParameterInfo.ParameterType.Name);
+            help.Add(text);
         }
 
         private readonly MethodInfo mMethod;

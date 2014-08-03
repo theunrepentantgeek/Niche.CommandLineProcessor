@@ -65,6 +65,7 @@ namespace Niche.CommandLine
         }
 
         public CommandLineSwitch(object instance, MethodInfo method)
+            : base(method)
         {
             if (instance == null)
             {
@@ -111,6 +112,21 @@ namespace Niche.CommandLine
             dictionary[ShortName] = this;
             dictionary[AlternateShortName] = this;
             dictionary[LongName] = this;
+        }
+
+        /// <summary>
+        /// Add help text to the passed list
+        /// </summary>
+        /// <param name="help">List to capture the help text</param>
+        public override void AddHelpTo(IList<string> help)
+        {
+            if (help == null)
+            {
+                throw new ArgumentNullException("help");
+            }
+
+            var text = string.Format("{0}\t{1}\t{2}", LongName, ShortName, Description);
+            help.Add(text);
         }
 
         private readonly object mInstance;

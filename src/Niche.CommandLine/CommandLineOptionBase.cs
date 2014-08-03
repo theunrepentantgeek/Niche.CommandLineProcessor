@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -15,11 +16,16 @@ namespace Niche.CommandLine
     public abstract class CommandLineOptionBase
     {
         /// <summary>
+        /// Gets or sets a description of this option
+        /// </summary>
+        public string Description { get; private set; }
+
+        /// <summary>
         /// Initializes a new instance of the CommandLineOptionBase class
         /// </summary>
-        protected CommandLineOptionBase()
+        protected CommandLineOptionBase(MemberInfo member)
         {
-            // Nothing
+            Description = GetDescription(member);
         }
 
         /// <summary>
@@ -33,6 +39,12 @@ namespace Niche.CommandLine
         /// </summary>
         /// <param name="dictionary">Dictionary that collects our triggers</param>
         public abstract void AddOptionsTo(Dictionary<string, CommandLineOptionBase> dictionary);
+
+        /// <summary>
+        /// Add help text to the passed list
+        /// </summary>
+        /// <param name="help">List to capture the help text</param>
+        public abstract void AddHelpTo(IList<string> help);
 
         /// <summary>
         /// Convert a value from a string into the desired type
@@ -74,6 +86,17 @@ namespace Niche.CommandLine
                    ex.Message);
                 throw new InvalidOperationException(message);
             }
+        }
+
+        protected string GetDescription(MemberInfo info)
+        {
+            var attribute = info.GetCustomAttribute<DescriptionAttribute>();
+            if (attribute == null)
+            {
+                return string.Empty;
+            }
+
+            return attribute.Description;
         }
     }
 }

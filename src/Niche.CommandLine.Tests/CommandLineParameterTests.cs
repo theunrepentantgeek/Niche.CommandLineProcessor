@@ -137,5 +137,24 @@ namespace Niche.CommandLine.Tests
             commandLineParameter.AddOptionsTo(options);
             Assert.That(options.Count, Is.EqualTo(3));
         }
+
+        [Test]
+        public void AddHelpTo_givenNull_throwsException()
+        {
+            var driver = new SampleDriver();
+            var commandLineParameter = CommandLineParameter.CreateParameters(driver).First();
+            Assert.Throws<ArgumentNullException>(
+                () => commandLineParameter.AddHelpTo(null));
+        }
+
+        [Test]
+        public void AddHelpTo_givenList_AddsEntry()
+        {
+            var driver = new SampleDriver();
+            var commandLineParameter = CommandLineParameter.CreateParameters(driver).First();
+            var help = new List<string>();
+            commandLineParameter.AddHelpTo(help);
+            Assert.That(help, Has.Count.EqualTo(1));
+        }
     }
 }
