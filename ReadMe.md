@@ -35,7 +35,7 @@ document what the option does.
 
 For example, this method:
 
-    [Descrpition("Find files that match a wildcard")]
+    [Description("Find files that match a wildcard")]
     public void Find(string wildcard);
     
 will give the options `-f <wildcard>` and `--find <wildcard>`.
