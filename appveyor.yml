@@ -1,9 +1,5 @@
 # appveyor file
 # http://www.appveyor.com/docs/appveyor-yml
----
-#---------------------------------#
-#      general configuration      #
-#---------------------------------#
 
 # version format
 version: 1.0.{build}
@@ -19,3 +15,13 @@ assembly_info:
   assembly_version: "{version}"
   assembly_file_version: "{version}"
 
+build:
+  project: Niche.CommandLine.sln
+  publish_nuget: true             # package projects with .nuspec files and push to artifacts
+  
+deploy:
+  - provider: NuGet
+    server: 
+    api_key:
+      secure: oQjllmGDfO1OQ5QYI0RdPZf0EMebCOMKc1axg3tZk5RFN8nOUlE4ACz4J5A4JMGn
+    artifact: /.*\.nupkg/
