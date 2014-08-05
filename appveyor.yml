@@ -1,3 +1,5 @@
+# appveyor file
+# http://www.appveyor.com/docs/appveyor-yml
 ---
 #---------------------------------#
 #      general configuration      #
@@ -5,4 +7,15 @@
 
 # version format
 version: 1.0.{build}
+
+# scripts that run after cloning repository
+install:
+  - nuget restore
+
+# enable patching of AssemblyInfo.* files
+assembly_info:
+  patch: true
+  file: AssemblyInfo.*
+  assembly_version: "{version}"
+  assembly_file_version: "{version}"
 
