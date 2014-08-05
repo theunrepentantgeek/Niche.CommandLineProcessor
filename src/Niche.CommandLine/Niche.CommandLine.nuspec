@@ -12,7 +12,6 @@
     <projectUrl>https://github.com/theunrepentantgeek/Niche.CommandLineProcessor</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Convention based argument handling for console applications</description>
-    <releaseNotes>Summary of changes made in this release of the package.</releaseNotes>
     <copyright>Copyright 2014</copyright>
     <tags>command line command-line option</tags>
   </metadata>
