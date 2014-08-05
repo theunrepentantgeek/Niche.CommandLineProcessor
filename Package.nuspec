@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Niche.CommandLineProcessor</id>
+    <version>1.0.0</version>
+    <authors>bevan@nichesoftware.co.nz</authors>
+    <owners>bevan@nichesoftware.co.nz</owners>
+    <!--
+    <licenseUrl>http://LICENSE_URL_HERE_OR_DELETE_THIS_LINE</licenseUrl>
+    <iconUrl>http://ICON_URL_HERE_OR_DELETE_THIS_LINE</iconUrl>
+    -->
+    <projectUrl>https://github.com/theunrepentantgeek/Niche.CommandLineProcessor</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Convention based argument handling for console applications</description>
+    <releaseNotes>Summary of changes made in this release of the package.</releaseNotes>
+    <copyright>Copyright 2014</copyright>
+    <tags>command line command-line option</tags>
+  </metadata>
+</package>
