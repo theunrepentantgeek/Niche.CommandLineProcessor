@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>Niche.CommandLineProcessor</id>
-    <version>1.0.0</version>
+    <version>$version$</version>
     <authors>bevan@nichesoftware.co.nz</authors>
     <owners>bevan@nichesoftware.co.nz</owners>
     <!--
