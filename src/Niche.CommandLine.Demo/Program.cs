@@ -14,9 +14,7 @@ namespace Niche.CommandLine.Demo
             var logger = new ConsoleLogger();
             logger.ConsoleBanner();
 
-            var processor = new CommandLineProcessor(args);
-            var driver = new Driver();
-            processor.Configure(driver);
+            var processor = new CommandLineProcessor<Driver>(args);
 
             // If we had any errors, output the list and then exit
             if (processor.HasErrors)
@@ -25,7 +23,7 @@ namespace Niche.CommandLine.Demo
                 return;
             }
 
-            if (driver.ShowHelp)
+            if (processor.Driver.ShowHelp)
             {
                 logger.Information("Available commandline options:");
                 logger.Detail(processor.Help);
