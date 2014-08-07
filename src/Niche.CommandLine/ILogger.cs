@@ -11,8 +11,8 @@ namespace Niche.CommandLine
         /// <summary>
         /// Display a heading
         /// </summary>
-        /// <param name="heading"></param>
-        void Heading(string heading);
+        /// <param name="message"></param>
+        void Heading(string message);
 
         /// <summary>
         /// Write details of an action

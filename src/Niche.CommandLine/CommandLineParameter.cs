@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -138,7 +139,15 @@ namespace Niche.CommandLine
                 throw new ArgumentNullException("help");
             }
 
-            var text = string.Format("{0} <{3}>\t{1} <{3}>\t{2}", LongName, ShortName, Description, mParameterInfo.Name);
+            var text
+                = string.Format(
+                    CultureInfo.CurrentCulture,
+                    "{0} <{3}>\t{1} <{3}>\t{2}",
+                    LongName,
+                    ShortName,
+                    Description,
+                    mParameterInfo.Name.ToLower(CultureInfo.CurrentCulture));
+
             help.Add(text);
         }
 

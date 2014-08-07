@@ -25,7 +25,7 @@ namespace Niche.CommandLine
         /// </summary>
         protected CommandLineOptionBase(MemberInfo member)
         {
-            Description = GetDescription(member);
+            Description = FindDescription(member);
         }
 
         /// <summary>
@@ -88,7 +88,7 @@ namespace Niche.CommandLine
             }
         }
 
-        protected string GetDescription(MemberInfo info)
+        protected static string FindDescription(MemberInfo info)
         {
             var attribute = info.GetCustomAttribute<DescriptionAttribute>();
             if (attribute == null)
