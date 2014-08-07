@@ -7,7 +7,12 @@ using System.Threading.Tasks;
 
 namespace Niche.CommandLine
 {
-    public class CommandLineProcessor
+    /// <summary>
+    /// Utility class used to parse command line parameters and populate a driver instance
+    /// </summary>
+    /// <typeparam name="T">Type of the driver instance to use</typeparam>
+    public class CommandLineProcessor<T>
+        where T : new()
     {
         /// <summary>
         /// Gets the list of arguments not already processed
@@ -26,7 +31,7 @@ namespace Niche.CommandLine
         }
 
         /// <summary>
-        /// Gets a list of errors already encountered
+        /// Gets the sequence of the errors already encountered
         /// </summary>
         public IEnumerable<string> Errors
         {
@@ -42,9 +47,17 @@ namespace Niche.CommandLine
         }
 
         /// <summary>
+        /// Gets a reference to the driver instance we've configured from the command line
+        /// </summary>
+        public T Driver
+        {
+            get { return mDriver; }
+        }
+
+        /// <summary>
         /// Initializes a new instance of the CommandLineProcessor class
         /// </summary>
-        /// <param name="arguments"></pparam>
+        /// <param name="arguments"></param>
         public CommandLineProcessor(IEnumerable<string> arguments)
         {
             if (arguments == null)
@@ -53,34 +66,12 @@ namespace Niche.CommandLine
             }
 
             mArguments = arguments.ToList();
-        }
-
-        /// <summary>
-        /// Configure the passed driver instance using available arguments
-        /// </summary>
-        /// <param name="driver">Instance to configure.</param>
-        public void Configure(object driver)
-        {
-            if (driver == null)
-            {
-                throw new ArgumentNullException("driver");
-            }
+            mDriver = new T();
 
             var options = new Dictionary<string, CommandLineOptionBase>();
-            
-            // Create Switches
-            foreach(var s in CommandLineSwitch.CreateSwitches(driver))
-            {
-                s.AddOptionsTo(options);
-                s.AddHelpTo(mHelp);
-            }
 
-            // Create Parameters
-            foreach(var p in CommandLineParameter.CreateParameters(driver))
-            {
-                p.AddOptionsTo(options);
-                p.AddHelpTo(mHelp);
-            }
+            CreateSwitches(options);
+            CreateParameters(options);
 
             mHelp.Sort();
 
@@ -107,12 +98,32 @@ namespace Niche.CommandLine
             }
         }
 
+        private void CreateParameters(Dictionary<string, CommandLineOptionBase> options)
+        {
+            // Create Parameters
+            foreach (var p in CommandLineParameter.CreateParameters(mDriver))
+            {
+                p.AddOptionsTo(options);
+                p.AddHelpTo(mHelp);
+            }
+        }
+
+        private void CreateSwitches(Dictionary<string, CommandLineOptionBase> options)
+        {
+            // Create Switches
+            foreach (var s in CommandLineSwitch.CreateSwitches(mDriver))
+            {
+                s.AddOptionsTo(options);
+                s.AddHelpTo(mHelp);
+            }
+        }
+
         /// <summary>
         /// Test to see if the passed argument is an option
         /// </summary>
         /// <param name="argument">Argument to test</param>
         /// <returns>True if the argument is an option, false otherwise.</returns>
-        private bool IsOption(string argument)
+        private static bool IsOption(string argument)
         {
             if (argument == null)
             {
@@ -128,5 +139,7 @@ namespace Niche.CommandLine
         private readonly List<string> mErrors = new List<string>();
 
         private readonly List<string> mHelp = new List<string>();
+
+        private readonly T mDriver;
     }
 }
