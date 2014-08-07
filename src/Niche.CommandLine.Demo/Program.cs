@@ -23,10 +23,10 @@ namespace Niche.CommandLine.Demo
                 return;
             }
 
-            if (processor.Driver.ShowHelp)
+            if (processor.ShowHelp)
             {
                 logger.Information("Available commandline options:");
-                logger.Detail(processor.Help);
+                logger.Detail(processor.OptionHelp);
             }
         }
     }

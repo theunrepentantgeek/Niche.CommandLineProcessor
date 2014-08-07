@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -31,6 +32,14 @@ namespace Niche.CommandLine
         }
 
         /// <summary>
+        /// Gets a value indicating whether we should should help
+        /// </summary>
+        public bool ShowHelp
+        {
+            get { return mShowHelp; }
+        }
+
+        /// <summary>
         /// Gets the sequence of the errors already encountered
         /// </summary>
         public IEnumerable<string> Errors
@@ -41,9 +50,9 @@ namespace Niche.CommandLine
         /// <summary>
         /// Gets a list of help text for display
         /// </summary>
-        public IEnumerable<string> Help
+        public IEnumerable<string> OptionHelp
         {
-            get { return mHelp; }
+            get { return mOptionHelp; }
         }
 
         /// <summary>
@@ -70,10 +79,9 @@ namespace Niche.CommandLine
 
             var options = new Dictionary<string, CommandLineOptionBase>();
 
-            CreateSwitches(options);
-            CreateParameters(options);
+            LoadOptions(options);
 
-            mHelp.Sort();
+            mOptionHelp.Sort();
 
             CommandLineOptionBase option;
             var queue = new Queue<string>(mArguments);
@@ -98,23 +106,33 @@ namespace Niche.CommandLine
             }
         }
 
-        private void CreateParameters(Dictionary<string, CommandLineOptionBase> options)
+        [Description("Show help")]
+        public void Help()
         {
+            mShowHelp = true;
+        }
+
+        private void LoadOptions(Dictionary<string, CommandLineOptionBase> options)
+        {
+            // Default switches
+            foreach(var s in CommandLineSwitch.CreateSwitches(this))
+            {
+                s.AddOptionsTo(options);
+                s.AddHelpTo(mOptionHelp);
+            }
+
             // Create Parameters
             foreach (var p in CommandLineParameter.CreateParameters(mDriver))
             {
                 p.AddOptionsTo(options);
-                p.AddHelpTo(mHelp);
+                p.AddHelpTo(mOptionHelp);
             }
-        }
 
-        private void CreateSwitches(Dictionary<string, CommandLineOptionBase> options)
-        {
             // Create Switches
             foreach (var s in CommandLineSwitch.CreateSwitches(mDriver))
             {
                 s.AddOptionsTo(options);
-                s.AddHelpTo(mHelp);
+                s.AddHelpTo(mOptionHelp);
             }
         }
 
@@ -138,8 +156,10 @@ namespace Niche.CommandLine
 
         private readonly List<string> mErrors = new List<string>();
 
-        private readonly List<string> mHelp = new List<string>();
+        private readonly List<string> mOptionHelp = new List<string>();
 
         private readonly T mDriver;
+
+        private bool mShowHelp;
     }
 }
