@@ -16,118 +16,79 @@ namespace Niche.CommandLine.Tests
             Assert.Throws<ArgumentNullException>(
                 () =>
                 {
-                    new CommandLineProcessor(null);
+                    new CommandLineProcessor<SampleDriver>(null);
                 });
         }
 
         [Test]
-        public void Constructor_givenArguments_populatesArguments()
+        public void Constructor_withLongFormSwitch_callsMethod()
         {
             var arguments = new List<string> { "--help" };
-            var driver = new SampleDriver();
-            var processor = new CommandLineProcessor(arguments);
-            Assert.That(processor.Arguments, Has.Count.EqualTo(1));
+            var processor = new CommandLineProcessor<SampleDriver>(arguments);
+            Assert.That(processor.Driver.ShowHelp, Is.True);
         }
 
         [Test]
-        public void Configure_givenNull_throwsException()
-        {
-            var arguments = new List<string>();
-            var processor = new CommandLineProcessor(arguments);
-            Assert.Throws<ArgumentNullException>(
-                () =>
-                {
-                    processor.Configure(null);
-                });
-        }
-
-        [Test]
-        public void Configure_withLongFormSwitch_callsMethod()
-        {
-            var arguments = new List<string> { "--help" };
-            var driver = new SampleDriver();
-            var processor = new CommandLineProcessor(arguments);
-            processor.Configure(driver);
-            Assert.That(driver.ShowHelp, Is.True);
-        }
-
-        [Test]
-        public void Configure_withShortFormSwitch_callsMethod()
+        public void Constructor_withShortFormSwitch_callsMethod()
         {
             var arguments = new List<string> { "-h" };
-            var driver = new SampleDriver();
-            var processor = new CommandLineProcessor(arguments);
-            processor.Configure(driver);
-            Assert.That(driver.ShowHelp, Is.True);
+            var processor = new CommandLineProcessor<SampleDriver>(arguments);
+            Assert.That(processor.Driver.ShowHelp, Is.True);
         }
 
         [Test]
-        public void Configure_withAlternateShortFormSwitch_callsMethod()
+        public void Constructor_withAlternateShortFormSwitch_callsMethod()
         {
             var arguments = new List<string> { "/h" };
-            var driver = new SampleDriver();
-            var processor = new CommandLineProcessor(arguments);
-            processor.Configure(driver);
-            Assert.That(driver.ShowHelp, Is.True);
+            var processor = new CommandLineProcessor<SampleDriver>(arguments);
+            Assert.That(processor.Driver.ShowHelp, Is.True);
         }
 
         [Test]
-        public void Configure_withLongFormParameter_callsMethods()
+        public void Constructor_withLongFormParameter_callsMethods()
         {
             var arguments = new List<string> { "--find", "fu" };
-            var driver = new SampleDriver();
-            var processor = new CommandLineProcessor(arguments);
-            processor.Configure(driver);
-            Assert.That(driver.Searches, Is.EquivalentTo(new List<string> { "fu" }));
+            var processor = new CommandLineProcessor<SampleDriver>(arguments);
+            Assert.That(processor.Driver.Searches, Is.EquivalentTo(new List<string> { "fu" }));
         }
 
         [Test]
-        public void Configure_withShortFormParameter_callsMethod()
+        public void Constructor_withShortFormParameter_callsMethod()
         {
             var arguments = new List<string> { "-f", "fu" };
-            var driver = new SampleDriver();
-            var processor = new CommandLineProcessor(arguments);
-            processor.Configure(driver);
-            Assert.That(driver.Searches, Is.EquivalentTo(new List<string> { "fu" }));
+            var processor = new CommandLineProcessor<SampleDriver>(arguments);
+            Assert.That(processor.Driver.Searches, Is.EquivalentTo(new List<string> { "fu" }));
         }
 
         [Test]
-        public void Configure_withAlternateShortFormParameter_callsMethod()
+        public void Constructor_withAlternateShortFormParameter_callsMethod()
         {
             var arguments = new List<string> { "/f", "fu" };
-            var driver = new SampleDriver();
-            var processor = new CommandLineProcessor(arguments);
-            processor.Configure(driver);
-            Assert.That(driver.Searches, Is.EquivalentTo(new List<string> { "fu" }));
+            var processor = new CommandLineProcessor<SampleDriver>(arguments);
+            Assert.That(processor.Driver.Searches, Is.EquivalentTo(new List<string> { "fu" }));
         }
 
         [Test]
-        public void Configure_withParameterRequiringConversion_callsMethod()
+        public void Constructor_withParameterRequiringConversion_callsMethod()
         {
             var arguments = new List<string> { "-r", "4" };
-            var driver = new SampleDriver();
-            var processor = new CommandLineProcessor(arguments);
-            processor.Configure(driver);
-            Assert.That(driver.Repeats, Is.EqualTo(4));
+            var processor = new CommandLineProcessor<SampleDriver>(arguments);
+            Assert.That(processor.Driver.Repeats, Is.EqualTo(4));
         }
 
         [Test]
-        public void Configure_withUnexpectedArgument_leavesItInList()
+        public void Constructor_withUnexpectedArgument_leavesItInList()
         {
             var arguments = new List<string> { "snafu" };
-            var driver = new SampleDriver();
-            var processor = new CommandLineProcessor(arguments);
-            processor.Configure(driver);
+            var processor = new CommandLineProcessor<SampleDriver>(arguments);
             Assert.That(processor.Arguments, Is.EquivalentTo(new List<string> { "snafu" }));
         }
 
         [Test]
-        public void Configure_withUnexpectedOption_generatesError()
+        public void Constructor_withUnexpectedOption_generatesError()
         {
             var arguments = new List<string> { "-s" };
-            var driver = new SampleDriver();
-            var processor = new CommandLineProcessor(arguments);
-            processor.Configure(driver);
+            var processor = new CommandLineProcessor<SampleDriver>(arguments);
             Assert.That(processor.HasErrors, Is.True);
         }
     }
