@@ -50,7 +50,7 @@ namespace Niche.CommandLine
         /// </summary>
         /// <param name="messageTemplate">Template for the message to write.</param>
         /// <param name="parameters">Parameters to substitute in the template.</param>
-        public static void Action(this ILogger logger, string messageTemplate, params string[] parameters)
+        public static void Action(this ILogger logger, string messageTemplate, params object[] parameters)
         {
             if (logger == null)
             {
@@ -82,7 +82,7 @@ namespace Niche.CommandLine
         /// </summary>
         /// <param name="messageTemplate">Template for the message to write.</param>
         /// <param name="parameters">Parameters to substitute in the template.</param>
-        public static void Success(this ILogger logger, string messageTemplate, params string[] parameters)
+        public static void Success(this ILogger logger, string messageTemplate, params object[] parameters)
         {
             if (logger == null)
             {
@@ -114,7 +114,7 @@ namespace Niche.CommandLine
         /// </summary>
         /// <param name="messageTemplate">Template for the message to write.</param>
         /// <param name="parameters">Parameters to substitute in the template.</param>
-        public static void Failure(this ILogger logger, string messageTemplate, params string[] parameters)
+        public static void Failure(this ILogger logger, string messageTemplate, params object[] parameters)
         {
             if (logger == null)
             {
@@ -146,7 +146,7 @@ namespace Niche.CommandLine
         /// </summary>
         /// <param name="messageTemplate">Template for the message to write.</param>
         /// <param name="parameters">Parameters to substitute in the template.</param>
-        public static void Warning(this ILogger logger, string messageTemplate, params string[] parameters)
+        public static void Warning(this ILogger logger, string messageTemplate, params object[] parameters)
         {
             if (logger == null)
             {
@@ -178,7 +178,7 @@ namespace Niche.CommandLine
         /// </summary>
         /// <param name="messageTemplate">Template for the message to write.</param>
         /// <param name="parameters">Parameters to substitute in the template.</param>
-        public static void Information(this ILogger logger, string messageTemplate, params string[] parameters)
+        public static void Information(this ILogger logger, string messageTemplate, params object[] parameters)
         {
             if (logger == null)
             {
@@ -210,7 +210,7 @@ namespace Niche.CommandLine
         /// </summary>
         /// <param name="messageTemplate">Template for the message to write.</param>
         /// <param name="parameters">Parameters to substitute in the template.</param>
-        public static void Detail(this ILogger logger, string messageTemplate, params string[] parameters)
+        public static void Detail(this ILogger logger, string messageTemplate, params object[] parameters)
         {
             if (logger == null)
             {
