@@ -91,5 +91,21 @@ namespace Niche.CommandLine.Tests
             var processor = new CommandLineProcessor<SampleDriver>(arguments);
             Assert.That(processor.HasErrors, Is.True);
         }
+
+        [Test]
+        public void Constructor_withValidValueForParameter_configuresDriver()
+        {
+            var arguments = new List<string> { "--repeat", "5" };
+            var processor = new CommandLineProcessor<SampleDriver>(arguments);
+            Assert.That(processor.Driver.Repeats, Is.EqualTo(5));
+        }
+
+        [Test]
+        public void Constructor_withInvalidValueForParameter_generatesError()
+        {
+            var arguments = new List<string> { "--repeat", "twice" };
+            var processor = new CommandLineProcessor<SampleDriver>(arguments);
+            Assert.That(processor.HasErrors, Is.True);
+        }
     }
 }
