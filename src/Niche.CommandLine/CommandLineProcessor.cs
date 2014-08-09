@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -67,6 +68,7 @@ namespace Niche.CommandLine
         /// Initializes a new instance of the CommandLineProcessor class
         /// </summary>
         /// <param name="arguments"></param>
+        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
         public CommandLineProcessor(IEnumerable<string> arguments)
         {
             if (arguments == null)
@@ -91,7 +93,19 @@ namespace Niche.CommandLine
                 var arg = queue.Dequeue();
                 if (options.TryGetValue(arg, out option))
                 {
-                    option.Activate(queue);
+                    try
+                    {
+                        option.Activate(queue);
+                    }
+                    // Shouldn't really catch exception, but the BCL throws it!
+                    // See http://www.nichesoftware.co.nz/2013/02/21/so-you-should-never-catch-exception.html 
+                    catch (Exception ex)
+                    {
+                        var message
+                            = string.Format(CultureInfo.CurrentCulture, "{0}:\t{1}", arg, ex.Message);
+                        mErrors.Add(message);
+                    }
+
                     continue;
                 }
 
@@ -115,7 +129,7 @@ namespace Niche.CommandLine
         private void LoadOptions(Dictionary<string, CommandLineOptionBase> options)
         {
             // Default switches
-            foreach(var s in CommandLineSwitch.CreateSwitches(this))
+            foreach (var s in CommandLineSwitch.CreateSwitches(this))
             {
                 s.AddOptionsTo(options);
                 s.AddHelpTo(mOptionHelp);
