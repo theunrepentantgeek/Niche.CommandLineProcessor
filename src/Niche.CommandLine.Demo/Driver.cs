@@ -16,6 +16,8 @@ namespace Niche.CommandLine.Demo
 
         public IList<string> SearchTerms { get { return mSearchTerms; } }
 
+        public ConsoleColor ForegroundColor { get; private set; }
+        
         [Description("Verbose output")]
         public void Verbose()
         {
@@ -26,6 +28,12 @@ namespace Niche.CommandLine.Demo
         public void Find(string keyword)
         {
             mSearchTerms.Add(keyword);
+        }
+
+        [Description("Specify the color of output (and test automatic conversion)")]
+        public void ForeGround(ConsoleColor color)
+        {
+            ForegroundColor = color;
         }
 
         private readonly List<string> mSearchTerms = new List<string>();

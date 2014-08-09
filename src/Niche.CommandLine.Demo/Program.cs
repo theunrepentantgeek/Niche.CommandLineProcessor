@@ -28,6 +28,8 @@ namespace Niche.CommandLine.Demo
                 logger.Information("Available commandline options:");
                 logger.Detail(processor.OptionHelp);
             }
+
+            logger.Information("Configured foreground: {0}", processor.Driver.ForegroundColor);
         }
     }
 }
