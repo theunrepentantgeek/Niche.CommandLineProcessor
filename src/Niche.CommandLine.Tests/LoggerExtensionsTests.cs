@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using NSubstitute;
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,6 +42,42 @@ namespace Niche.CommandLine.Tests
             var result = LoggerExtensions.Tablefy(original);
             var expected = new List<string>{"alpha   beta   gamma", "one     two    three"};
             Assert.That(result, Is.EquivalentTo(expected));
+        }
+        
+        [Test]
+        public void Failure_givenSimpleException_logsOneMessage()
+        {
+            var logger = Substitute.For<ILogger>();
+            var ex = new Exception("This is an exception.");
+
+            logger.Failure(ex);
+
+            logger.Received(1).Failure(Arg.Any<string>());
+        }
+
+        [Test]
+        public void Failure_givenNestedException_logsExpectedMessageCount()
+        {
+            var logger = Substitute.For<ILogger>();
+            var inner = new InvalidOperationException();
+            var ex = new Exception("This is an exception.", inner);
+
+            logger.Failure(ex);
+
+            logger.Received(2).Failure(Arg.Any<string>());
+        }
+
+        [Test]
+        public void Failure_givenSimpleExceptionWithData_logsExpectedMessageCount()
+        {
+            var logger = Substitute.For<ILogger>();
+            var ex = new Exception("This is an exception.");
+            ex.Data["name"] = "George";
+            ex.Data["repetitions"] = 45;
+            
+            logger.Failure(ex);
+            
+            logger.Received(3).Failure(Arg.Any<string>());
         }
     }
 }

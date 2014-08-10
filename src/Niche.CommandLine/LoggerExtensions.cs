@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
@@ -24,7 +25,7 @@ namespace Niche.CommandLine
             var assembly = Assembly.GetEntryAssembly();
 
             var heading = new StringBuilder();
-            
+
             var title = assembly.GetCustomAttribute<AssemblyTitleAttribute>();
             if (title != null && !String.IsNullOrWhiteSpace(title.Title))
             {
@@ -36,7 +37,7 @@ namespace Niche.CommandLine
             }
 
             var version = assembly.GetName().Version;
-            if (version !=null)
+            if (version != null)
             {
                 heading.Append(" v");
                 heading.Append(version.ToString(4));
@@ -138,6 +139,28 @@ namespace Niche.CommandLine
             foreach (var line in Tablefy(messages))
             {
                 logger.Failure(line);
+            }
+        }
+
+        /// <summary>
+        /// Write details of an exception
+        /// </summary>
+        /// <param name="logger">Logger to use for logging.</param>
+        /// <param name="exception">Exception with the details to log.</param>
+        public static void Failure(this ILogger logger, Exception exception)
+        {
+            var e = exception;
+            while (e != null)
+            {
+                logger.Failure(e.Message);
+                if (e.Data != null && e.Data.Count > 0)
+                {
+                    logger.Failure(
+                        e.Data.Cast<DictionaryEntry>()
+                        .Select(de => string.Format("{0}\t{1}", de.Key, de.Value)));
+                }
+
+                e = e.InnerException;
             }
         }
 
