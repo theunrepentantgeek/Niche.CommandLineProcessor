@@ -149,6 +149,16 @@ namespace Niche.CommandLine
         /// <param name="exception">Exception with the details to log.</param>
         public static void Failure(this ILogger logger, Exception exception)
         {
+            if (logger == null)
+            {
+                throw new ArgumentNullException("logger");
+            }
+
+            if (exception == null)
+            {
+                throw new ArgumentNullException("exception");
+            }
+
             var e = exception;
             while (e != null)
             {
@@ -157,7 +167,7 @@ namespace Niche.CommandLine
                 {
                     logger.Failure(
                         e.Data.Cast<DictionaryEntry>()
-                        .Select(de => string.Format("{0}\t{1}", de.Key, de.Value)));
+                        .Select(de => string.Format(CultureInfo.CurrentCulture, "{0}\t{1}", de.Key, de.Value)));
                 }
 
                 e = e.InnerException;
