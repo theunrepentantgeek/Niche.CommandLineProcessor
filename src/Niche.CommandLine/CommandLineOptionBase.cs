@@ -47,6 +47,11 @@ namespace Niche.CommandLine
         public abstract void AddHelpTo(IList<string> help);
 
         /// <summary>
+        /// Carry out any configuration that needs to happen when we've finished processing the command line
+        /// </summary>
+        public abstract void Completed();
+
+        /// <summary>
         /// Convert a value from a string into the desired type
         /// </summary>
         /// <param name="value">String value to convert</param>

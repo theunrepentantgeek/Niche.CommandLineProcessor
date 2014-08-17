@@ -151,6 +151,14 @@ namespace Niche.CommandLine
             help.Add(text);
         }
 
+        /// <summary>
+        /// Carry out any parameter configuration that needs to happen when we've finished processing the command line
+        /// </summary>
+        public override void Completed()
+        {
+            // Nothing
+        }
+
         private readonly MethodInfo mMethod;
         private readonly ParameterInfo mParameterInfo;
         private readonly object mInstance;

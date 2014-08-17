@@ -100,6 +100,14 @@ namespace Niche.CommandLine
         }
 
         /// <summary>
+        /// Carry out any switch configuration that needs to happen when we've finished processing the command line
+        /// </summary>
+        public override void Completed()
+        {
+            // Nothing
+        }
+
+        /// <summary>
         /// Add triggers to activate this option to the passed dictionary
         /// </summary>
         /// <param name="dictionary">Dictionary that collects our triggers</param>
