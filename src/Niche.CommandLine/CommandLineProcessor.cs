@@ -129,21 +129,14 @@ namespace Niche.CommandLine
         private void LoadOptions(Dictionary<string, CommandLineOptionBase> options)
         {
             // Default switches
-            foreach (var s in CommandLineSwitch.CreateSwitches(this))
-            {
-                s.AddOptionsTo(options);
-                s.AddHelpTo(mOptionHelp);
-            }
+            mOptions.AddRange(CommandLineSwitch.CreateSwitches(this));
 
             // Create Parameters
-            foreach (var p in CommandLineParameter.CreateParameters(mDriver))
-            {
-                p.AddOptionsTo(options);
-                p.AddHelpTo(mOptionHelp);
-            }
+            mOptions.AddRange(CommandLineParameter.CreateParameters(mDriver));
+            mOptions.AddRange(CommandLineSwitch.CreateSwitches(mDriver));
 
             // Create Switches
-            foreach (var s in CommandLineSwitch.CreateSwitches(mDriver))
+            foreach (var s in mOptions)
             {
                 s.AddOptionsTo(options);
                 s.AddHelpTo(mOptionHelp);
@@ -165,6 +158,8 @@ namespace Niche.CommandLine
             return argument.StartsWith("-", StringComparison.Ordinal)
                 || argument.StartsWith("/", StringComparison.Ordinal);
         }
+
+        private readonly List<CommandLineOptionBase> mOptions = new List<CommandLineOptionBase>();
 
         private readonly List<string> mArguments = new List<string>();
 
