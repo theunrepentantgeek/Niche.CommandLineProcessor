@@ -30,6 +30,11 @@ namespace Niche.CommandLine
         public string LongName { get; private set; }
 
         /// <summary>
+        /// Gets a value indicating whether this parameter is required
+        /// </summary>
+        public bool IsRequired { get; private set; }
+
+        /// <summary>
         /// Test to see if the specified method is a parameter
         /// </summary>
         /// Parameters are methods with no return type and exactly one parameter that have a
@@ -86,6 +91,7 @@ namespace Niche.CommandLine
             mInstance = instance;
             mMethod = method;
             mParameterInfo = method.GetParameters().Single();
+            IsRequired = method.GetCustomAttribute<RequiredAttribute>() != null;
 
             ShortName = "-" + CamelCase.ToShortName(method.Name);
             AlternateShortName = "/" + CamelCase.ToShortName(method.Name);
@@ -102,6 +108,7 @@ namespace Niche.CommandLine
                 throw new ArgumentNullException("arguments");
             }
 
+            mUsed = true;
             var parameter = arguments.Dequeue();
             var parameters = new object[] { parameter };
             if (mParameterInfo.ParameterType != typeof(string))
@@ -156,11 +163,19 @@ namespace Niche.CommandLine
         /// </summary>
         public override void Completed()
         {
-            // Nothing
+            if (!mUsed)
+            {
+                throw new ArgumentException("Required parameter not specified.");
+            }
         }
 
         private readonly MethodInfo mMethod;
         private readonly ParameterInfo mParameterInfo;
         private readonly object mInstance;
+        
+        /// <summary>
+        /// Record whether this parameter has been used
+        /// </summary>
+        private bool mUsed;
     }
 }
