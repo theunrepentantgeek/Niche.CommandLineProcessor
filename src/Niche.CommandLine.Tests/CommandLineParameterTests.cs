@@ -151,10 +151,23 @@ namespace Niche.CommandLine.Tests
         public void AddHelpTo_givenList_AddsEntry()
         {
             var driver = new SampleDriver();
-            var commandLineParameter = CommandLineParameter.CreateParameters(driver).First();
+            var commandLineParameter
+                = CommandLineParameter.CreateParameters(driver)
+                .Single(p => p.ShortName == "-f");
             var help = new List<string>();
             commandLineParameter.AddHelpTo(help);
             Assert.That(help, Has.Count.EqualTo(1));
+        }
+
+        [Test]
+        public void Completed_whenRequiredParameterOmitted_throwsException()
+        {
+            var driver = new SampleDriver();
+            var commandLineParameter
+                = CommandLineParameter.CreateParameters(driver)
+                .Single(p => p.ShortName == "-f");
+            Assert.Throws<ArgumentException>(
+                () => commandLineParameter.Completed());
         }
     }
 }
