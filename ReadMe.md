@@ -4,17 +4,13 @@ Niche.CommandLine
 
 A simple convention based argument handler to make it easy for .NET developers to write console applications.
 
-## Design Goals
-
-* Simple conventions that "just work"
-* Little to no dependency on the commandline library
-
 ## Conventions
 
-Commandline options are declared by writing methods that comply with the approriate convention (see below). Each option
-has a short form starting with a single dash `-` (e.g.: `-f`, `-h` or `-rs`) and a long form starting with a double
-dash `--` (e.g.: `--find`, `--help` or `--report-status`). These names are derived from the names of the implementing
-methods (e.g.: `Find()`, `Help()` or `ReportStatus()`).
+Commandline options are declared by writing methods that comply with the appropriate convention (see below for examples). 
+
+Each option has a short form starting with a single dash `-` (e.g.: `-f`, `-h` or `-rs`) and a long form starting with a 
+double dash `--` (e.g.: `--find`, `--help` or `--report-status`). These names are derived from the names of the 
+implementing methods (e.g.: `Find()`, `Help()` or `ReportStatus()`).
 
 ### Switches
 
