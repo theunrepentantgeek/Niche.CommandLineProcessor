@@ -49,7 +49,8 @@ namespace Niche.CommandLine
         /// <summary>
         /// Carry out any configuration that needs to happen when we've finished processing the command line
         /// </summary>
-        public abstract void Completed();
+        /// <param name="errors">List used to gather any reported errors.</param>
+        public abstract void Completed(IList<string> errors);
 
         /// <summary>
         /// Convert a value from a string into the desired type

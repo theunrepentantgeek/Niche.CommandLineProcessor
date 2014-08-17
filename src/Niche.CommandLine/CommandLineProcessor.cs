@@ -93,19 +93,7 @@ namespace Niche.CommandLine
                 var arg = queue.Dequeue();
                 if (options.TryGetValue(arg, out option))
                 {
-                    try
-                    {
-                        option.Activate(queue);
-                    }
-                    // Shouldn't really catch exception, but the BCL throws it!
-                    // See http://www.nichesoftware.co.nz/2013/02/21/so-you-should-never-catch-exception.html 
-                    catch (Exception ex)
-                    {
-                        var message
-                            = string.Format(CultureInfo.CurrentCulture, "{0}:\t{1}", arg, ex.Message);
-                        mErrors.Add(message);
-                    }
-
+                    Activate(option, queue, arg);
                     continue;
                 }
 
@@ -117,6 +105,27 @@ namespace Niche.CommandLine
                 }
 
                 mArguments.Add(arg);
+            }
+
+            foreach(var o in mOptions)
+            {
+                o.Completed(mErrors);
+            }
+        }
+
+        private void Activate(CommandLineOptionBase option, Queue<string> queue, string arg)
+        {
+            try
+            {
+                option.Activate(queue);
+            }
+            // Shouldn't really catch exception, but the BCL throws it!
+            // See http://www.nichesoftware.co.nz/2013/02/21/so-you-should-never-catch-exception.html 
+            catch (Exception ex)
+            {
+                var message
+                    = string.Format(CultureInfo.CurrentCulture, "{0}:\t{1}", arg, ex.Message);
+                mErrors.Add(message);
             }
         }
 

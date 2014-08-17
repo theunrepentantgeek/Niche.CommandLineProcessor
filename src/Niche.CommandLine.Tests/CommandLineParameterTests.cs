@@ -160,14 +160,27 @@ namespace Niche.CommandLine.Tests
         }
 
         [Test]
-        public void Completed_whenRequiredParameterOmitted_throwsException()
+        public void Completed_whenRequiredParameterOmitted_generatesError()
         {
             var driver = new SampleDriver();
             var commandLineParameter
                 = CommandLineParameter.CreateParameters(driver)
                 .Single(p => p.ShortName == "-f");
-            Assert.Throws<ArgumentException>(
-                () => commandLineParameter.Completed());
+            var errors = new List<string>();
+            commandLineParameter.Completed(errors);
+            Assert.That(errors, Is.Not.Empty);
+        }
+
+        [Test]
+        public void Completed_whenOptionalParameterOmitted_generatesNoErrors()
+        {
+            var driver = new SampleDriver();
+            var commandLineParameter
+                = CommandLineParameter.CreateParameters(driver)
+                .Single(p => p.ShortName == "-u");
+            var errors = new List<string>();
+            commandLineParameter.Completed(errors);
+            Assert.That(errors, Is.Empty);
         }
     }
 }

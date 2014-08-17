@@ -161,11 +161,14 @@ namespace Niche.CommandLine
         /// <summary>
         /// Carry out any parameter configuration that needs to happen when we've finished processing the command line
         /// </summary>
-        public override void Completed()
+        /// <param name="errors">List used to gather any reported errors.</param>
+        public override void Completed(IList<string> errors)
         {
-            if (!mUsed)
+            if (!mUsed && IsRequired)
             {
-                throw new ArgumentException("Required parameter not specified.");
+                var message
+                    = string.Format(CultureInfo.CurrentCulture, "{0}:\t{1}", LongName, "Required parameter not supplied.");
+                errors.Add(message);
             }
         }
 
