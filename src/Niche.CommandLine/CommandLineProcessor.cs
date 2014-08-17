@@ -131,11 +131,11 @@ namespace Niche.CommandLine
             // Default switches
             mOptions.AddRange(CommandLineSwitch.CreateSwitches(this));
 
-            // Create Parameters
+            // Create options for our driver
             mOptions.AddRange(CommandLineParameter.CreateParameters(mDriver));
             mOptions.AddRange(CommandLineSwitch.CreateSwitches(mDriver));
 
-            // Create Switches
+            // Populate as flags
             foreach (var s in mOptions)
             {
                 s.AddOptionsTo(options);
