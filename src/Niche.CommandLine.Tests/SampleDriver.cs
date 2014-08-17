@@ -33,10 +33,17 @@ namespace Niche.CommandLine.Tests
         /// This is a parameter method
         /// </summary>
         /// <param name="term"></param>
+        [Required]
         [Description("Find")]
         public void Find(string term)
         {
             Searches.Add(term);
+        }
+
+        [Description("Upload file")]
+        public void Upload(IEnumerable<string> files)
+        {
+            // Nothing
         }
 
         /// <summary>
