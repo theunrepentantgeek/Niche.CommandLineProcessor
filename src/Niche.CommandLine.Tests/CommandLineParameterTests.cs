@@ -172,6 +172,21 @@ namespace Niche.CommandLine.Tests
         }
 
         [Test]
+        public void Completed_whenRequiredParameterSupplied_generatesNoErrors()
+        {
+            var driver = new SampleDriver();
+            var commandLineParameter
+                = CommandLineParameter.CreateParameters(driver)
+                .Single(p => p.ShortName == "-f");
+            var arguments = new Queue<string>();
+            arguments.Enqueue("search");
+            commandLineParameter.Activate(arguments);
+            var errors = new List<string>();
+            commandLineParameter.Completed(errors);
+            Assert.That(errors, Is.Empty);
+        }
+
+        [Test]
         public void Completed_whenOptionalParameterOmitted_generatesNoErrors()
         {
             var driver = new SampleDriver();
@@ -179,7 +194,6 @@ namespace Niche.CommandLine.Tests
                 = CommandLineParameter.CreateParameters(driver)
                 .Single(p => p.ShortName == "-u");
             var errors = new List<string>();
-            commandLineParameter.Completed(errors);
             Assert.That(errors, Is.Empty);
         }
     }
