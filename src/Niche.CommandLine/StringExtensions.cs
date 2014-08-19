@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,7 +27,21 @@ namespace Niche.CommandLine
             var converter = TypeDescriptor.GetConverter(typeof(T));
             if (converter != null && converter.CanConvertFrom(typeof(string)))
             {
-                return (T)converter.ConvertFromString(value);
+                try
+                {
+                    return (T)converter.ConvertFromString(value);
+                }
+                catch (Exception ex)
+                {
+                    string failureMessage
+                   = string.Format(
+                       CultureInfo.InvariantCulture,
+                       "Failed to convert \"{0}\" to {1}: {2}",
+                       value,
+                       typeof(T).Name,
+                       ex.Message);
+                    throw new InvalidOperationException(failureMessage);
+                }
             }
 
             // Look for a constructor that takes a string
