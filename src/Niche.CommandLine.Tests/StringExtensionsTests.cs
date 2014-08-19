@@ -42,5 +42,13 @@ namespace Niche.CommandLine.Tests
             var result = sample.As<Version>();
             Assert.That(result.ToString(4), Is.EqualTo("1.2.3.4"));
         }
+
+        [Test]
+        public void AsList_givenString_throwsException()
+        {
+            var sample = "sample";
+            Assert.Throws<InvalidOperationException>(
+                () => sample.As<List<int>>());
+        }
     }
 }
