@@ -68,21 +68,29 @@ namespace Niche.CommandLine
             return switches;
         }
 
-        public static IEnumerable<CommandLineParameter> CreateParameters(object instance)
+        public static IEnumerable<CommandLineOptionBase> CreateParameters(object instance)
         {
             if (instance == null)
             {
                 throw new ArgumentNullException("instance");
             }
 
-            var methods = instance.GetType().GetMethods();
+            var methods = instance.GetType().GetMethods()
+                .Where(CommandLineOptionFactory.IsParameter);
 
-            var parameters
-                = methods.Where(CommandLineOptionFactory.IsParameter)
-                    .Select(m => new CommandLineParameter(instance, m))
-                    .ToList();
+            var result = new List<CommandLineOptionBase>();
 
-            return parameters;
+            var parameterType = typeof(CommandLineParameter<>);
+            foreach (var m in methods)
+            {
+                var p = m.GetParameters().Single();
+                var valueType = p.ParameterType;
+                var t = parameterType.MakeGenericType(valueType);
+                var parameter = (CommandLineOptionBase)Activator.CreateInstance(t, instance, m);
+                result.Add(parameter);
+            }
+
+            return result;
         }
 
     }

@@ -12,7 +12,8 @@ namespace Niche.CommandLine
     /// <summary>
     /// Wrapper class that handles a simple parameter - something that takes a value
     /// </summary>
-    public class CommandLineParameter : CommandLineOptionBase
+    /// <typeparam name="TValue">Type of value expected by the parameter</typeparam>
+    public class CommandLineParameter<TValue> : CommandLineOptionBase
     {
         /// <summary>
         /// Gets the short form of this switch
@@ -74,12 +75,7 @@ namespace Niche.CommandLine
 
             mUsed = true;
             var parameter = arguments.Dequeue();
-            var parameters = new object[] { parameter };
-            if (mParameterInfo.ParameterType != typeof(string))
-            {
-                parameters[0] = ConvertValue(parameter, mParameterInfo.ParameterType);
-            }
-
+            var parameters = new object[] { parameter.As<TValue>() };
             mMethod.Invoke(mInstance, parameters);
         }
 

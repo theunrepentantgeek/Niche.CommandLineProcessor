@@ -18,7 +18,7 @@ namespace Niche.CommandLine.Tests
             Assert.Throws<ArgumentNullException>(
                 () =>
                 {
-                    new CommandLineParameter(null, method);
+                    new CommandLineParameter<string>(null, method);
                 });
         }
 
@@ -30,7 +30,7 @@ namespace Niche.CommandLine.Tests
             Assert.Throws<ArgumentNullException>(
                 () =>
                 {
-                    new CommandLineParameter(driver, null);
+                    new CommandLineParameter<string>(driver, null);
                 });
         }
 
@@ -42,7 +42,7 @@ namespace Niche.CommandLine.Tests
             Assert.Throws<ArgumentException>(
                 () =>
                 {
-                    new CommandLineParameter(this, method);
+                    new CommandLineParameter<string>(this, method);
                 });
         }
 
@@ -51,7 +51,7 @@ namespace Niche.CommandLine.Tests
         {
             var driver = new SampleDriver();
             var method = driver.GetType().GetMethod("Find");
-            var commandLineParameter = new CommandLineParameter(driver, method);
+            var commandLineParameter = new CommandLineParameter<string>(driver, method);
             Assert.Throws<ArgumentNullException>(
             () => commandLineParameter.Activate(null));
         }
@@ -61,7 +61,7 @@ namespace Niche.CommandLine.Tests
         {
             var driver = new SampleDriver();
             var method = driver.GetType().GetMethod("Find");
-            var commandLineParameter = new CommandLineParameter(driver, method);
+            var commandLineParameter = new CommandLineParameter<string>(driver, method);
             var arguments = new Queue<string>();
             arguments.Enqueue("search");
             commandLineParameter.Activate(arguments);
@@ -73,7 +73,7 @@ namespace Niche.CommandLine.Tests
         {
             var driver = new SampleDriver();
             var method = driver.GetType().GetMethod("Find");
-            var commandLineSwitch = new CommandLineParameter(driver, method);
+            var commandLineSwitch = new CommandLineParameter<string>(driver, method);
             Assert.That(commandLineSwitch.ShortName, Is.EqualTo("-f"));
         }
 
@@ -82,7 +82,7 @@ namespace Niche.CommandLine.Tests
         {
             var driver = new SampleDriver();
             var method = driver.GetType().GetMethod("Find");
-            var commandLineSwitch = new CommandLineParameter(driver, method);
+            var commandLineSwitch = new CommandLineParameter<string>(driver, method);
             Assert.That(commandLineSwitch.LongName, Is.EqualTo("--find"));
         }
 
@@ -125,9 +125,8 @@ namespace Niche.CommandLine.Tests
         public void AddHelpTo_givenList_AddsEntry()
         {
             var driver = new SampleDriver();
-            var commandLineParameter
-                = CommandLineOptionFactory.CreateParameters(driver)
-                .Single(p => p.ShortName == "-f");
+            var findMethod = typeof(SampleDriver).GetMethod("Find");
+            var commandLineParameter = new CommandLineParameter<string>(driver, findMethod);
             var help = new List<string>();
             commandLineParameter.AddHelpTo(help);
             Assert.That(help, Has.Count.EqualTo(1));
@@ -137,9 +136,8 @@ namespace Niche.CommandLine.Tests
         public void Completed_whenRequiredParameterOmitted_generatesError()
         {
             var driver = new SampleDriver();
-            var commandLineParameter
-                = CommandLineOptionFactory.CreateParameters(driver)
-                .Single(p => p.ShortName == "-f");
+            var findMethod = typeof(SampleDriver).GetMethod("Find");
+            var commandLineParameter = new CommandLineParameter<string>(driver, findMethod);
             var errors = new List<string>();
             commandLineParameter.Completed(errors);
             Assert.That(errors, Is.Not.Empty);
@@ -149,9 +147,8 @@ namespace Niche.CommandLine.Tests
         public void Completed_whenRequiredParameterSupplied_generatesNoErrors()
         {
             var driver = new SampleDriver();
-            var commandLineParameter
-                = CommandLineOptionFactory.CreateParameters(driver)
-                .Single(p => p.ShortName == "-f");
+            var findMethod = typeof(SampleDriver).GetMethod("Find");
+            var commandLineParameter = new CommandLineParameter<string>(driver, findMethod);
             var arguments = new Queue<string>();
             arguments.Enqueue("search");
             commandLineParameter.Activate(arguments);
@@ -164,9 +161,8 @@ namespace Niche.CommandLine.Tests
         public void Completed_whenOptionalParameterOmitted_generatesNoErrors()
         {
             var driver = new SampleDriver();
-            var commandLineParameter
-                = CommandLineOptionFactory.CreateParameters(driver)
-                .Single(p => p.ShortName == "-u");
+            var findMethod = typeof(SampleDriver).GetMethod("Upload");
+            var commandLineParameter = new CommandLineParameter<string>(driver, findMethod);
             var errors = new List<string>();
             Assert.That(errors, Is.Empty);
         }
