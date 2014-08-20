@@ -67,5 +67,23 @@ namespace Niche.CommandLine
 
             return switches;
         }
+
+        public static IEnumerable<CommandLineParameter> CreateParameters(object instance)
+        {
+            if (instance == null)
+            {
+                throw new ArgumentNullException("instance");
+            }
+
+            var methods = instance.GetType().GetMethods();
+
+            var parameters
+                = methods.Where(CommandLineOptionFactory.IsParameter)
+                    .Select(m => new CommandLineParameter(instance, m))
+                    .ToList();
+
+            return parameters;
+        }
+
     }
 }

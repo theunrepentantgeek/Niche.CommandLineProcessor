@@ -90,14 +90,14 @@ namespace Niche.CommandLine.Tests
         public void ConfigureParameters_givenNullInstance_throwsException()
         {
             Assert.Throws<ArgumentNullException>(
-            () => CommandLineParameter.CreateParameters(null));
+            () => CommandLineOptionFactory.CreateParameters(null));
         }
 
         [Test]
         public void AddOptionsTo_givenNull_throwsException()
         {
             var driver = new SampleDriver();
-            var commandLineParameter = CommandLineParameter.CreateParameters(driver).First();
+            var commandLineParameter = CommandLineOptionFactory.CreateParameters(driver).First();
             Assert.Throws<ArgumentNullException>(
                 () => commandLineParameter.AddOptionsTo(null));
         }
@@ -106,7 +106,7 @@ namespace Niche.CommandLine.Tests
         public void AddOptionsTo_givenDictionary_AddsEntries()
         {
             var driver = new SampleDriver();
-            var commandLineParameter = CommandLineParameter.CreateParameters(driver).First();
+            var commandLineParameter = CommandLineOptionFactory.CreateParameters(driver).First();
             var options = new Dictionary<string, CommandLineOptionBase>();
             commandLineParameter.AddOptionsTo(options);
             Assert.That(options.Count, Is.EqualTo(3));
@@ -116,7 +116,7 @@ namespace Niche.CommandLine.Tests
         public void AddHelpTo_givenNull_throwsException()
         {
             var driver = new SampleDriver();
-            var commandLineParameter = CommandLineParameter.CreateParameters(driver).First();
+            var commandLineParameter = CommandLineOptionFactory.CreateParameters(driver).First();
             Assert.Throws<ArgumentNullException>(
                 () => commandLineParameter.AddHelpTo(null));
         }
@@ -126,7 +126,7 @@ namespace Niche.CommandLine.Tests
         {
             var driver = new SampleDriver();
             var commandLineParameter
-                = CommandLineParameter.CreateParameters(driver)
+                = CommandLineOptionFactory.CreateParameters(driver)
                 .Single(p => p.ShortName == "-f");
             var help = new List<string>();
             commandLineParameter.AddHelpTo(help);
@@ -138,7 +138,7 @@ namespace Niche.CommandLine.Tests
         {
             var driver = new SampleDriver();
             var commandLineParameter
-                = CommandLineParameter.CreateParameters(driver)
+                = CommandLineOptionFactory.CreateParameters(driver)
                 .Single(p => p.ShortName == "-f");
             var errors = new List<string>();
             commandLineParameter.Completed(errors);
@@ -150,7 +150,7 @@ namespace Niche.CommandLine.Tests
         {
             var driver = new SampleDriver();
             var commandLineParameter
-                = CommandLineParameter.CreateParameters(driver)
+                = CommandLineOptionFactory.CreateParameters(driver)
                 .Single(p => p.ShortName == "-f");
             var arguments = new Queue<string>();
             arguments.Enqueue("search");
@@ -165,7 +165,7 @@ namespace Niche.CommandLine.Tests
         {
             var driver = new SampleDriver();
             var commandLineParameter
-                = CommandLineParameter.CreateParameters(driver)
+                = CommandLineOptionFactory.CreateParameters(driver)
                 .Single(p => p.ShortName == "-u");
             var errors = new List<string>();
             Assert.That(errors, Is.Empty);

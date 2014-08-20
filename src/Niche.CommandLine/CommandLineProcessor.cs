@@ -141,7 +141,7 @@ namespace Niche.CommandLine
             mOptions.AddRange(CommandLineOptionFactory.CreateSwitches(this));
 
             // Create options for our driver
-            mOptions.AddRange(CommandLineParameter.CreateParameters(mDriver));
+            mOptions.AddRange(CommandLineOptionFactory.CreateParameters(mDriver));
             mOptions.AddRange(CommandLineOptionFactory.CreateSwitches(mDriver));
 
             // Populate as flags

@@ -34,22 +34,6 @@ namespace Niche.CommandLine
         /// </summary>
         public bool IsRequired { get; private set; }
 
-        public static IEnumerable<CommandLineParameter> CreateParameters(object instance)
-        {
-            if (instance == null)
-            {
-                throw new ArgumentNullException("instance");
-            }
-
-            var methods = instance.GetType().GetMethods();
-
-            var parameters
-                = methods.Where(CommandLineOptionFactory.IsParameter)
-                    .Select(m => new CommandLineParameter(instance, m))
-                    .ToList();
-
-            return parameters;
-        }
         public CommandLineParameter(object instance, MethodInfo method)
             : base(method)
         {
