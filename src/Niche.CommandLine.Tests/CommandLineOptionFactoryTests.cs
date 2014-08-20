@@ -59,6 +59,32 @@ namespace Niche.CommandLine.Tests
                 () => CommandLineOptionFactory.CreateSwitches(null));
         }
 
+        [Test]
+        public void IsParameter_givenNull_throwsException()
+        {
+            Assert.Throws<ArgumentNullException>(
+                () =>
+                {
+                    CommandLineOptionFactory.IsParameter(null);
+                });
+        }
+
+        [Test]
+        public void IsParameter_givenParameterMethod_returnsTrue()
+        {
+            var driver = new SampleDriver();
+            var method = driver.GetType().GetMethod("Find");
+            Assert.That(CommandLineOptionFactory.IsParameter(method), Is.True);
+        }
+
+        [Test]
+        public void IsParameter_givenSwitchMethod_returnsFalse()
+        {
+            var driver = new SampleDriver();
+            var method = driver.GetType().GetMethod("Help");
+            Assert.That(CommandLineOptionFactory.IsParameter(method), Is.False);
+        }
+
 
     }
 }

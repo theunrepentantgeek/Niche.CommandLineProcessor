@@ -32,6 +32,25 @@ namespace Niche.CommandLine
                 && method.GetCustomAttribute<DescriptionAttribute>() != null;
         }
 
+        /// <summary>
+        /// Test to see if the specified method is a parameter
+        /// </summary>
+        /// Parameters are methods with no return type and exactly one parameter that have a
+        /// [Description] attribute.
+        /// <param name="method">Method to test.</param>
+        /// <returns>True if it is a parameter, false otherwise.</returns>
+        public static bool IsParameter(MethodInfo method)
+        {
+            if (method == null)
+            {
+                throw new ArgumentNullException("method");
+            }
+
+            return method.ReturnType == typeof(void)
+                && method.GetParameters().Length == 1
+                && method.GetCustomAttribute<DescriptionAttribute>() != null;
+        }
+
         public static IEnumerable<CommandLineSwitch> CreateSwitches(object instance)
         {
             if (instance == null)

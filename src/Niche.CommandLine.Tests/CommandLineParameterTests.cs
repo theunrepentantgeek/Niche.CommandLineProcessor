@@ -47,32 +47,6 @@ namespace Niche.CommandLine.Tests
         }
 
         [Test]
-        public void IsParameter_givenNull_throwsException()
-        {
-            Assert.Throws<ArgumentNullException>(
-                () =>
-                {
-                    CommandLineParameter.IsParameter(null);
-                });
-        }
-
-        [Test]
-        public void IsParameter_givenParameterMethod_returnsTrue()
-        {
-            var driver = new SampleDriver();
-            var method = driver.GetType().GetMethod("Find");
-            Assert.That(CommandLineParameter.IsParameter(method), Is.True);
-        }
-
-        [Test]
-        public void IsParameter_givenSwitchMethod_returnsFalse()
-        {
-            var driver = new SampleDriver();
-            var method = driver.GetType().GetMethod("Help");
-            Assert.That(CommandLineParameter.IsParameter(method), Is.False);
-        }
-
-        [Test]
         public void Activate_givenNull_throwsException()
         {
             var driver = new SampleDriver();
