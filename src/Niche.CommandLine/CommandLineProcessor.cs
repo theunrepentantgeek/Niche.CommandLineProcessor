@@ -138,11 +138,11 @@ namespace Niche.CommandLine
         private void LoadOptions(Dictionary<string, CommandLineOptionBase> options)
         {
             // Default switches
-            mOptions.AddRange(CommandLineSwitch.CreateSwitches(this));
+            mOptions.AddRange(CommandLineOptionFactory.CreateSwitches(this));
 
             // Create options for our driver
             mOptions.AddRange(CommandLineParameter.CreateParameters(mDriver));
-            mOptions.AddRange(CommandLineSwitch.CreateSwitches(mDriver));
+            mOptions.AddRange(CommandLineOptionFactory.CreateSwitches(mDriver));
 
             // Populate as flags
             foreach (var s in mOptions)

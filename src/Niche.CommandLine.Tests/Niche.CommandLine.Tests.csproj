@@ -57,6 +57,7 @@
   <ItemGroup>
     <Compile Include="CamelCaseTests.cs" />
     <Compile Include="CommandLineOptionBaseTests.cs" />
+    <Compile Include="CommandLineOptionFactoryTests.cs" />
     <Compile Include="CommandLineParameterTests.cs" />
     <Compile Include="CommandLineProcessorTests.cs" />
     <Compile Include="CommandLineSwitchTests.cs" />

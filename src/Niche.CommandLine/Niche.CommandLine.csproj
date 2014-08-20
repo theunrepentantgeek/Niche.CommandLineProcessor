@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="CamelCase.cs" />
     <Compile Include="CommandLineOptionBase.cs" />
+    <Compile Include="CommandLineOptionFactory.cs" />
     <Compile Include="CommandLineParameter.cs" />
     <Compile Include="CommandLineProcessor.cs" />
     <Compile Include="CommandLineSwitch.cs" />

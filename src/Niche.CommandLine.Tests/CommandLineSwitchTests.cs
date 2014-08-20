@@ -47,48 +47,6 @@ namespace Niche.CommandLine.Tests
         }
 
         [Test]
-        public void IsSwitch_givenNull_throwsException()
-        {
-            Assert.Throws<ArgumentNullException>(
-                () =>
-                {
-                    CommandLineSwitch.IsSwitch(null);
-                });
-        }
-
-        [Test]
-        public void IsSwitch_givenSwitchMethod_returnsTrue()
-        {
-            var driver = new SampleDriver();
-            var method = driver.GetType().GetMethod("Help");
-            Assert.That(CommandLineSwitch.IsSwitch(method), Is.True);
-        }
-
-        [Test]
-        public void IsSwitch_givenParameterMethod_returnsFalse()
-        {
-            var driver = new SampleDriver();
-            var method = driver.GetType().GetMethod("Find");
-            Assert.That(CommandLineSwitch.IsSwitch(method), Is.False);
-        }
-
-        [Test]
-        public void IsSwitch_givenMethodMissingDescription_returnsFalse()
-        {
-            var driver = new SampleDriver();
-            var method = driver.GetType().GetMethod("Verbose");
-            Assert.That(CommandLineSwitch.IsSwitch(method), Is.False);
-        }
-
-        [Test]
-        public void IsSwitch_givenMethodWithParameters_returnsFalse()
-        {
-            var driver = new SampleDriver();
-            var method = driver.GetType().GetMethod("Find");
-            Assert.That(CommandLineSwitch.IsSwitch(method), Is.False);
-        }
-
-        [Test]
         public void Activate_whenConfigured_callsMethod()
         {
             var driver = new SampleDriver();
@@ -118,17 +76,10 @@ namespace Niche.CommandLine.Tests
         }
 
         [Test]
-        public void ConfigureSwitches_givenNullInstance_throwsException()
-        {
-            Assert.Throws<ArgumentNullException>(
-                () => CommandLineSwitch.CreateSwitches(null));
-        }
-
-        [Test]
         public void AddOptionsTo_givenNull_throwsException()
         {
             var driver = new SampleDriver();
-            var commandLineSwitch = CommandLineSwitch.CreateSwitches(driver).First();
+            var commandLineSwitch = CommandLineOptionFactory.CreateSwitches(driver).First();
             Assert.Throws<ArgumentNullException>(
                 () => commandLineSwitch.AddOptionsTo(null));
         }
@@ -137,7 +88,7 @@ namespace Niche.CommandLine.Tests
         public void AddOptionsTo_givenDictionary_AddsEntries()
         {
             var driver = new SampleDriver();
-            var commandLineSwitch = CommandLineSwitch.CreateSwitches(driver).First();
+            var commandLineSwitch = CommandLineOptionFactory.CreateSwitches(driver).First();
             var options = new Dictionary<string, CommandLineOptionBase>();
             commandLineSwitch.AddOptionsTo(options);
             Assert.That(options.Count, Is.EqualTo(3));
@@ -147,7 +98,7 @@ namespace Niche.CommandLine.Tests
         public void AddHelpTo_givenNull_throwsException()
         {
             var driver = new SampleDriver();
-            var commandLineSwitch = CommandLineSwitch.CreateSwitches(driver).First();
+            var commandLineSwitch = CommandLineOptionFactory.CreateSwitches(driver).First();
             Assert.Throws<ArgumentNullException>(
                 () => commandLineSwitch.AddHelpTo(null));
         }
@@ -156,7 +107,7 @@ namespace Niche.CommandLine.Tests
         public void AddHelpTo_givenList_AddsEntry()
         {
             var driver = new SampleDriver();
-            var commandLineSwitch = CommandLineSwitch.CreateSwitches(driver).First();
+            var commandLineSwitch = CommandLineOptionFactory.CreateSwitches(driver).First();
             var help = new List<string>();
             commandLineSwitch.AddHelpTo(help);
             Assert.That(help, Has.Count.EqualTo(1));
