@@ -51,7 +51,7 @@ namespace Niche.CommandLine
                 return (T)constructor.Invoke(new[] { value });
             }
 
-            var message = string.Format("Cannot convert {0} into {1}", value, typeof(T).Name);
+            var message = string.Format(CultureInfo.CurrentCulture, "Cannot convert {0} into {1}", value, typeof(T).Name);
             throw new InvalidOperationException(message);
         }
     }

@@ -124,6 +124,11 @@ namespace Niche.CommandLine
         /// <param name="errors">List used to gather any reported errors.</param>
         public override void Completed(IList<string> errors)
         {
+            if (errors == null)
+            {
+                throw new ArgumentNullException("errors");
+            }
+
             if (!mUsed && IsRequired)
             {
                 var message

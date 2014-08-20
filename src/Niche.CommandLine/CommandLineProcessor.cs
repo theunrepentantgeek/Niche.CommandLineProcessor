@@ -113,6 +113,7 @@ namespace Niche.CommandLine
             }
         }
 
+        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
         private void Activate(CommandLineOptionBase option, Queue<string> queue, string arg)
         {
             try
