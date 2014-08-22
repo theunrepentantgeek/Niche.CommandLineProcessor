@@ -16,6 +16,11 @@ namespace Niche.CommandLine
     public class CommandLineParameter<TValue> : CommandLineOptionBase
     {
         /// <summary>
+        /// Gets the name of this parameter
+        /// </summary>
+        public string Name { get; private set; }
+
+        /// <summary>
         /// Gets the short form of this switch
         /// </summary>
         public string ShortName { get; private set; }
@@ -57,6 +62,8 @@ namespace Niche.CommandLine
             mMethod = method;
             mParameterInfo = method.GetParameters().Single();
             IsRequired = method.GetCustomAttribute<RequiredAttribute>() != null;
+
+            Name = method.Name;
 
             ShortName = "-" + CamelCase.ToShortName(method.Name);
             AlternateShortName = "/" + CamelCase.ToShortName(method.Name);
