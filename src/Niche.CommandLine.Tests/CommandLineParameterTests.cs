@@ -69,24 +69,6 @@ namespace Niche.CommandLine.Tests
         }
 
         [Test]
-        public void ShortName_whenConfigured_isExpected()
-        {
-            var driver = new SampleDriver();
-            var method = driver.GetType().GetMethod("Find");
-            var commandLineSwitch = new CommandLineParameter<string>(driver, method);
-            Assert.That(commandLineSwitch.ShortName, Is.EqualTo("-f"));
-        }
-
-        [Test]
-        public void LongName_whenConfigured_isExpected()
-        {
-            var driver = new SampleDriver();
-            var method = driver.GetType().GetMethod("Find");
-            var commandLineSwitch = new CommandLineParameter<string>(driver, method);
-            Assert.That(commandLineSwitch.LongName, Is.EqualTo("--find"));
-        }
-
-        [Test]
         public void ConfigureParameters_givenNullInstance_throwsException()
         {
             Assert.Throws<ArgumentNullException>(

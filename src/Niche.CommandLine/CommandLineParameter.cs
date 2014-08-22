@@ -21,21 +21,6 @@ namespace Niche.CommandLine
         public string Name { get; private set; }
 
         /// <summary>
-        /// Gets the short form of this switch
-        /// </summary>
-        public string ShortName { get; private set; }
-
-        /// <summary>
-        /// Gets the other short form of this switch
-        /// </summary>
-        public string AlternateShortName { get; private set; }
-
-        /// <summary>
-        /// Gets the long form of this switch
-        /// </summary>
-        public string LongName { get; private set; }
-
-        /// <summary>
         /// Gets a value indicating whether this parameter is required
         /// </summary>
         public bool IsRequired { get; private set; }
@@ -64,10 +49,6 @@ namespace Niche.CommandLine
             IsRequired = method.GetCustomAttribute<RequiredAttribute>() != null;
 
             Name = method.Name;
-
-            ShortName = "-" + CamelCase.ToShortName(method.Name);
-            AlternateShortName = "/" + CamelCase.ToShortName(method.Name);
-            LongName = "--" + CamelCase.ToDashedName(method.Name);
         }
 
         /// <summary>
@@ -97,9 +78,13 @@ namespace Niche.CommandLine
                 throw new ArgumentNullException("dictionary");
             }
 
-            dictionary[ShortName] = this;
-            dictionary[AlternateShortName] = this;
-            dictionary[LongName] = this;
+            var shortForm = "-" + CamelCase.ToShortName(Name);
+            var alternateForm = "/" + CamelCase.ToShortName(Name);
+            var longForm = "--" + CamelCase.ToDashedName(Name);
+
+            dictionary[shortForm] = this;
+            dictionary[alternateForm] = this;
+            dictionary[longForm] = this;
         }
 
         /// <summary>
@@ -116,9 +101,9 @@ namespace Niche.CommandLine
             var text
                 = string.Format(
                     CultureInfo.CurrentCulture,
-                    "{0} <{3}>\t{1} <{3}>\t{2}",
-                    LongName,
-                    ShortName,
+                    "--{0} <{3}>\t-{1} <{3}>\t{2}",
+                    CamelCase.ToDashedName(Name),
+                    CamelCase.ToShortName(Name),
                     Description,
                     mParameterInfo.Name.ToLower(CultureInfo.CurrentCulture));
 
@@ -139,7 +124,7 @@ namespace Niche.CommandLine
             if (!mUsed && IsRequired)
             {
                 var message
-                    = string.Format(CultureInfo.CurrentCulture, "{0}:\t{1}", LongName, "Required parameter not supplied.");
+                    = string.Format(CultureInfo.CurrentCulture, "--{0}:\t{1}", CamelCase.ToDashedName(Name), "Required parameter not supplied.");
                 errors.Add(message);
             }
         }
@@ -147,7 +132,7 @@ namespace Niche.CommandLine
         private readonly MethodInfo mMethod;
         private readonly ParameterInfo mParameterInfo;
         private readonly object mInstance;
-        
+
         /// <summary>
         /// Record whether this parameter has been used
         /// </summary>
