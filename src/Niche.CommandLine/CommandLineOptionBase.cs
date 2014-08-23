@@ -52,49 +52,7 @@ namespace Niche.CommandLine
         /// <param name="errors">List used to gather any reported errors.</param>
         public abstract void Completed(IList<string> errors);
 
-        /// <summary>
-        /// Convert a value from a string into the desired type
-        /// </summary>
-        /// <param name="value">String value to convert</param>
-        /// <param name="desiredType">Desired type to return</param>
-        /// <returns>Converted value</returns>
-        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
-        public static object ConvertValue(string value, Type desiredType)
-        {
-            if (desiredType==null)
-            {
-                throw new ArgumentNullException("desiredType");
-            }
-
-            if (value == null)
-            {
-                return null;
-            }
-
-            try
-            {
-                var converter = TypeDescriptor.GetConverter(desiredType);
-                var result
-                    = converter != null
-                          ? converter.ConvertFromString(value)
-                          : Convert.ChangeType(value, desiredType, CultureInfo.InvariantCulture);
-                return result;
-            }
-            // Have to catch Exception 'cause that's what is thrown!
-            catch (Exception ex)
-            {
-                string message
-               = string.Format(
-                   CultureInfo.InvariantCulture,
-                   "Failed to convert \"{0}\" to {1}: {2}",
-                   value,
-                   desiredType.Name,
-                   ex.Message);
-                throw new InvalidOperationException(message);
-            }
-        }
-
-        protected static string FindDescription(MemberInfo info)
+        protected internal static string FindDescription(MemberInfo info)
         {
             var attribute = info.GetCustomAttribute<DescriptionAttribute>();
             if (attribute == null)
