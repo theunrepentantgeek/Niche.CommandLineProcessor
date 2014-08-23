@@ -28,7 +28,7 @@ namespace Niche.CommandLine
         /// <summary>
         /// Gets a value indicating whether this parameter is multivalued
         /// </summary>
-        public bool IsMultiValued { get; private set; }
+        public bool IsMultivalued { get; private set; }
 
         public CommandLineParameter(object instance, MethodInfo method)
             : base(method)
@@ -55,7 +55,7 @@ namespace Niche.CommandLine
             Name = method.Name;
 
             IsRequired = method.GetCustomAttribute<RequiredAttribute>() != null;
-            IsMultiValued = mParameterInfo.ParameterType.IsIEnumerable();
+            IsMultivalued = mParameterInfo.ParameterType.IsIEnumerable();
         }
 
         /// <summary>
@@ -141,7 +141,7 @@ namespace Niche.CommandLine
                 return;
             }
 
-            if (IsMultiValued)
+            if (IsMultivalued)
             {
                 // Use all the values we have
                 mMethod.Invoke(mInstance, new object[] { mValues });
@@ -169,10 +169,5 @@ namespace Niche.CommandLine
         /// List of values passed for this parameter
         /// </summary>
         private readonly List<TValue> mValues = new List<TValue>();
-
-        /// <summary>
-        /// Record whether this parameter has been used
-        /// </summary>
-        private bool mUsed;
     }
 }
