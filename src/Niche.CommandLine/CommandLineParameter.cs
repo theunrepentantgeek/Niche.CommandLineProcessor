@@ -13,7 +13,7 @@ namespace Niche.CommandLine
     /// Wrapper class that handles a simple parameter - something that takes a value
     /// </summary>
     /// <typeparam name="TValue">Type of value expected by the parameter</typeparam>
-    public class CommandLineParameter<TValue> : CommandLineOptionBase
+    public sealed class CommandLineParameter<TValue> : CommandLineOptionBase
     {
         /// <summary>
         /// Gets the name of this parameter
@@ -24,6 +24,11 @@ namespace Niche.CommandLine
         /// Gets a value indicating whether this parameter is required
         /// </summary>
         public bool IsRequired { get; private set; }
+
+        /// <summary>
+        /// Gets a value indicating whether this parameter is multivalued
+        /// </summary>
+        public bool IsMultiValued { get; private set; }
 
         public CommandLineParameter(object instance, MethodInfo method)
             : base(method)
@@ -46,9 +51,11 @@ namespace Niche.CommandLine
             mInstance = instance;
             mMethod = method;
             mParameterInfo = method.GetParameters().Single();
-            IsRequired = method.GetCustomAttribute<RequiredAttribute>() != null;
 
             Name = method.Name;
+
+            IsRequired = method.GetCustomAttribute<RequiredAttribute>() != null;
+            IsMultiValued = mParameterInfo.ParameterType.IsIEnumerable();
         }
 
         /// <summary>
@@ -61,10 +68,8 @@ namespace Niche.CommandLine
                 throw new ArgumentNullException("arguments");
             }
 
-            mUsed = true;
-            var parameter = arguments.Dequeue();
-            var parameters = new object[] { parameter.As<TValue>() };
-            mMethod.Invoke(mInstance, parameters);
+            var value = arguments.Dequeue().As<TValue>();
+            mValues.Add(value);
         }
 
         /// <summary>
@@ -121,17 +126,49 @@ namespace Niche.CommandLine
                 throw new ArgumentNullException("errors");
             }
 
-            if (!mUsed && IsRequired)
+            if (IsRequired && !mValues.Any())
             {
+                // Mandatory but not provided: create error
                 var message
                     = string.Format(CultureInfo.CurrentCulture, "--{0}:\t{1}", CamelCase.ToDashedName(Name), "Required parameter not supplied.");
                 errors.Add(message);
+                return;
             }
+
+            if (mValues.Count == 0)
+            {
+                // Nothing provided: return
+                return;
+            }
+
+            if (IsMultiValued)
+            {
+                // Use all the values we have
+                mMethod.Invoke(mInstance, new object[] { mValues });
+                return;
+            }
+
+            if (mValues.Count > 1)
+            {
+                // Single valued, but we have too many values
+                var message
+                    = string.Format(CultureInfo.CurrentCulture, "--{0}:\t{1}", CamelCase.ToDashedName(Name), "Parameter may only be specified once.");
+                errors.Add(message);
+                return;
+            }
+
+            // Single valued: one value provided
+            mMethod.Invoke(mInstance, new object[] { mValues[0] });
         }
 
         private readonly MethodInfo mMethod;
         private readonly ParameterInfo mParameterInfo;
         private readonly object mInstance;
+
+        /// <summary>
+        /// List of values passed for this parameter
+        /// </summary>
+        private readonly List<TValue> mValues = new List<TValue>();
 
         /// <summary>
         /// Record whether this parameter has been used

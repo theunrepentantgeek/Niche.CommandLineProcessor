@@ -11,13 +11,15 @@ namespace Niche.CommandLine.Tests
     {
         public bool ShowHelp { get; private set; }
 
-        public List<string> Searches { get; private set; }
+        public string TextSearch { get; private set; }
+
+        public IEnumerable<string> FilesToUpload { get; private set; }
 
         public int Repeats { get; private set; }
 
         public SampleDriver()
         {
-            Searches = new List<string>();
+            //
         }
 
         /// <summary>
@@ -37,13 +39,13 @@ namespace Niche.CommandLine.Tests
         [Description("Find")]
         public void Find(string term)
         {
-            Searches.Add(term);
+            TextSearch = term;
         }
 
         [Description("Upload file")]
         public void Upload(IEnumerable<string> files)
         {
-            // Nothing
+            FilesToUpload = files.ToList();
         }
 
         /// <summary>
@@ -59,6 +61,5 @@ namespace Niche.CommandLine.Tests
         {
             Repeats = count;
         }
-
     }
 }

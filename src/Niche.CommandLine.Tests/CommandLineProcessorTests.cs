@@ -47,25 +47,25 @@ namespace Niche.CommandLine.Tests
         [Test]
         public void Constructor_withLongFormParameter_callsMethods()
         {
-            var arguments = new List<string> { "--find", "fu" };
+            var arguments = new List<string> { "--find", "file" };
             var processor = new CommandLineProcessor<SampleDriver>(arguments);
-            Assert.That(processor.Driver.Searches, Is.EquivalentTo(new List<string> { "fu" }));
+            Assert.That(processor.Driver.TextSearch, Is.EqualTo("file"));
         }
 
         [Test]
         public void Constructor_withShortFormParameter_callsMethod()
         {
-            var arguments = new List<string> { "-f", "fu" };
+            var arguments = new List<string> { "-f", "file" };
             var processor = new CommandLineProcessor<SampleDriver>(arguments);
-            Assert.That(processor.Driver.Searches, Is.EquivalentTo(new List<string> { "fu" }));
+            Assert.That(processor.Driver.TextSearch, Is.EqualTo("file"));
         }
 
         [Test]
         public void Constructor_withAlternateShortFormParameter_callsMethod()
         {
-            var arguments = new List<string> { "/f", "fu" };
+            var arguments = new List<string> { "/f", "file" };
             var processor = new CommandLineProcessor<SampleDriver>(arguments);
-            Assert.That(processor.Driver.Searches, Is.EquivalentTo(new List<string> { "fu" }));
+            Assert.That(processor.Driver.TextSearch, Is.EqualTo("file"));
         }
 
         [Test]
