@@ -103,6 +103,16 @@ namespace Niche.CommandLine.Tests
         }
 
         [Test]
+        public void Completed_withNoErrorList_throwsException()
+        {
+            var driver = new SampleDriver();
+            var findMethod = typeof(SampleDriver).GetMethod("Find");
+            var commandLineParameter = new CommandLineParameter<string>(driver, findMethod);
+            Assert.Throws<ArgumentNullException>(
+                () => commandLineParameter.Completed(null));
+        }
+
+        [Test]
         public void Completed_whenRequiredParameterOmitted_generatesError()
         {
             var driver = new SampleDriver();
@@ -149,9 +159,25 @@ namespace Niche.CommandLine.Tests
             var commandLineParameter = new CommandLineParameter<string>(driver, method);
             commandLineParameter.Activate(arguments);
             commandLineParameter.Completed(errors);
-
             Assert.That(driver.TextSearch, Is.EqualTo("search"));
         }
+
+        [Test]
+        public void Completed_whenSingleValuedParameterProvidedTwice_createsError()
+        {
+            var driver = new SampleDriver();
+            var method = driver.GetType().GetMethod("Find");
+            var arguments = new Queue<string>();
+            arguments.Enqueue("alpha");
+            arguments.Enqueue("beta");
+            var errors = new List<string>();
+
+            var commandLineParameter = new CommandLineParameter<string>(driver, method);
+            commandLineParameter.Activate(arguments);
+            commandLineParameter.Activate(arguments);
+            commandLineParameter.Completed(errors);
+            Assert.That(errors, Is.Not.Empty);
+       }
 
         [Test]
         public void Completed_whenMultiValuedParameterProvided_callsMethod()

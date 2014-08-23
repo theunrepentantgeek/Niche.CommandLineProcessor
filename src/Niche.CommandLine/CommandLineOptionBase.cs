@@ -25,6 +25,11 @@ namespace Niche.CommandLine
         /// </summary>
         protected CommandLineOptionBase(MemberInfo member)
         {
+            if (member == null)
+            {
+                throw new ArgumentNullException("member");
+            }
+
             Description = FindDescription(member);
         }
 

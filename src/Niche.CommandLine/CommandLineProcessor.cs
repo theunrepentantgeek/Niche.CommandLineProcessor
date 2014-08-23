@@ -160,11 +160,6 @@ namespace Niche.CommandLine
         /// <returns>True if the argument is an option, false otherwise.</returns>
         private static bool IsOption(string argument)
         {
-            if (argument == null)
-            {
-                throw new ArgumentNullException("argument");
-            }
-
             return argument.StartsWith("-", StringComparison.Ordinal)
                 || argument.StartsWith("/", StringComparison.Ordinal);
         }
