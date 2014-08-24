@@ -37,11 +37,6 @@ namespace Niche.CommandLine
                 throw new ArgumentNullException("instance");
             }
 
-            if (method == null)
-            {
-                throw new ArgumentNullException("method");
-            }
-
             if (!method.DeclaringType.IsAssignableFrom(instance.GetType()))
             {
                 throw new ArgumentException("Expect method to be callable on instance");

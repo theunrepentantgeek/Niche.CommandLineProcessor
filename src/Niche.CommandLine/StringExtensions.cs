@@ -35,7 +35,7 @@ namespace Niche.CommandLine
                 {
                     string failureMessage
                    = string.Format(
-                       CultureInfo.InvariantCulture,
+                       CultureInfo.CurrentCulture,
                        "Failed to convert \"{0}\" to {1}: {2}",
                        value,
                        typeof(T).Name,
