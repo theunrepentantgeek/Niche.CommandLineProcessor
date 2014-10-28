@@ -7,10 +7,8 @@ using System.Threading.Tasks;
 
 namespace Niche.CommandLine.Tests
 {
-    public class SampleDriver
+    public class SampleDriver : BaseDriver
     {
-        public bool ShowHelp { get; private set; }
-
         public string TextSearch { get; private set; }
 
         public IEnumerable<string> FilesToUpload { get; private set; }
@@ -20,15 +18,6 @@ namespace Niche.CommandLine.Tests
         public SampleDriver()
         {
             //
-        }
-
-        /// <summary>
-        /// This is a switch method
-        /// </summary>
-        [Description("Show Help")]
-        public void Help()
-        {
-            ShowHelp = true;
         }
 
         /// <summary>
