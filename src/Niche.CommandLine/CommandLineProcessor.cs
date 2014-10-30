@@ -53,7 +53,15 @@ namespace Niche.CommandLine
         /// </summary>
         public IEnumerable<string> OptionHelp
         {
-            get { return mOptionHelp; }
+            get
+            {
+                if (!mOptionHelp.Any())
+                {
+                    CreateHelp();
+                }
+
+                return mOptionHelp;
+            }
         }
 
         /// <summary>
@@ -81,9 +89,17 @@ namespace Niche.CommandLine
 
             var options = new Dictionary<string, CommandLineOptionBase>();
 
-            LoadOptions(options);
+            // Default switches
+            mOptions.AddRange(CommandLineOptionFactory.CreateSwitches(this));
 
-            mOptionHelp.Sort();
+            // Create options for our driver
+            mOptions.AddRange(CommandLineOptionFactory.CreateParameters(mDriver));
+            mOptions.AddRange(CommandLineOptionFactory.CreateSwitches(mDriver));
+
+            foreach (var s in mOptions)
+            {
+                s.AddOptionsTo(options);
+            }
 
             CommandLineOptionBase option;
             var queue = new Queue<string>(mArguments);
@@ -107,7 +123,7 @@ namespace Niche.CommandLine
                 mArguments.Add(arg);
             }
 
-            foreach(var o in mOptions)
+            foreach (var o in mOptions)
             {
                 o.Completed(mErrors);
             }
@@ -136,23 +152,6 @@ namespace Niche.CommandLine
             mShowHelp = true;
         }
 
-        private void LoadOptions(Dictionary<string, CommandLineOptionBase> options)
-        {
-            // Default switches
-            mOptions.AddRange(CommandLineOptionFactory.CreateSwitches(this));
-
-            // Create options for our driver
-            mOptions.AddRange(CommandLineOptionFactory.CreateParameters(mDriver));
-            mOptions.AddRange(CommandLineOptionFactory.CreateSwitches(mDriver));
-
-            // Populate as flags
-            foreach (var s in mOptions)
-            {
-                s.AddOptionsTo(options);
-                s.AddHelpTo(mOptionHelp);
-            }
-        }
-
         /// <summary>
         /// Test to see if the passed argument is an option
         /// </summary>
@@ -162,6 +161,19 @@ namespace Niche.CommandLine
         {
             return argument.StartsWith("-", StringComparison.Ordinal)
                 || argument.StartsWith("/", StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Create help text
+        /// </summary>
+        private void CreateHelp()
+        {
+            foreach (var s in mOptions)
+            {
+                s.AddHelpTo(mOptionHelp);
+            }
+
+            mOptionHelp.Sort();
         }
 
         private readonly List<CommandLineOptionBase> mOptions = new List<CommandLineOptionBase>();
