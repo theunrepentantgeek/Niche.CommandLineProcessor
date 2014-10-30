@@ -11,12 +11,23 @@ namespace Niche.CommandLine.Tests
     public class CommandLineProcessorTests
     {
         [Test]
-        public void Constructor_givenNull_throwsException()
+        public void Constructor_givenNullForArguments_throwsException()
         {
             Assert.Throws<ArgumentNullException>(
                 () =>
                 {
-                    new CommandLineProcessor<SampleDriver>(null);
+                    new CommandLineProcessor<BaseDriver>(null, new BaseDriver());
+                });
+        }
+
+        [Test]
+        public void Constructor_givenNullForDriver_throwsException()
+        {
+            var arguments = new List<string> { "--help" };
+            Assert.Throws<ArgumentNullException>(
+                () =>
+                {
+                    new CommandLineProcessor<BaseDriver>(arguments, null);
                 });
         }
 
@@ -24,7 +35,7 @@ namespace Niche.CommandLine.Tests
         public void Constructor_withLongFormSwitch_callsMethod()
         {
             var arguments = new List<string> { "--help" };
-            var processor = new CommandLineProcessor<SampleDriver>(arguments);
+            var processor = new CommandLineProcessor<BaseDriver>(arguments, new BaseDriver());
             Assert.That(processor.Driver.ShowHelp, Is.True);
         }
 
@@ -32,7 +43,7 @@ namespace Niche.CommandLine.Tests
         public void Constructor_withShortFormSwitch_callsMethod()
         {
             var arguments = new List<string> { "-h" };
-            var processor = new CommandLineProcessor<SampleDriver>(arguments);
+            var processor = new CommandLineProcessor<BaseDriver>(arguments, new BaseDriver());
             Assert.That(processor.Driver.ShowHelp, Is.True);
         }
 
@@ -40,7 +51,7 @@ namespace Niche.CommandLine.Tests
         public void Constructor_withAlternateShortFormSwitch_callsMethod()
         {
             var arguments = new List<string> { "/h" };
-            var processor = new CommandLineProcessor<SampleDriver>(arguments);
+            var processor = new CommandLineProcessor<BaseDriver>(arguments, new BaseDriver());
             Assert.That(processor.Driver.ShowHelp, Is.True);
         }
 
@@ -48,7 +59,7 @@ namespace Niche.CommandLine.Tests
         public void Constructor_withLongFormParameter_callsMethods()
         {
             var arguments = new List<string> { "--find", "file" };
-            var processor = new CommandLineProcessor<SampleDriver>(arguments);
+            var processor = new CommandLineProcessor<SampleDriver>(arguments, new SampleDriver());
             Assert.That(processor.Driver.TextSearch, Is.EqualTo("file"));
         }
 
@@ -56,7 +67,7 @@ namespace Niche.CommandLine.Tests
         public void Constructor_withShortFormParameter_callsMethod()
         {
             var arguments = new List<string> { "-f", "file" };
-            var processor = new CommandLineProcessor<SampleDriver>(arguments);
+            var processor = new CommandLineProcessor<SampleDriver>(arguments, new SampleDriver());
             Assert.That(processor.Driver.TextSearch, Is.EqualTo("file"));
         }
 
@@ -64,7 +75,7 @@ namespace Niche.CommandLine.Tests
         public void Constructor_withAlternateShortFormParameter_callsMethod()
         {
             var arguments = new List<string> { "/f", "file" };
-            var processor = new CommandLineProcessor<SampleDriver>(arguments);
+            var processor = new CommandLineProcessor<SampleDriver>(arguments, new SampleDriver());
             Assert.That(processor.Driver.TextSearch, Is.EqualTo("file"));
         }
 
@@ -72,7 +83,7 @@ namespace Niche.CommandLine.Tests
         public void Constructor_withParameterRequiringConversion_callsMethod()
         {
             var arguments = new List<string> { "-r", "4" };
-            var processor = new CommandLineProcessor<SampleDriver>(arguments);
+            var processor = new CommandLineProcessor<SampleDriver>(arguments, new SampleDriver());
             Assert.That(processor.Driver.Repeats, Is.EqualTo(4));
         }
 
@@ -80,7 +91,7 @@ namespace Niche.CommandLine.Tests
         public void Constructor_withUnexpectedArgument_leavesItInList()
         {
             var arguments = new List<string> { "snafu" };
-            var processor = new CommandLineProcessor<SampleDriver>(arguments);
+            var processor = new CommandLineProcessor<SampleDriver>(arguments, new SampleDriver());
             Assert.That(processor.Arguments, Is.EquivalentTo(new List<string> { "snafu" }));
         }
 
@@ -88,7 +99,7 @@ namespace Niche.CommandLine.Tests
         public void Constructor_withUnexpectedOption_generatesError()
         {
             var arguments = new List<string> { "-s" };
-            var processor = new CommandLineProcessor<SampleDriver>(arguments);
+            var processor = new CommandLineProcessor<BaseDriver>(arguments, new BaseDriver());
             Assert.That(processor.HasErrors, Is.True);
         }
 
@@ -96,7 +107,7 @@ namespace Niche.CommandLine.Tests
         public void Constructor_withValidValueForParameter_configuresDriver()
         {
             var arguments = new List<string> { "--repeat", "5" };
-            var processor = new CommandLineProcessor<SampleDriver>(arguments);
+            var processor = new CommandLineProcessor<SampleDriver>(arguments, new SampleDriver());
             Assert.That(processor.Driver.Repeats, Is.EqualTo(5));
         }
 
@@ -104,8 +115,9 @@ namespace Niche.CommandLine.Tests
         public void Constructor_withInvalidValueForParameter_generatesError()
         {
             var arguments = new List<string> { "--repeat", "twice" };
-            var processor = new CommandLineProcessor<SampleDriver>(arguments);
+            var processor = new CommandLineProcessor<BaseDriver>(arguments, new BaseDriver());
             Assert.That(processor.HasErrors, Is.True);
         }
+
     }
 }

@@ -2,7 +2,7 @@
 # http://www.appveyor.com/docs/appveyor-yml
 
 # version format
-version: 1.0.{build}
+version: 2.0.{build}
 
 # scripts that run after cloning repository
 install:

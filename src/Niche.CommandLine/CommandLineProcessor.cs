@@ -12,7 +12,7 @@ namespace Niche.CommandLine
     /// <summary>
     /// Utility class used to parse command line parameters and populate a driver instance
     /// </summary>
-    /// <typeparam name="T">Type of the driver instance to use</typeparam>
+    /// <typeparam name="T">Type of the driver instances to support</typeparam>
     public class CommandLineProcessor<T>
         where T : new()
     {
@@ -77,17 +77,14 @@ namespace Niche.CommandLine
         /// </summary>
         /// <param name="arguments"></param>
         [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
-        public CommandLineProcessor(IEnumerable<string> arguments)
+        public CommandLineProcessor(IEnumerable<string> arguments, T driver)
         {
             if (arguments == null)
             {
                 throw new ArgumentNullException("arguments");
             }
 
-            mArguments = arguments.ToList();
-            mDriver = new T();
-
-            var options = new Dictionary<string, CommandLineOptionBase>();
+            mDriver = driver;
 
             // Default switches
             mOptions.AddRange(CommandLineOptionFactory.CreateSwitches(this));
@@ -96,13 +93,14 @@ namespace Niche.CommandLine
             mOptions.AddRange(CommandLineOptionFactory.CreateParameters(mDriver));
             mOptions.AddRange(CommandLineOptionFactory.CreateSwitches(mDriver));
 
+            var options = new Dictionary<string, CommandLineOptionBase>();
             foreach (var s in mOptions)
             {
                 s.AddOptionsTo(options);
             }
 
             CommandLineOptionBase option;
-            var queue = new Queue<string>(mArguments);
+            var queue = new Queue<string>(arguments);
             mArguments.Clear();
             while (queue.Count > 0)
             {
