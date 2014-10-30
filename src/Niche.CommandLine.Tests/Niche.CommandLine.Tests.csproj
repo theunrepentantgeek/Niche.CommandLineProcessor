@@ -66,6 +66,7 @@
     <Compile Include="SampleDriver.cs" />
     <Compile Include="BaseDriver.cs" />
     <Compile Include="StringExtensionsTests.cs" />
+    <Compile Include="TestDriver.cs" />
     <Compile Include="TypeExtensionsTests.cs" />
   </ItemGroup>
   <ItemGroup>

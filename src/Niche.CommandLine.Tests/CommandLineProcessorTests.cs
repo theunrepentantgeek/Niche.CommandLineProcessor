@@ -119,5 +119,12 @@ namespace Niche.CommandLine.Tests
             Assert.That(processor.HasErrors, Is.True);
         }
 
+        [Test]
+        public void Constructor_specifyingMode_returnsDriverForMode()
+        {
+            var arguments = new List<string> { "test", "--help" };
+            var processor = new CommandLineProcessor<BaseDriver>(arguments, new BaseDriver());
+            Assert.That(processor.Driver, Is.InstanceOfType<TestDriver>());
+        }
     }
 }
