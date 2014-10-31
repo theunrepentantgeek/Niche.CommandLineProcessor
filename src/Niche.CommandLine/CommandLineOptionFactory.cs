@@ -51,6 +51,25 @@ namespace Niche.CommandLine
                 && method.GetCustomAttribute<DescriptionAttribute>() != null;
         }
 
+        /// <summary>
+        /// Test to see if the specified method is a mode
+        /// </summary>
+        /// Modes are methods with a return value, no parameters and a [Description] attribute.
+        /// <typeparam name="T">Required type for the return value</typeparam>
+        /// <param name="method">Method to test.</param>
+        /// <returns>True if the method is a mode, false otherwise.</returns>
+        public static bool IsMode<T>(MethodInfo method)
+        {
+            if (method == null)
+            {
+                throw new ArgumentNullException("method");
+            }
+
+            return typeof(T).IsAssignableFrom(method.ReturnType)
+                && !method.GetParameters().Any()
+                && method.GetCustomAttribute<DescriptionAttribute>() != null;
+        }
+
         public static IEnumerable<CommandLineSwitch> CreateSwitches(object instance)
         {
             if (instance == null)

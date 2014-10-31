@@ -53,6 +53,14 @@ namespace Niche.CommandLine.Tests
         }
 
         [Test]
+        public void IsSwitch_givenModeMethod_returnsFalse()
+        {
+            var driver = new BaseDriver();
+            var method = driver.GetType().GetMethod("TestPerformance");
+            Assert.That(CommandLineOptionFactory.IsSwitch(method), Is.False);
+        }
+
+        [Test]
         public void ConfigureSwitches_givenNullInstance_throwsException()
         {
             Assert.Throws<ArgumentNullException>(
@@ -85,6 +93,43 @@ namespace Niche.CommandLine.Tests
             Assert.That(CommandLineOptionFactory.IsParameter(method), Is.False);
         }
 
+        [Test]
+        public void IsParameter_givenModeMethod_returnsFalse()
+        {
+            var driver = new BaseDriver();
+            var method = driver.GetType().GetMethod("TestPerformance");
+            Assert.That(CommandLineOptionFactory.IsParameter(method), Is.False);
+        }
 
+        [Test]
+        public void IsMode_givenNull_throwsException()
+        {
+            Assert.Throws<ArgumentNullException>(
+                () => CommandLineOptionFactory.IsMode<BaseDriver>(null));
+        }
+
+        [Test]
+        public void IsMode_givenParameterMethod_returnsFalse()
+        {
+            var driver = new SampleDriver();
+            var method = driver.GetType().GetMethod("Find");
+            Assert.That(CommandLineOptionFactory.IsMode<BaseDriver>(method), Is.False);
+        }
+
+        [Test]
+        public void IsMode_givenSwitchMethod_returnsFalse()
+        {
+            var driver = new SampleDriver();
+            var method = driver.GetType().GetMethod("Help");
+            Assert.That(CommandLineOptionFactory.IsMode<BaseDriver>(method), Is.False);
+        }
+
+        [Test]
+        public void IsMode_givenModelMethod_returnsTrue()
+        {
+            var driver = new BaseDriver();
+            var method = driver.GetType().GetMethod("TestPerformance");
+            Assert.That(CommandLineOptionFactory.IsMode<BaseDriver>(method), Is.True);
+        }
     }
 }
