@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CamelCase.cs" />
+    <Compile Include="CommandLineMode.cs" />
     <Compile Include="CommandLineOptionBase.cs" />
     <Compile Include="CommandLineOptionFactory.cs" />
     <Compile Include="CommandLineParameter.cs" />

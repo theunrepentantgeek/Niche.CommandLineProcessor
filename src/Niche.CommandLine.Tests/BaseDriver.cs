@@ -20,6 +20,11 @@ namespace Niche.CommandLine.Tests
             ShowHelp = true;
         }
 
+        [Description("Performance tests")]
+        public TestDriver TestPerformance()
+        {
+            return new TestDriver();
+        }
 
     }
 }
