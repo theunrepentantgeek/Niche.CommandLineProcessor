@@ -112,5 +112,21 @@ namespace Niche.CommandLine
             return result;
         }
 
+        public static IEnumerable<CommandLineMode<T>> CreateModes<T>(T instance)
+        {
+            if (instance == null)
+            {
+                throw new ArgumentNullException("instance");
+            }
+
+            var methods = instance.GetType().GetMethods();
+
+            var modes
+                = methods.Where(m => IsMode<T>(m))
+                    .Select(m => new CommandLineMode<T>(instance, m))
+                    .ToList();
+
+            return modes;
+        }
     }
 }

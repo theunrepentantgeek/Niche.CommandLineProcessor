@@ -61,7 +61,7 @@ namespace Niche.CommandLine.Tests
         }
 
         [Test]
-        public void ConfigureSwitches_givenNullInstance_throwsException()
+        public void CreateSwitches_givenNullInstance_throwsException()
         {
             Assert.Throws<ArgumentNullException>(
                 () => CommandLineOptionFactory.CreateSwitches(null));
@@ -102,6 +102,13 @@ namespace Niche.CommandLine.Tests
         }
 
         [Test]
+        public void CreateParameters_givenNullInstance_throwsException()
+        {
+            Assert.Throws<ArgumentNullException>(
+                () => CommandLineOptionFactory.CreateParameters(null));
+        }
+
+        [Test]
         public void IsMode_givenNull_throwsException()
         {
             Assert.Throws<ArgumentNullException>(
@@ -130,6 +137,13 @@ namespace Niche.CommandLine.Tests
             var driver = new BaseDriver();
             var method = driver.GetType().GetMethod("TestPerformance");
             Assert.That(CommandLineOptionFactory.IsMode<BaseDriver>(method), Is.True);
+        }
+
+        [Test]
+        public void CreateModes_givenNullInstance_throwsException()
+        {
+            Assert.Throws<ArgumentNullException>(
+                () => CommandLineOptionFactory.CreateModes<BaseDriver>(null));
         }
     }
 }
