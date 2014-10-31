@@ -122,7 +122,7 @@ namespace Niche.CommandLine.Tests
         [Test]
         public void Constructor_specifyingMode_returnsDriverForMode()
         {
-            var arguments = new List<string> { "test", "--help" };
+            var arguments = new List<string> { "test-performance", "--help" };
             var processor = new CommandLineProcessor<BaseDriver>(arguments, new BaseDriver());
             Assert.That(processor.Driver, Is.InstanceOfType<TestDriver>());
         }

@@ -84,7 +84,23 @@ namespace Niche.CommandLine
                 throw new ArgumentNullException("arguments");
             }
 
-            mDriver = driver;
+            var queue = new Queue<string>(arguments);
+            var selectedDriver = driver;
+            while(queue.Any())
+            {
+                var availableModes = CommandLineOptionFactory.CreateModes<T>(selectedDriver);
+                var modeName = queue.Peek();
+                var mode = availableModes.SingleOrDefault(m => m.HasName(modeName));
+                if (mode == null)
+                {
+                    break;
+                }
+
+                selectedDriver = mode.Activate();
+                queue.Dequeue();
+            }
+
+            mDriver = selectedDriver;
 
             // Default switches
             mOptions.AddRange(CommandLineOptionFactory.CreateSwitches(this));
@@ -100,7 +116,6 @@ namespace Niche.CommandLine
             }
 
             CommandLineOptionBase option;
-            var queue = new Queue<string>(arguments);
             mArguments.Clear();
             while (queue.Count > 0)
             {
