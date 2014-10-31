@@ -44,6 +44,11 @@ namespace Niche.CommandLine
             Name = CamelCase.ToDashedName(method.Name);
         }
 
+        public bool HasName(string name)
+        {
+            return string.Equals(Name, name, StringComparison.Ordinal);
+        }
+
         /// <summary>
         /// Activate this switch when found
         /// </summary>
