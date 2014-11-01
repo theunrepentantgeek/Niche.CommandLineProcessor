@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -55,6 +56,21 @@ namespace Niche.CommandLine
         public T Activate()
         {
             return (T)mMethod.Invoke(mInstance, null);
+        }
+
+        /// <summary>
+        /// Create help text for this option
+        /// </summary>
+        public IEnumerable<string> CreateHelp()
+        {
+            var text
+    = string.Format(
+        CultureInfo.CurrentCulture,
+        "{0}\t\t{1}",
+        Name,
+        Description);
+
+            yield return text;
         }
 
         private readonly object mInstance;

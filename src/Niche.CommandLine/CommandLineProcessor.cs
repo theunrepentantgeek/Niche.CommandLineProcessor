@@ -86,11 +86,11 @@ namespace Niche.CommandLine
 
             var queue = new Queue<string>(arguments);
             var selectedDriver = driver;
-            while(queue.Any())
+            while (queue.Any())
             {
-                var availableModes = CommandLineOptionFactory.CreateModes<T>(selectedDriver);
+                mModes = CommandLineOptionFactory.CreateModes<T>(selectedDriver);
                 var modeName = queue.Peek();
-                var mode = availableModes.SingleOrDefault(m => m.HasName(modeName));
+                var mode = mModes.SingleOrDefault(m => m.HasName(modeName));
                 if (mode == null)
                 {
                     break;
@@ -149,7 +149,7 @@ namespace Niche.CommandLine
             {
                 option.Activate(queue);
             }
-            // Shouldn't really catch exception, but the BCL throws it!
+            // Shouldn't really catch "Exception", but the BCL throws it!
             // See http://www.nichesoftware.co.nz/2013/02/21/so-you-should-never-catch-exception.html 
             catch (Exception ex)
             {
@@ -181,12 +181,9 @@ namespace Niche.CommandLine
         /// </summary>
         private void CreateHelp()
         {
-            foreach (var s in mOptions)
-            {
-                s.AddHelpTo(mOptionHelp);
-            }
-
-            mOptionHelp.Sort();
+            mOptionHelp.AddRange(mModes.SelectMany(m => m.CreateHelp()).OrderBy(l => l));
+            mOptionHelp.Add(string.Empty);
+            mOptionHelp.AddRange(mOptions.SelectMany(o => o.CreateHelp()).OrderBy(l => l));
         }
 
         private readonly List<CommandLineOptionBase> mOptions = new List<CommandLineOptionBase>();
@@ -200,5 +197,7 @@ namespace Niche.CommandLine
         private readonly T mDriver;
 
         private bool mShowHelp;
+
+        private IEnumerable<CommandLineMode<T>> mModes;
     }
 }

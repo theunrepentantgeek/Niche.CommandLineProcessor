@@ -14,7 +14,7 @@ namespace Niche.CommandLine.Demo
             var logger = new ConsoleLogger();
             logger.ConsoleBanner();
 
-            var processor = new CommandLineProcessor<Driver>(args);
+            var processor = new CommandLineProcessor<Driver>(args, new Driver());
 
             // If we had any errors, output the list and then exit
             if (processor.HasErrors)

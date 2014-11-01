@@ -95,21 +95,11 @@ namespace Niche.CommandLine.Tests
         }
 
         [Test]
-        public void AddHelpTo_givenNull_throwsException()
-        {
-            var driver = new SampleDriver();
-            var commandLineSwitch = CommandLineOptionFactory.CreateSwitches(driver).First();
-            Assert.Throws<ArgumentNullException>(
-                () => commandLineSwitch.AddHelpTo(null));
-        }
-
-        [Test]
         public void AddHelpTo_givenList_AddsEntry()
         {
             var driver = new SampleDriver();
             var commandLineSwitch = CommandLineOptionFactory.CreateSwitches(driver).First();
-            var help = new List<string>();
-            commandLineSwitch.AddHelpTo(help);
+            var help = commandLineSwitch.CreateHelp().ToList();
             Assert.That(help, Has.Count.EqualTo(1));
         }
     }

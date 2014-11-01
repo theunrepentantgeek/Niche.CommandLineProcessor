@@ -83,22 +83,12 @@ namespace Niche.CommandLine.Tests
         }
 
         [Test]
-        public void AddHelpTo_givenNull_throwsException()
-        {
-            var driver = new SampleDriver();
-            var commandLineParameter = CommandLineOptionFactory.CreateParameters(driver).First();
-            Assert.Throws<ArgumentNullException>(
-                () => commandLineParameter.AddHelpTo(null));
-        }
-
-        [Test]
-        public void AddHelpTo_givenList_AddsEntry()
+        public void CreateHelp_givenList_AddsEntry()
         {
             var driver = new SampleDriver();
             var findMethod = typeof(SampleDriver).GetMethod("Find");
             var commandLineParameter = new CommandLineParameter<string>(driver, findMethod);
-            var help = new List<string>();
-            commandLineParameter.AddHelpTo(help);
+            var help = commandLineParameter.CreateHelp().ToList();
             Assert.That(help, Has.Count.EqualTo(1));
         }
 

@@ -84,16 +84,10 @@ namespace Niche.CommandLine
         }
 
         /// <summary>
-        /// Add help text to the passed list
+        /// Create help text for this option
         /// </summary>
-        /// <param name="help">List to capture the help text</param>
-        public override void AddHelpTo(IList<string> help)
+        public override IEnumerable<string> CreateHelp()
         {
-            if (help == null)
-            {
-                throw new ArgumentNullException("help");
-            }
-
             var text
                 = string.Format(
                     CultureInfo.CurrentCulture,
@@ -102,7 +96,7 @@ namespace Niche.CommandLine
                     ShortName,
                     Description);
 
-            help.Add(text);
+            yield return text;
         }
 
         private readonly object mInstance;

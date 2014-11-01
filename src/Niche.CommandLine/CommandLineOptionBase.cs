@@ -46,10 +46,9 @@ namespace Niche.CommandLine
         public abstract void AddOptionsTo(Dictionary<string, CommandLineOptionBase> dictionary);
 
         /// <summary>
-        /// Add help text to the passed list
+        /// Create help text for this option
         /// </summary>
-        /// <param name="help">List to capture the help text</param>
-        public abstract void AddHelpTo(IList<string> help);
+        public abstract IEnumerable<string> CreateHelp();
 
         /// <summary>
         /// Carry out any configuration that needs to happen when we've finished processing the command line
