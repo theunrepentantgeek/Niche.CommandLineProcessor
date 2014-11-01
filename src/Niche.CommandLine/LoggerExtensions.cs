@@ -281,21 +281,28 @@ namespace Niche.CommandLine
             var parts = lines.Select(l => l.Split('\t')).ToList();
             var columns = parts.Max(c => c.Length);
 
-            // Create a format string
-            var f = new StringBuilder();
+            var formats = new List<string>();
+
+            // Create our set of format strings
             for (int c = 0; c < columns; c++)
             {
                 var width = parts.Where(p => p.Length > c).Max(p => p[c].Length);
-                var fragment = string.Format(CultureInfo.CurrentCulture, "{{{0},-{1}}}{2}", c, width, "   ");
-                f.Append(fragment);
+                var f = string.Format(CultureInfo.CurrentCulture, "{{0,-{0}}}{1}", width, "   ");
+                formats.Add(f);
             }
-            var format = f.ToString();
 
             // Create the result
             var result = new List<string>();
             foreach (var line in parts)
             {
-                result.Add(string.Format(CultureInfo.CurrentCulture, format, line).TrimEnd());
+                var builder = new StringBuilder();
+                var index = 0;
+                foreach (var c in line)
+                {
+                    builder.Append(string.Format(CultureInfo.CurrentCulture, formats[index++], c));
+                }
+                
+                result.Add(builder.ToString().TrimEnd());
             }
 
             return result;

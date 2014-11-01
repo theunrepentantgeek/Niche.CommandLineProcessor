@@ -36,6 +36,12 @@ namespace Niche.CommandLine.Demo
             ForegroundColor = color;
         }
 
+        [Description("Sample Mode (recursive!)")]
+        public Driver RecursiveMode()
+        {
+            return this;
+        }
+
         private readonly List<string> mSearchTerms = new List<string>();
     }
 }
