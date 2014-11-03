@@ -27,18 +27,6 @@ namespace Niche.CommandLine.Tests
         }
 
         [Test]
-        public void Constructor_forHelp_initialisesName()
-        {
-            // Arrange
-            var driver = new BaseDriver();
-            var method = typeof(BaseDriver).GetMethod("Help");
-            // Act
-            var mode = new CommandLineMode<BaseDriver>(driver, method);
-            // Assert
-            Assert.That(mode.Name, Is.EqualTo("help"));
-        }
-
-        [Test]
         public void Constructor_forTestPerformance_initialisesName()
         {
             var driver = new BaseDriver();
@@ -50,13 +38,28 @@ namespace Niche.CommandLine.Tests
         [Test]
         public void Constructor_forHelp_initialisesDescription()
         {
-            // Arrange
+            var driver = new BaseDriver();
+            var method = typeof(BaseDriver).GetMethod("TestPerformance");
+            var mode = new CommandLineMode<BaseDriver>(driver, method);
+            Assert.That(mode.Description, Is.EqualTo("Performance tests"));
+        }
+
+        [Test]
+        public void Constructor_givenNonModeMethod_throwsException()
+        {
             var driver = new BaseDriver();
             var method = typeof(BaseDriver).GetMethod("Help");
-            // Act
-            var mode = new CommandLineMode<BaseDriver>(driver, method);
-            // Assert
-            Assert.That(mode.Description, Is.EqualTo("Show Help"));
+            Assert.Throws<ArgumentException>(
+                () => new CommandLineMode<BaseDriver>(driver, method));
+        }
+
+        [Test]
+        public void Constructor_givenMethodForOtherClass_throwsException()
+        {
+            var driver = new BaseDriver();
+            var method = typeof(string).GetMethod("Clone"); 
+            Assert.Throws<ArgumentException>(
+                 () => new CommandLineMode<BaseDriver>(driver, method));
         }
 
         [Test]
@@ -67,6 +70,15 @@ namespace Niche.CommandLine.Tests
             var mode = new CommandLineMode<BaseDriver>(driver, method);
             var result = mode.Activate();
             Assert.That(result, Is.InstanceOf<TestDriver>());
+        }
+
+        [Test]
+        public void CreateHelp_forTestPerformance_generatesItem()
+        {
+            var driver = new BaseDriver();
+            var method = typeof(BaseDriver).GetMethod("TestPerformance");
+            var mode = new CommandLineMode<BaseDriver>(driver, method);
+            Assert.That(mode.CreateHelp().ToList(), Has.Count.EqualTo(1));
         }
     }
 }

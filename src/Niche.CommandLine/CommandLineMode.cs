@@ -38,6 +38,14 @@ namespace Niche.CommandLine
                 throw new ArgumentException("Expect method to be callable on instance");
             }
 
+            if (!typeof(T).IsAssignableFrom(method.ReturnType))
+            {
+                var message
+                    = string.Format("Expect method return type to be compatible with {0}", typeof(T).Name);
+                throw new ArgumentException(message);
+            }
+
+
             mInstance = instance;
             mMethod = method;
             Description = CommandLineOptionBase.FindDescription(method);
