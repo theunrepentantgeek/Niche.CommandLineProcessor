@@ -95,7 +95,7 @@ namespace Niche.CommandLine.Tests
         }
 
         [Test]
-        public void AddHelpTo_givenList_AddsEntry()
+        public void CreateHelp_givenList_AddsEntry()
         {
             var driver = new SampleDriver();
             var commandLineSwitch = CommandLineOptionFactory.CreateSwitches(driver).First();

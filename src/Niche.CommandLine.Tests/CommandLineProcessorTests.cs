@@ -126,5 +126,30 @@ namespace Niche.CommandLine.Tests
             var processor = new CommandLineProcessor<BaseDriver>(arguments, new BaseDriver());
             Assert.That(processor.Driver, Is.InstanceOfType<TestDriver>());
         }
+
+        [Test]
+        public void OptionHelp_forValidDriver_returnsText()
+        {
+            var arguments = new List<string> { "test-performance", "--help" };
+            var processor = new CommandLineProcessor<BaseDriver>(arguments, new BaseDriver());
+            Assert.That(processor.OptionHelp, Is.Not.Empty);
+        }
+
+        [Test]
+        public void Help_forValidDriver_SetsShowHelp()
+        {
+            var arguments = new List<string> { "test-performance", "--help" };
+            var processor = new CommandLineProcessor<BaseDriver>(arguments, new BaseDriver());
+            processor.Help();
+            Assert.That(processor.ShowHelp, Is.True);
+        }
+
+        [Test]
+        public void Errors_forInvalidParameter_ListsContent()
+        {
+            var arguments = new List<string> { "--not-an-option" };
+            var processor = new CommandLineProcessor<BaseDriver>(arguments, new BaseDriver());
+            Assert.That(processor.Errors, Is.Not.Empty);
+        }
     }
 }
