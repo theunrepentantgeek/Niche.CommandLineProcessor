@@ -96,7 +96,7 @@ namespace Niche.CommandLine
                     break;
                 }
 
-                selectedDriver = mode.Activate();
+                selectedDriver = (T)mode.Activate();
                 queue.Dequeue();
             }
 
@@ -198,6 +198,6 @@ namespace Niche.CommandLine
 
         private bool mShowHelp;
 
-        private IEnumerable<CommandLineMode<T>> mModes;
+        private IEnumerable<CommandLineMode> mModes;
     }
 }

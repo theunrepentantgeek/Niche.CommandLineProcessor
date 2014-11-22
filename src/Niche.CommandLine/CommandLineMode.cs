@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Niche.CommandLine
 {
-    public class CommandLineMode<T>
+    public class CommandLineMode
     {
         /// <summary>
         /// Gets the name of this mode
@@ -21,8 +21,13 @@ namespace Niche.CommandLine
         public string Description { get; private set; }
 
 
-        public CommandLineMode(T instance, MethodInfo method)
+        public CommandLineMode(Type driverType, object instance, MethodInfo method)
         {
+            if (driverType == null)
+            {
+                throw new ArgumentNullException("driverType");
+            }
+
             if (instance == null)
             {
                 throw new ArgumentNullException("instance");
@@ -38,13 +43,12 @@ namespace Niche.CommandLine
                 throw new ArgumentException("Expect method to be callable on instance");
             }
 
-            if (!typeof(T).IsAssignableFrom(method.ReturnType))
+            if (!driverType.IsAssignableFrom(method.ReturnType))
             {
                 var message
-                    = string.Format("Expect method return type to be compatible with {0}", typeof(T).Name);
+                    = string.Format("Expect method return type to be compatible with {0}", driverType.Name);
                 throw new ArgumentException(message);
             }
-
 
             mInstance = instance;
             mMethod = method;
@@ -61,9 +65,9 @@ namespace Niche.CommandLine
         /// <summary>
         /// Activate this switch when found
         /// </summary>
-        public T Activate()
+        public object Activate()
         {
-            return (T)mMethod.Invoke(mInstance, null);
+            return mMethod.Invoke(mInstance, null);
         }
 
         /// <summary>
@@ -72,11 +76,11 @@ namespace Niche.CommandLine
         public IEnumerable<string> CreateHelp()
         {
             var text
-    = string.Format(
-        CultureInfo.CurrentCulture,
-        "{0}\t\t{1}",
-        Name,
-        Description);
+                = string.Format(
+                    CultureInfo.CurrentCulture,
+                    "{0}\t\t{1}",
+                    Name,
+                    Description);
 
             yield return text;
         }

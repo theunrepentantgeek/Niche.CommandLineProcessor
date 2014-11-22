@@ -15,7 +15,7 @@ namespace Niche.CommandLine.Tests
         {
             var method = typeof(BaseDriver).GetMethod("Help");
             Assert.Throws<ArgumentNullException>(
-                () => new CommandLineMode<BaseDriver>(null, method));
+                () => new CommandLineMode(typeof(BaseDriver), null, method));
         }
 
         [Test]
@@ -23,7 +23,7 @@ namespace Niche.CommandLine.Tests
         {
             var driver = new BaseDriver();
             Assert.Throws<ArgumentNullException>(
-                () => new CommandLineMode<BaseDriver>(driver, null));
+                () => new CommandLineMode(typeof(BaseDriver), driver, null));
         }
 
         [Test]
@@ -31,7 +31,7 @@ namespace Niche.CommandLine.Tests
         {
             var driver = new BaseDriver();
             var method = typeof(BaseDriver).GetMethod("TestPerformance");
-            var mode = new CommandLineMode<BaseDriver>(driver, method);
+            var mode = new CommandLineMode(typeof(BaseDriver), driver, method);
             Assert.That(mode.Name, Is.EqualTo("test-performance"));
         }
 
@@ -40,7 +40,7 @@ namespace Niche.CommandLine.Tests
         {
             var driver = new BaseDriver();
             var method = typeof(BaseDriver).GetMethod("TestPerformance");
-            var mode = new CommandLineMode<BaseDriver>(driver, method);
+            var mode = new CommandLineMode(typeof(BaseDriver), driver, method);
             Assert.That(mode.Description, Is.EqualTo("Performance tests"));
         }
 
@@ -50,16 +50,16 @@ namespace Niche.CommandLine.Tests
             var driver = new BaseDriver();
             var method = typeof(BaseDriver).GetMethod("Help");
             Assert.Throws<ArgumentException>(
-                () => new CommandLineMode<BaseDriver>(driver, method));
+                () => new CommandLineMode(typeof(BaseDriver), driver, method));
         }
 
         [Test]
         public void Constructor_givenMethodForOtherClass_throwsException()
         {
             var driver = new BaseDriver();
-            var method = typeof(string).GetMethod("Clone"); 
+            var method = typeof(string).GetMethod("Clone");
             Assert.Throws<ArgumentException>(
-                 () => new CommandLineMode<BaseDriver>(driver, method));
+                 () => new CommandLineMode(typeof(BaseDriver), driver, method));
         }
 
         [Test]
@@ -67,7 +67,7 @@ namespace Niche.CommandLine.Tests
         {
             var driver = new BaseDriver();
             var method = typeof(BaseDriver).GetMethod("TestPerformance");
-            var mode = new CommandLineMode<BaseDriver>(driver, method);
+            var mode = new CommandLineMode(typeof(BaseDriver), driver, method);
             var result = mode.Activate();
             Assert.That(result, Is.InstanceOf<TestDriver>());
         }
@@ -77,7 +77,7 @@ namespace Niche.CommandLine.Tests
         {
             var driver = new BaseDriver();
             var method = typeof(BaseDriver).GetMethod("TestPerformance");
-            var mode = new CommandLineMode<BaseDriver>(driver, method);
+            var mode = new CommandLineMode(typeof(BaseDriver), driver, method);
             Assert.That(mode.CreateHelp().ToList(), Has.Count.EqualTo(1));
         }
     }

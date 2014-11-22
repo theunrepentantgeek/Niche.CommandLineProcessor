@@ -112,7 +112,7 @@ namespace Niche.CommandLine
             return result;
         }
 
-        public static IEnumerable<CommandLineMode<T>> CreateModes<T>(T instance)
+        public static IEnumerable<CommandLineMode> CreateModes<T>(T instance)
         {
             if (instance == null)
             {
@@ -123,7 +123,7 @@ namespace Niche.CommandLine
 
             var modes
                 = methods.Where(m => IsMode<T>(m))
-                    .Select(m => new CommandLineMode<T>(instance, m))
+                    .Select(m => new CommandLineMode(typeof(T), instance, m))
                     .ToList();
 
             return modes;
