@@ -36,4 +36,17 @@ For example, this method:
     
 will give the options `-f <wildcard>` and `--find <wildcard>`.
 
+### Modes
 
+To define a whole new mode, declare a method returning a new driver instance that has no parameters. Again, you "opt-in"
+by giving it a `[Description]` attribute to document what the mode does.
+
+For example, this method:
+
+    [Description("Compare the results of two compilers between systems")]
+    public CompilerDriver TestCompiler();
+
+declares a mode `test-compiler'.
+
+See [Mode Support](https://github.com/theunrepentantgeek/Niche.CommandLineProcessor/wiki/Mode-Support) for more 
+information.
