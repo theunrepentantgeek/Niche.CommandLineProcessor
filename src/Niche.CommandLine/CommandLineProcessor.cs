@@ -14,7 +14,7 @@ namespace Niche.CommandLine
     /// </summary>
     /// <typeparam name="T">Type of the driver instances to support</typeparam>
     public class CommandLineProcessor<T>
-        where T : new()
+        where T : class
     {
         /// <summary>
         /// Gets the list of arguments not already processed
