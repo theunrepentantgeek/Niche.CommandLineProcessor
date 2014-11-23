@@ -19,9 +19,11 @@ what the switch does.
 
 For example, this method:
 
-    [Description("Show help listing all available options")]
-    public void Help();
-    
+``` csharp
+[Description("Show help listing all available options")]
+public void Help();
+```
+
 will give the options `-h` and `--help`.
 
 ### Parameters
@@ -31,8 +33,10 @@ document what the option does.
 
 For example, this method:
 
-    [Description("Find files that match a wildcard")]
-    public void Find(string wildcard);
+``` csharp
+[Description("Find files that match a wildcard")]
+public void Find(string wildcard);
+```
     
 will give the options `-f <wildcard>` and `--find <wildcard>`.
 
@@ -43,8 +47,10 @@ by giving it a `[Description]` attribute to document what the mode does.
 
 For example, this method:
 
-    [Description("Compare the results of two compilers between systems")]
-    public CompilerDriver TestCompiler();
+``` csharp
+[Description("Compare the results of two compilers between systems")]
+public CompilerDriver TestCompiler();
+```
 
 declares a mode `test-compiler`.
 
