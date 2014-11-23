@@ -46,7 +46,7 @@ For example, this method:
     [Description("Compare the results of two compilers between systems")]
     public CompilerDriver TestCompiler();
 
-declares a mode `test-compiler'.
+declares a mode `test-compiler`.
 
 See [Mode Support](https://github.com/theunrepentantgeek/Niche.CommandLineProcessor/wiki/Mode-Support) for more 
 information.
