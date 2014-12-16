@@ -86,9 +86,9 @@ namespace Niche.CommandLine
 
             var queue = new Queue<string>(arguments);
             var selectedDriver = driver;
+            mModes = CommandLineOptionFactory.CreateModes<T>(selectedDriver);
             while (queue.Any())
             {
-                mModes = CommandLineOptionFactory.CreateModes<T>(selectedDriver);
                 var modeName = queue.Peek();
                 var mode = mModes.SingleOrDefault(m => m.HasName(modeName));
                 if (mode == null)
@@ -97,6 +97,7 @@ namespace Niche.CommandLine
                 }
 
                 selectedDriver = (T)mode.Activate();
+                mModes = CommandLineOptionFactory.CreateModes<T>(selectedDriver);
                 queue.Dequeue();
             }
 
@@ -181,12 +182,8 @@ namespace Niche.CommandLine
         /// </summary>
         private void CreateHelp()
         {
-            if (mModes != null)
-            {
-                mOptionHelp.AddRange(mModes.SelectMany(m => m.CreateHelp()).OrderBy(l => l));
-                mOptionHelp.Add(string.Empty);
-            }
-
+            mOptionHelp.AddRange(mModes.SelectMany(m => m.CreateHelp()).OrderBy(l => l));
+            mOptionHelp.Add(string.Empty);
             mOptionHelp.AddRange(mOptions.SelectMany(o => o.CreateHelp()).OrderBy(l => l));
         }
 
