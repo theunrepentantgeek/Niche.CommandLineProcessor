@@ -124,7 +124,7 @@ namespace Niche.CommandLine.Tests
         {
             var arguments = new List<string> { "test-performance", "--help" };
             var processor = new CommandLineProcessor<BaseDriver>(arguments, new BaseDriver());
-            Assert.That(processor.Driver, Is.InstanceOfType<TestDriver>());
+            Assert.That(processor.Driver, Is.InstanceOf<TestDriver>());
         }
 
         [Test]
