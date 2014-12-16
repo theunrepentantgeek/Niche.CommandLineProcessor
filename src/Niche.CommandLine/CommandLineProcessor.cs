@@ -181,8 +181,12 @@ namespace Niche.CommandLine
         /// </summary>
         private void CreateHelp()
         {
-            mOptionHelp.AddRange(mModes.SelectMany(m => m.CreateHelp()).OrderBy(l => l));
-            mOptionHelp.Add(string.Empty);
+            if (mModes != null)
+            {
+                mOptionHelp.AddRange(mModes.SelectMany(m => m.CreateHelp()).OrderBy(l => l));
+                mOptionHelp.Add(string.Empty);
+            }
+
             mOptionHelp.AddRange(mOptions.SelectMany(o => o.CreateHelp()).OrderBy(l => l));
         }
 

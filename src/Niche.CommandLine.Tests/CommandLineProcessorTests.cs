@@ -151,5 +151,13 @@ namespace Niche.CommandLine.Tests
             var processor = new CommandLineProcessor<BaseDriver>(arguments, new BaseDriver());
             Assert.That(processor.Errors, Is.Not.Empty);
         }
+
+        [Test]
+        public void OptionHelp_withNoOptions_returnsHelp()
+        {
+            var arguments = new List<string>();
+            var processor = new CommandLineProcessor<SampleDriver>(arguments, new SampleDriver());
+            Assert.That(processor.OptionHelp.ToList(), Has.Count.GreaterThan(0));
+        }
     }
 }
