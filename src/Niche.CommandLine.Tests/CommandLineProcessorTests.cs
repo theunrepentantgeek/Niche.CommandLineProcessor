@@ -36,7 +36,7 @@ namespace Niche.CommandLine.Tests
         {
             var arguments = new List<string> { "--help" };
             var processor = new CommandLineProcessor<BaseDriver>(arguments, new BaseDriver());
-            Assert.That(processor.Driver.ShowHelp, Is.True);
+            Assert.That(processor.ShowHelp, Is.True);
         }
 
         [Test]
@@ -44,7 +44,7 @@ namespace Niche.CommandLine.Tests
         {
             var arguments = new List<string> { "-h" };
             var processor = new CommandLineProcessor<BaseDriver>(arguments, new BaseDriver());
-            Assert.That(processor.Driver.ShowHelp, Is.True);
+            Assert.That(processor.ShowHelp, Is.True);
         }
 
         [Test]
@@ -52,7 +52,7 @@ namespace Niche.CommandLine.Tests
         {
             var arguments = new List<string> { "/h" };
             var processor = new CommandLineProcessor<BaseDriver>(arguments, new BaseDriver());
-            Assert.That(processor.Driver.ShowHelp, Is.True);
+            Assert.That(processor.ShowHelp, Is.True);
         }
 
         [Test]
@@ -161,11 +161,13 @@ namespace Niche.CommandLine.Tests
         }
 
         [Test]
-        public void OptionHelp_withNoOptions_listsModes()
+        public void OptionHelp_withNoModes_listsOptions()
         {
             var arguments = new List<string>();
-            var processor = new CommandLineProcessor<BaseDriver>(arguments, new BaseDriver());
-            Assert.That(processor.OptionHelp.ToList(), Has.Count.EqualTo(4));
+            var processor = new CommandLineProcessor<SampleDriver>(arguments, new SampleDriver());
+            Assert.That(processor.OptionHelp.ToList(), Has.Count.EqualTo(5));
         }
+
+
     }
 }
