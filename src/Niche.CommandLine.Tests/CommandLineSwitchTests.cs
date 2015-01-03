@@ -38,7 +38,7 @@ namespace Niche.CommandLine.Tests
         public void Constructor_ifMethodDoesNotApplyToInstance_throwsException()
         {
             var driver = new SampleDriver();
-            var method = driver.GetType().GetMethod("Help");
+            var method = driver.GetType().GetMethod("Debug");
             Assert.Throws<ArgumentException>(
                 () =>
                 {
@@ -50,29 +50,29 @@ namespace Niche.CommandLine.Tests
         public void Activate_whenConfigured_callsMethod()
         {
             var driver = new SampleDriver();
-            var method = driver.GetType().GetMethod("Help");
+            var method = driver.GetType().GetMethod("Debug");
             var commandLineSwitch = new CommandLineSwitch(driver, method);
             var arguments = new Queue<string>();
             commandLineSwitch.Activate(arguments);
-            Assert.That(driver.ShowHelp, Is.True);
+            Assert.That(driver.ShowDiagnostics, Is.True);
         }
 
         [Test]
         public void ShortName_whenConfigured_isExpected()
         {
             var driver = new SampleDriver();
-            var method = driver.GetType().GetMethod("Help");
+            var method = driver.GetType().GetMethod("Debug");
             var commandLineSwitch = new CommandLineSwitch(driver, method);
-            Assert.That(commandLineSwitch.ShortName, Is.EqualTo("-h"));
+            Assert.That(commandLineSwitch.ShortName, Is.EqualTo("-d"));
         }
 
         [Test]
         public void LongName_whenConfigured_isExpected()
         {
             var driver = new SampleDriver();
-            var method = driver.GetType().GetMethod("Help");
+            var method = driver.GetType().GetMethod("Debug");
             var commandLineSwitch = new CommandLineSwitch(driver, method);
-            Assert.That(commandLineSwitch.LongName, Is.EqualTo("--help"));
+            Assert.That(commandLineSwitch.LongName, Is.EqualTo("--debug"));
         }
 
         [Test]

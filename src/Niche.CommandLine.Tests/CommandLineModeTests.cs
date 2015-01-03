@@ -48,7 +48,7 @@ namespace Niche.CommandLine.Tests
         public void Constructor_givenNonModeMethod_throwsException()
         {
             var driver = new BaseDriver();
-            var method = typeof(BaseDriver).GetMethod("Help");
+            var method = typeof(BaseDriver).GetMethod("Debug");
             Assert.Throws<ArgumentException>(
                 () => new CommandLineMode(typeof(BaseDriver), driver, method));
         }

@@ -13,9 +13,9 @@ namespace Niche.CommandLine.Tests
         [Test]
         public void FindDescription_givenMemberWithDescription_returnsDescription()
         {
-            var method = typeof(SampleDriver).GetMethod("Help");
+            var method = typeof(SampleDriver).GetMethod("Debug");
             var description = CommandLineOptionBase.FindDescription(method);
-            Assert.That(description, Is.EqualTo("Show Help"));
+            Assert.That(description, Is.EqualTo("Show Diagnostics"));
         }
 
         [Test]

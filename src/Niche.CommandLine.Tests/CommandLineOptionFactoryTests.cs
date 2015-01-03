@@ -24,7 +24,7 @@ namespace Niche.CommandLine.Tests
         public void IsSwitch_givenSwitchMethod_returnsTrue()
         {
             var driver = new SampleDriver();
-            var method = driver.GetType().GetMethod("Help");
+            var method = driver.GetType().GetMethod("Debug");
             Assert.That(CommandLineOptionFactory.IsSwitch(method), Is.True);
         }
 
@@ -89,7 +89,7 @@ namespace Niche.CommandLine.Tests
         public void IsParameter_givenSwitchMethod_returnsFalse()
         {
             var driver = new SampleDriver();
-            var method = driver.GetType().GetMethod("Help");
+            var method = driver.GetType().GetMethod("Debug");
             Assert.That(CommandLineOptionFactory.IsParameter(method), Is.False);
         }
 
@@ -127,7 +127,7 @@ namespace Niche.CommandLine.Tests
         public void IsMode_givenSwitchMethod_returnsFalse()
         {
             var driver = new SampleDriver();
-            var method = driver.GetType().GetMethod("Help");
+            var method = driver.GetType().GetMethod("Debug");
             Assert.That(CommandLineOptionFactory.IsMode<BaseDriver>(method), Is.False);
         }
 

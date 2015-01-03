@@ -9,15 +9,15 @@ namespace Niche.CommandLine.Tests
 {
     public class BaseDriver
     {
-        public bool ShowHelp { get; private set; }
+        public bool ShowDiagnostics { get; private set; }
 
         /// <summary>
         /// This is a switch method
         /// </summary>
-        [Description("Show Help")]
-        public void Help()
+        [Description("Show Diagnostics")]
+        public void Debug()
         {
-            ShowHelp = true;
+            ShowDiagnostics = true;
         }
 
         [Description("Performance tests")]
