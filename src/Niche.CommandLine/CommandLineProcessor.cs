@@ -160,7 +160,7 @@ namespace Niche.CommandLine
             }
         }
 
-        [Description("Show help")]
+        [Description("Show this help")]
         public void Help()
         {
             mShowHelp = true;
