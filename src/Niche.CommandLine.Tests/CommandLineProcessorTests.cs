@@ -168,6 +168,31 @@ namespace Niche.CommandLine.Tests
             Assert.That(processor.OptionHelp.ToList(), Has.Count.EqualTo(5));
         }
 
+        [Test]
+        public void Constructor_givenAssignment_setsValue()
+        {
+            var arguments = new List<string>() { "Name=Donald" };
+            var driver = new AssignmentDriver();
+            var processor = new CommandLineProcessor<AssignmentDriver>(arguments, driver);
+            Assert.That(driver["Name"], Is.EqualTo("Donald"));
+        }
 
+        [Test]
+        public void Constructor_givenAssignmentWithSingleQuotes_setsValueWithoutQuotes()
+        {
+            var arguments = new List<string>() { "Name='Donald Trump'" };
+            var driver = new AssignmentDriver();
+            var processor = new CommandLineProcessor<AssignmentDriver>(arguments, driver);
+            Assert.That(driver["Name"], Is.EqualTo("Donald Trump"));
+        }
+
+        [Test]
+        public void Constructor_givenAssignmentWithDoubleQuotes_setsValueWithoutQuotes()
+        {
+            var arguments = new List<string>() { "Name=\"Donald Trump\"" };
+            var driver = new AssignmentDriver();
+            var processor = new CommandLineProcessor<AssignmentDriver>(arguments, driver);
+            Assert.That(driver["Name"], Is.EqualTo("Donald Trump"));
+        }
     }
 }
