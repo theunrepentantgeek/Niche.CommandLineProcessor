@@ -72,6 +72,11 @@ namespace Niche.CommandLine
                 && method.GetCustomAttribute<DescriptionAttribute>() != null;
         }
 
+        /// <summary>
+        /// Create switches for the passed instance
+        /// </summary>
+        /// <param name="instance">Instance for which switches should be created.</param>
+        /// <returns>Sequence of switches, possibly empty.</returns>
         public static IEnumerable<CommandLineSwitch> CreateSwitches(object instance)
         {
             if (instance == null)
@@ -89,6 +94,11 @@ namespace Niche.CommandLine
             return switches;
         }
 
+        /// <summary>
+        /// Create parameters for the passed instance
+        /// </summary>
+        /// <param name="instance">Instance for which parameters should be created.</param>
+        /// <returns>Sequence of parameters, possibly empty.</returns>
         public static IEnumerable<CommandLineOptionBase> CreateParameters(object instance)
         {
             if (instance == null)
@@ -114,6 +124,12 @@ namespace Niche.CommandLine
             return result;
         }
 
+        /// <summary>
+        /// Create Modes for the passed instance.
+        /// </summary>
+        /// <typeparam name="T">Base type of all modes.</typeparam>
+        /// <param name="instance">Instance for which modes should be created</param>
+        /// <returns>Sequence of modes, possibly empty.</returns>
         public static IEnumerable<CommandLineMode> CreateModes<T>(T instance)
         {
             if (instance == null)
