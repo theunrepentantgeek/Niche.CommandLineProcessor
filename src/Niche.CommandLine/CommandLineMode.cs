@@ -46,7 +46,10 @@ namespace Niche.CommandLine
             if (!driverType.IsAssignableFrom(method.ReturnType))
             {
                 var message
-                    = string.Format("Expect method return type to be compatible with {0}", driverType.Name);
+                    = string.Format(
+                        CultureInfo.CurrentCulture,
+                        "Expected method return type to be compatible with {0}",
+                        driverType.Name);
                 throw new ArgumentException(message);
             }
 

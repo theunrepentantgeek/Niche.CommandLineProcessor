@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -58,6 +59,7 @@ namespace Niche.CommandLine
         /// <typeparam name="T">Required type for the return value</typeparam>
         /// <param name="method">Method to test.</param>
         /// <returns>True if the method is a mode, false otherwise.</returns>
+        [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
         public static bool IsMode<T>(MethodInfo method)
         {
             if (method == null)
