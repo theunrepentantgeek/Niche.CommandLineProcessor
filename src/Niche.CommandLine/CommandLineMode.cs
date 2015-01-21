@@ -20,7 +20,12 @@ namespace Niche.CommandLine
         /// </summary>
         public string Description { get; private set; }
 
-
+        /// <summary>
+        /// Initializes a new instance of the CommandLineMode class
+        /// </summary>
+        /// <param name="driverType">Type of the driver</param>
+        /// <param name="instance">Instance on which the mode was declared.</param>
+        /// <param name="method">Method to invoke to activate the mode.</param>
         public CommandLineMode(Type driverType, object instance, MethodInfo method)
         {
             if (driverType == null)
