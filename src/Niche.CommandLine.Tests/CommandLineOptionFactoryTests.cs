@@ -109,6 +109,24 @@ namespace Niche.CommandLine.Tests
         }
 
         [Test]
+        public void CreateParameters_givenDriver_returnsParameters()
+        {
+            var driver = new SampleDriver();
+            var parameters = CommandLineOptionFactory.CreateParameters(driver);
+            Assert.That(parameters, Is.Not.Empty);
+        }
+
+        [Test]
+        public void CreateParameters_givenDriver_returnsParameterOfCorrectType()
+        {
+            var driver = new SampleDriver();
+            var parameters
+                = CommandLineOptionFactory.CreateParameters(driver);
+            var uploadParameter = parameters.Single(p => p.Method.Name == "Upload");
+            Assert.That(uploadParameter, Is.InstanceOf<CommandLineParameter<string>>());
+        }
+
+        [Test]
         public void IsMode_givenNull_throwsException()
         {
             Assert.Throws<ArgumentNullException>(

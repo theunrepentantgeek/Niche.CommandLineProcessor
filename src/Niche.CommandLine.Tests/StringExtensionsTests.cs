@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -49,6 +50,22 @@ namespace Niche.CommandLine.Tests
             var sample = "sample";
             Assert.Throws<InvalidOperationException>(
                 () => sample.As<List<int>>());
+        }
+
+        [Test]
+        public void AsDirectoryInfo_givenStringWithoutTrailingSlash_returnsInstance()
+        {
+            var dir = "C:\\SampleFolder";
+            var info = dir.As<DirectoryInfo>();
+            Assert.That(info, Is.Not.Null);
+        }
+
+        [Test]
+        public void AsDirectoryInfo_givenStringWithTrailingSlash_returnsInstance()
+        {
+            var dir = "C:\\SampleFolder\\";
+            var info = dir.As<DirectoryInfo>();
+            Assert.That(info, Is.Not.Null);
         }
     }
 }

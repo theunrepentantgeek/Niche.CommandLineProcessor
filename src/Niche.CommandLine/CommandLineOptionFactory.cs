@@ -116,6 +116,11 @@ namespace Niche.CommandLine
             {
                 var p = m.GetParameters().Single();
                 var valueType = p.ParameterType;
+                if (valueType.IsIEnumerable())
+                {
+                    valueType = valueType.GetIEnumerableItemType();
+                }
+
                 var t = parameterType.MakeGenericType(valueType);
                 var parameter = (CommandLineOptionBase)Activator.CreateInstance(t, instance, m);
                 result.Add(parameter);

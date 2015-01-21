@@ -21,15 +21,22 @@ namespace Niche.CommandLine
         public string Description { get; private set; }
 
         /// <summary>
+        /// Gets a reference to the method used to implement this option
+        /// </summary>
+        /// Mostly useful for debugging
+        public MethodInfo Method { get; private set; }
+
+        /// <summary>
         /// Initializes a new instance of the CommandLineOptionBase class
         /// </summary>
-        protected CommandLineOptionBase(MemberInfo member)
+        protected CommandLineOptionBase(MethodInfo member)
         {
             if (member == null)
             {
                 throw new ArgumentNullException("member");
             }
 
+            Method = member;
             Description = FindDescription(member);
         }
 
