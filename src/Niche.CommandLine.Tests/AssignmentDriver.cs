@@ -24,7 +24,7 @@ namespace Niche.CommandLine.Tests
         }
 
         [Description("Define a variable.")]
-        public void DefineMetadata(IEnumerable<KeyValuePair<string, string>> variables)
+        public void Define(IEnumerable<KeyValuePair<string, string>> variables)
         {
             foreach (var p in variables)
             {

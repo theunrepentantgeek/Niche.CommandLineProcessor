@@ -47,13 +47,14 @@ namespace Niche.CommandLine.Tests
         }
 
         [Test]
-        public void Activate_whenConfigured_callsMethod()
+        public void TryActivate_whenConfigured_callsMethod()
         {
             var driver = new SampleDriver();
             var method = driver.GetType().GetMethod("Debug");
             var commandLineSwitch = new CommandLineSwitch(driver, method);
             var arguments = new Queue<string>();
-            commandLineSwitch.Activate(arguments);
+            arguments.Enqueue("-d");
+            commandLineSwitch.TryActivate(arguments);
             Assert.That(driver.ShowDiagnostics, Is.True);
         }
 
@@ -73,25 +74,6 @@ namespace Niche.CommandLine.Tests
             var method = driver.GetType().GetMethod("Debug");
             var commandLineSwitch = new CommandLineSwitch(driver, method);
             Assert.That(commandLineSwitch.LongName, Is.EqualTo("--debug"));
-        }
-
-        [Test]
-        public void AddOptionsTo_givenNull_throwsException()
-        {
-            var driver = new SampleDriver();
-            var commandLineSwitch = CommandLineOptionFactory.CreateSwitches(driver).First();
-            Assert.Throws<ArgumentNullException>(
-                () => commandLineSwitch.AddOptionsTo(null));
-        }
-
-        [Test]
-        public void AddOptionsTo_givenDictionary_AddsEntries()
-        {
-            var driver = new SampleDriver();
-            var commandLineSwitch = CommandLineOptionFactory.CreateSwitches(driver).First();
-            var options = new Dictionary<string, CommandLineOptionBase>();
-            commandLineSwitch.AddOptionsTo(options);
-            Assert.That(options.Count, Is.EqualTo(3));
         }
 
         [Test]

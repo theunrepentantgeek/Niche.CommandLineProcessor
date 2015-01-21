@@ -47,13 +47,13 @@ namespace Niche.CommandLine.Tests
         }
 
         [Test]
-        public void Activate_givenNull_throwsException()
+        public void TryActivate_givenNull_throwsException()
         {
             var driver = new SampleDriver();
             var method = driver.GetType().GetMethod("Find");
             var commandLineParameter = new CommandLineParameter<string>(driver, method);
             Assert.Throws<ArgumentNullException>(
-            () => commandLineParameter.Activate(null));
+            () => commandLineParameter.TryActivate(null));
         }
 
         [Test]
@@ -61,25 +61,6 @@ namespace Niche.CommandLine.Tests
         {
             Assert.Throws<ArgumentNullException>(
             () => CommandLineOptionFactory.CreateParameters(null));
-        }
-
-        [Test]
-        public void AddOptionsTo_givenNull_throwsException()
-        {
-            var driver = new SampleDriver();
-            var commandLineParameter = CommandLineOptionFactory.CreateParameters(driver).First();
-            Assert.Throws<ArgumentNullException>(
-                () => commandLineParameter.AddOptionsTo(null));
-        }
-
-        [Test]
-        public void AddOptionsTo_givenDictionary_AddsEntries()
-        {
-            var driver = new SampleDriver();
-            var commandLineParameter = CommandLineOptionFactory.CreateParameters(driver).First();
-            var options = new Dictionary<string, CommandLineOptionBase>();
-            commandLineParameter.AddOptionsTo(options);
-            Assert.That(options.Count, Is.EqualTo(3));
         }
 
         [Test]
@@ -120,8 +101,9 @@ namespace Niche.CommandLine.Tests
             var findMethod = typeof(SampleDriver).GetMethod("Find");
             var commandLineParameter = new CommandLineParameter<string>(driver, findMethod);
             var arguments = new Queue<string>();
+            arguments.Enqueue("-f"); 
             arguments.Enqueue("search");
-            commandLineParameter.Activate(arguments);
+            commandLineParameter.TryActivate(arguments);
             var errors = new List<string>();
             commandLineParameter.Completed(errors);
             Assert.That(errors, Is.Empty);
@@ -143,11 +125,12 @@ namespace Niche.CommandLine.Tests
             var driver = new SampleDriver();
             var method = driver.GetType().GetMethod("Find");
             var arguments = new Queue<string>();
+            arguments.Enqueue("-f");
             arguments.Enqueue("search");
             var errors = new List<string>();
 
             var commandLineParameter = new CommandLineParameter<string>(driver, method);
-            commandLineParameter.Activate(arguments);
+            commandLineParameter.TryActivate(arguments);
             commandLineParameter.Completed(errors);
             Assert.That(driver.TextSearch, Is.EqualTo("search"));
         }
@@ -158,13 +141,15 @@ namespace Niche.CommandLine.Tests
             var driver = new SampleDriver();
             var method = driver.GetType().GetMethod("Find");
             var arguments = new Queue<string>();
+            arguments.Enqueue("-f"); 
             arguments.Enqueue("alpha");
+            arguments.Enqueue("-f"); 
             arguments.Enqueue("beta");
             var errors = new List<string>();
 
             var commandLineParameter = new CommandLineParameter<string>(driver, method);
-            commandLineParameter.Activate(arguments);
-            commandLineParameter.Activate(arguments);
+            commandLineParameter.TryActivate(arguments);
+            commandLineParameter.TryActivate(arguments);
             commandLineParameter.Completed(errors);
             Assert.That(errors, Is.Not.Empty);
        }
@@ -175,15 +160,18 @@ namespace Niche.CommandLine.Tests
             var driver = new SampleDriver();
             var method = driver.GetType().GetMethod("Upload");
             var arguments = new Queue<string>();
+            arguments.Enqueue("--upload");
             arguments.Enqueue("alpha");
+            arguments.Enqueue("-u"); 
             arguments.Enqueue("beta");
+            arguments.Enqueue("/u");
             arguments.Enqueue("gamma");
             var errors = new List<string>();
 
             var commandLineParameter = new CommandLineParameter<string>(driver, method);
-            commandLineParameter.Activate(arguments);
-            commandLineParameter.Activate(arguments);
-            commandLineParameter.Activate(arguments);
+            commandLineParameter.TryActivate(arguments);
+            commandLineParameter.TryActivate(arguments);
+            commandLineParameter.TryActivate(arguments);
             commandLineParameter.Completed(errors);
 
             Assert.That(driver.FilesToUpload, Is.EquivalentTo(new List<string> { "alpha", "beta", "gamma" }));
