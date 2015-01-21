@@ -24,9 +24,12 @@ namespace Niche.CommandLine.Tests
         }
 
         [Description("Define a variable.")]
-        public void Define(string name, string value)
+        public void DefineMetadata(IEnumerable<KeyValuePair<string, string>> variables)
         {
-            mVariables[name] = value;
+            foreach (var p in variables)
+            {
+                mVariables[p.Key] = p.Value;
+            }
         }
 
         private readonly Dictionary<string, string> mVariables = new Dictionary<string, string>();
