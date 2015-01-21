@@ -16,9 +16,19 @@ namespace Niche.CommandLine
     public sealed class CommandLineParameter<TValue> : CommandLineOptionBase
     {
         /// <summary>
-        /// Gets the name of this parameter
+        /// Gets the short form of this switch
         /// </summary>
-        public string Name { get; private set; }
+        public string ShortName { get; private set; }
+
+        /// <summary>
+        /// Gets the other short form of this switch
+        /// </summary>
+        public string AlternateShortName { get; private set; }
+
+        /// <summary>
+        /// Gets the long form of this switch
+        /// </summary>
+        public string LongName { get; private set; }
 
         /// <summary>
         /// Gets a value indicating whether this parameter is required
@@ -47,7 +57,10 @@ namespace Niche.CommandLine
             mMethod = method;
             mParameterInfo = method.GetParameters().Single();
 
-            Name = method.Name;
+            var name = method.Name;
+            ShortName = "-" + CamelCase.ToShortName(name);
+            AlternateShortName = "/" + CamelCase.ToShortName(name);
+            LongName = "--" + CamelCase.ToDashedName(name);
 
             IsRequired = method.GetCustomAttribute<RequiredAttribute>() != null;
             IsMultivalued = mParameterInfo.ParameterType.IsIEnumerable();
@@ -56,35 +69,30 @@ namespace Niche.CommandLine
         /// <summary>
         /// Activate this parameter when found
         /// </summary>
-        public override void Activate(Queue<string> arguments)
+        public override bool TryActivate(Queue<string> arguments)
         {
             if (arguments == null)
             {
                 throw new ArgumentNullException("arguments");
             }
 
-            var value = arguments.Dequeue().As<TValue>();
-            mValues.Add(value);
-        }
-
-        /// <summary>
-        /// Add triggers to activate this option to the passed dictionary
-        /// </summary>
-        /// <param name="dictionary">Dictionary that collects our triggers</param>
-        public override void AddOptionsTo(Dictionary<string, CommandLineOptionBase> dictionary)
-        {
-            if (dictionary == null)
+            if (arguments.Count == 0)
             {
-                throw new ArgumentNullException("dictionary");
+                return false;
             }
 
-            var shortForm = "-" + CamelCase.ToShortName(Name);
-            var alternateForm = "/" + CamelCase.ToShortName(Name);
-            var longForm = "--" + CamelCase.ToDashedName(Name);
+            var arg = arguments.Peek();
+            if (ShortName.Equals(arg, StringComparison.CurrentCultureIgnoreCase)
+                || AlternateShortName.Equals(arg, StringComparison.CurrentCultureIgnoreCase)
+                || LongName.Equals(arg, StringComparison.CurrentCultureIgnoreCase))
+            {
+                arguments.Dequeue();
+                var value = arguments.Dequeue().As<TValue>();
+                mValues.Add(value);
+                return true;
+            }
 
-            dictionary[shortForm] = this;
-            dictionary[alternateForm] = this;
-            dictionary[longForm] = this;
+            return false;
         }
 
         /// <summary>
@@ -96,8 +104,8 @@ namespace Niche.CommandLine
                 = string.Format(
                     CultureInfo.CurrentCulture,
                     "--{0} <{3}>\t-{1} <{3}>\t{2}",
-                    CamelCase.ToDashedName(Name),
-                    CamelCase.ToShortName(Name),
+                    LongName,
+                    ShortName,
                     Description,
                     mParameterInfo.Name.ToLower(CultureInfo.CurrentCulture));
 
@@ -119,7 +127,7 @@ namespace Niche.CommandLine
             {
                 // Mandatory but not provided: create error
                 var message
-                    = string.Format(CultureInfo.CurrentCulture, "--{0}:\t{1}", CamelCase.ToDashedName(Name), "Required parameter not supplied.");
+                    = string.Format(CultureInfo.CurrentCulture, "--{0}:\t{1}", LongName, "Required parameter not supplied.");
                 errors.Add(message);
                 return;
             }
@@ -141,7 +149,7 @@ namespace Niche.CommandLine
             {
                 // Single valued, but we have too many values
                 var message
-                    = string.Format(CultureInfo.CurrentCulture, "--{0}:\t{1}", CamelCase.ToDashedName(Name), "Parameter may only be specified once.");
+                    = string.Format(CultureInfo.CurrentCulture, "--{0}:\t{1}", LongName, "Parameter may only be specified once.");
                 errors.Add(message);
                 return;
             }

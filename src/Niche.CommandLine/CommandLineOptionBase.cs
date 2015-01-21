@@ -34,16 +34,11 @@ namespace Niche.CommandLine
         }
 
         /// <summary>
-        /// Activate this option when found
+        /// Try to activate this option
         /// </summary>
         /// <param name="arguments">Available arguments for handling.</param>
-        public abstract void Activate(Queue<string> arguments);
-
-        /// <summary>
-        /// Add triggers to activate this option to the passed dictionary
-        /// </summary>
-        /// <param name="dictionary">Dictionary that collects our triggers</param>
-        public abstract void AddOptionsTo(Dictionary<string, CommandLineOptionBase> dictionary);
+        /// <returns>True if activated, false otherwise.</returns>
+        public abstract bool TryActivate(Queue<string> arguments);
 
         /// <summary>
         /// Create help text for this option

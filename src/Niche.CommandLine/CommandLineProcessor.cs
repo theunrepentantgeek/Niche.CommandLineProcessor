@@ -110,23 +110,16 @@ namespace Niche.CommandLine
             mOptions.AddRange(CommandLineOptionFactory.CreateParameters(mDriver));
             mOptions.AddRange(CommandLineOptionFactory.CreateSwitches(mDriver));
 
-            var options = new Dictionary<string, CommandLineOptionBase>();
-            foreach (var s in mOptions)
-            {
-                s.AddOptionsTo(options);
-            }
-
-            CommandLineOptionBase option;
             mArguments.Clear();
             while (queue.Count > 0)
             {
-                var arg = queue.Dequeue();
-                if (options.TryGetValue(arg, out option))
+                var activatedOption = mOptions.FirstOrDefault(m => m.TryActivate(queue));
+                if (activatedOption != null)
                 {
-                    Activate(option, queue, arg);
-                    continue;
+                    break;
                 }
 
+                var arg = queue.Dequeue();
                 if (IsOption(arg))
                 {
                     var message = string.Format(CultureInfo.CurrentCulture, "{0}\twas not expected.", arg);
@@ -144,20 +137,22 @@ namespace Niche.CommandLine
         }
 
         [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
-        private void Activate(CommandLineOptionBase option, Queue<string> queue, string arg)
+        private bool TryActivate(CommandLineOptionBase option, Queue<string> queue)
         {
             try
             {
-                option.Activate(queue);
+                return option.TryActivate(queue);
             }
             // Shouldn't really catch "Exception", but the BCL throws it!
             // See http://www.nichesoftware.co.nz/2013/02/21/so-you-should-never-catch-exception.html 
             catch (Exception ex)
             {
                 var message
-                    = string.Format(CultureInfo.CurrentCulture, "{0}:\t{1}", arg, ex.Message);
+                    = string.Format(CultureInfo.CurrentCulture, "{0}:\t{1}", queue.Peek(), ex.Message);
                 mErrors.Add(message);
             }
+
+            return false;
         }
 
         [Description("Show this help")]

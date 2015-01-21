@@ -53,9 +53,29 @@ namespace Niche.CommandLine
         /// <summary>
         /// Activate this switch when found
         /// </summary>
-        public override void Activate(Queue<string> arguments)
+        public override bool TryActivate(Queue<string> arguments)
         {
-            mMethod.Invoke(mInstance, null);
+            if (arguments == null)
+            {
+                throw new ArgumentNullException("arguments");
+            }
+
+            if (arguments.Count==0)
+            {
+                return false;
+            }
+
+            var arg = arguments.Peek();
+            if (ShortName.Equals(arg, StringComparison.CurrentCultureIgnoreCase)
+                || AlternateShortName.Equals(arg, StringComparison.CurrentCultureIgnoreCase)
+                || LongName.Equals(arg, StringComparison.CurrentCultureIgnoreCase))
+            {
+                arguments.Dequeue();
+                mMethod.Invoke(mInstance, null);
+                return true;
+            }
+
+            return false;
         }
 
         /// <summary>
@@ -65,22 +85,6 @@ namespace Niche.CommandLine
         public override void Completed(IList<string> errors)
         {
             // Nothing
-        }
-
-        /// <summary>
-        /// Add triggers to activate this option to the passed dictionary
-        /// </summary>
-        /// <param name="dictionary">Dictionary that collects our triggers</param>
-        public override void AddOptionsTo(Dictionary<string, CommandLineOptionBase> dictionary)
-        {
-            if (dictionary == null)
-            {
-                throw new ArgumentNullException("dictionary");
-            }
-
-            dictionary[ShortName] = this;
-            dictionary[AlternateShortName] = this;
-            dictionary[LongName] = this;
         }
 
         /// <summary>
