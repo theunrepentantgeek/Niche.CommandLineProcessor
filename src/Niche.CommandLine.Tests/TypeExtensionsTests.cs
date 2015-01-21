@@ -13,7 +13,7 @@ namespace Niche.CommandLine.Tests
         [Test]
         public void IsEnumerable_givenIEnumerableString_returnsTrue()
         {
-            Assert.That( typeof(IEnumerable<string>).IsIEnumerable(), Is.True);
+            Assert.That(typeof(IEnumerable<string>).IsIEnumerable(), Is.True);
         }
 
         [Test]
@@ -68,6 +68,48 @@ namespace Niche.CommandLine.Tests
         public void GetIEnumerableItemType_givenString_returnsNull()
         {
             Assert.That(typeof(string).GetIEnumerableItemType(), Is.Null);
+        }
+
+        [Test]
+        public void IsKeyValuePair_givenString_returnsFalse()
+        {
+            Assert.That(typeof(string).IsKeyValuePair(), Is.False);
+        }
+
+        [Test]
+        public void IsKeyValuePair_givenInteger_returnsFalse()
+        {
+            Assert.That(typeof(int).IsKeyValuePair(), Is.False);
+        }
+
+        [Test]
+        public void IsKeyValuePair_givenKeyValuePair_returnsFalse()
+        {
+            Assert.That(typeof(KeyValuePair<string, string>).IsKeyValuePair(), Is.True);
+        }
+
+        [Test]
+        public void GetKeyValueKeyType_givenString_returnsNull()
+        {
+            Assert.That(typeof(string).GetKeyValueKeyType(), Is.Null);
+        }
+
+        [Test]
+        public void GetKeyValueKeyType_givenKeyValuePair_returnsNull()
+        {
+            Assert.That(typeof(KeyValuePair<string,int>).GetKeyValueKeyType(), Is.EqualTo(typeof(string)));
+        }
+
+        [Test]
+        public void GetKeyValueValueType_givenString_returnsNull()
+        {
+            Assert.That(typeof(string).GetKeyValueValueType(), Is.Null);
+        }
+
+        [Test]
+        public void GetKeyValueValueType_givenKeyValuePair_returnsNull()
+        {
+            Assert.That(typeof(KeyValuePair<string, int>).GetKeyValueValueType(), Is.EqualTo(typeof(int)));
         }
     }
 }

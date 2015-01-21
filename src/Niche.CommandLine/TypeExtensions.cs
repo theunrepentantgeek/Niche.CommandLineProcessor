@@ -57,5 +57,52 @@ namespace Niche.CommandLine
 
             return enumerableType.GetGenericArguments().Single();
         }
+    
+        /// <summary>
+        /// Test to see if the passed Type is a KeyValuePair<K,V> for any K, V
+        /// </summary>
+        /// <param name="type">Type to test</param>
+        /// <returns>True if the type is a KeyValue type</returns>
+        public static bool IsKeyValuePair(this Type type)
+        {
+            if (type.IsGenericType == false)
+            {
+                return false;
+            }
+
+            return type.GetGenericTypeDefinition() == typeof(KeyValuePair<,>);
+        }
+
+        /// <summary>
+        /// Get the key type used by the KeyValuePair
+        /// </summary>
+        /// <param name="type">Type from which to extract the key type.</param>
+        /// <returns>Extracted type value.</returns>
+        public static Type GetKeyValueKeyType(this Type type)
+        {
+            if (type.IsKeyValuePair() == false)
+            {
+                return null;
+            }
+
+            var arguments = type.GetGenericArguments();
+            return arguments[0];
+        }
+
+        /// <summary>
+        /// Get the value type used by the KeyValuePair
+        /// </summary>
+        /// <param name="type">Type from which to extract the value type.</param>
+        /// <returns>Extracted type value.</returns>
+        public static Type GetKeyValueValueType(this Type type)
+        {
+            if (type.IsKeyValuePair() == false)
+            {
+                return null;
+            }
+
+            var arguments = type.GetGenericArguments();
+            return arguments[1];
+        }
     }
 }
