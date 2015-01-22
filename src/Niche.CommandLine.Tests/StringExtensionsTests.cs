@@ -67,5 +67,37 @@ namespace Niche.CommandLine.Tests
             var info = dir.As<DirectoryInfo>();
             Assert.That(info, Is.Not.Null);
         }
+
+        [Test]
+        public void AsKeyValuePair_givenStringWithEquals_returnsInstance()
+        {
+            var value = "Name=Bob";
+            var instance = value.As<KeyValuePair<string, string>>();
+            Assert.That(instance, Is.Not.Null);
+        }
+
+        [Test]
+        public void AsKeyValuePair_givenStringWithEquals_returnsKey()
+        {
+            var value = "Name=Bob";
+            var instance = value.As<KeyValuePair<string, string>>();
+            Assert.That(instance.Key, Is.EqualTo("Name"));
+        }
+
+        [Test]
+        public void AsKeyValuePair_givenStringWithEquals_returnsValue()
+        {
+            var value = "Name=Bob";
+            var instance = value.As<KeyValuePair<string, string>>();
+            Assert.That(instance.Value, Is.EqualTo("Bob"));
+        }
+
+        [Test]
+        public void AsKeyValuePair_givenStringWithEquals_returnsInt()
+        {
+            var value = "Count=42";
+            var instance = value.As<KeyValuePair<string, int>>();
+            Assert.That(instance.Value, Is.EqualTo(42));
+        }
     }
 }
