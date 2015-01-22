@@ -40,6 +40,11 @@ namespace Niche.CommandLine
         /// </summary>
         public bool IsMultivalued { get; private set; }
 
+        /// <summary>
+        /// Gets the sequence of values handled by this parameter
+        /// </summary>
+        public IEnumerable<TValue> Values { get { return mValues; } }
+
         public CommandLineParameter(object instance, MethodInfo method)
             : base(method)
         {
@@ -88,6 +93,16 @@ namespace Niche.CommandLine
             {
                 arguments.Dequeue();
                 var value = arguments.Dequeue().As<TValue>();
+                mValues.Add(value);
+                return true;
+            }
+
+            if (arg.StartsWith(ShortName + ":", StringComparison.CurrentCultureIgnoreCase)
+                || arg.StartsWith(AlternateShortName + ":", StringComparison.CurrentCultureIgnoreCase)
+                || arg.StartsWith(LongName + ":", StringComparison.CurrentCultureIgnoreCase))
+            {
+                arguments.Dequeue();
+                var value = arg.After(":").As<TValue>();
                 mValues.Add(value);
                 return true;
             }

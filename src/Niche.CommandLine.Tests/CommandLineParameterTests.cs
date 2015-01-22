@@ -101,12 +101,42 @@ namespace Niche.CommandLine.Tests
             var findMethod = typeof(SampleDriver).GetMethod("Find");
             var commandLineParameter = new CommandLineParameter<string>(driver, findMethod);
             var arguments = new Queue<string>();
-            arguments.Enqueue("-f"); 
+            arguments.Enqueue("-f");
             arguments.Enqueue("search");
             commandLineParameter.TryActivate(arguments);
             var errors = new List<string>();
             commandLineParameter.Completed(errors);
             Assert.That(errors, Is.Empty);
+        }
+
+
+        [Test]
+        public void Completed_whenRequiredParameterSupplied_configuresValue()
+        {
+            var driver = new SampleDriver();
+            var findMethod = typeof(SampleDriver).GetMethod("Find");
+            var commandLineParameter = new CommandLineParameter<string>(driver, findMethod);
+            var arguments = new Queue<string>();
+            arguments.Enqueue("-f");
+            arguments.Enqueue("search");
+            commandLineParameter.TryActivate(arguments);
+            var errors = new List<string>();
+            commandLineParameter.Completed(errors);
+            Assert.That(commandLineParameter.Values, Is.EquivalentTo(new List<string> { "search" }));
+        }
+
+        [Test]
+        public void Completed_whenParameterWithValue_configuresValue()
+        {
+            var driver = new SampleDriver();
+            var findMethod = typeof(SampleDriver).GetMethod("Find");
+            var commandLineParameter = new CommandLineParameter<string>(driver, findMethod);
+            var arguments = new Queue<string>();
+            arguments.Enqueue("-f:search");
+            commandLineParameter.TryActivate(arguments);
+            var errors = new List<string>();
+            commandLineParameter.Completed(errors);
+            Assert.That(commandLineParameter.Values, Is.EquivalentTo(new List<string> { "search" }));
         }
 
         [Test]
@@ -141,9 +171,9 @@ namespace Niche.CommandLine.Tests
             var driver = new SampleDriver();
             var method = driver.GetType().GetMethod("Find");
             var arguments = new Queue<string>();
-            arguments.Enqueue("-f"); 
+            arguments.Enqueue("-f");
             arguments.Enqueue("alpha");
-            arguments.Enqueue("-f"); 
+            arguments.Enqueue("-f");
             arguments.Enqueue("beta");
             var errors = new List<string>();
 
@@ -152,7 +182,7 @@ namespace Niche.CommandLine.Tests
             commandLineParameter.TryActivate(arguments);
             commandLineParameter.Completed(errors);
             Assert.That(errors, Is.Not.Empty);
-       }
+        }
 
         [Test]
         public void Completed_whenMultiValuedParameterProvided_callsMethod()
@@ -162,7 +192,7 @@ namespace Niche.CommandLine.Tests
             var arguments = new Queue<string>();
             arguments.Enqueue("--upload");
             arguments.Enqueue("alpha");
-            arguments.Enqueue("-u"); 
+            arguments.Enqueue("-u");
             arguments.Enqueue("beta");
             arguments.Enqueue("/u");
             arguments.Enqueue("gamma");
