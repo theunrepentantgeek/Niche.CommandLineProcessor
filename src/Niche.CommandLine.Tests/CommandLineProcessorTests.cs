@@ -176,23 +176,5 @@ namespace Niche.CommandLine.Tests
             var processor = new CommandLineProcessor<AssignmentDriver>(arguments, driver);
             Assert.That(driver["Name"], Is.EqualTo("Donald"));
         }
-
-        [Test]
-        public void Constructor_givenAssignmentWithSingleQuotes_setsValueWithoutQuotes()
-        {
-            var arguments = new List<string>() { "--define", "Name='Donald Trump'" };
-            var driver = new AssignmentDriver();
-            var processor = new CommandLineProcessor<AssignmentDriver>(arguments, driver);
-            Assert.That(driver["Name"], Is.EqualTo("Donald Trump"));
-        }
-
-        [Test]
-        public void Constructor_givenAssignmentWithDoubleQuotes_setsValueWithoutQuotes()
-        {
-            var arguments = new List<string>() { "--define", "Name=\"Donald Trump\"" };
-            var driver = new AssignmentDriver();
-            var processor = new CommandLineProcessor<AssignmentDriver>(arguments, driver);
-            Assert.That(driver["Name"], Is.EqualTo("Donald Trump"));
-        }
     }
 }
