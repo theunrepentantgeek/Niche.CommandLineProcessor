@@ -104,19 +104,25 @@ namespace Niche.CommandLine
             mDriver = selectedDriver;
 
             // Default switches
-            mOptions.AddRange(CommandLineOptionFactory.CreateSwitches(this));
+            mSwitches.AddRange(CommandLineOptionFactory.CreateSwitches(this));
 
             // Create options for our driver
-            mOptions.AddRange(CommandLineOptionFactory.CreateParameters(mDriver));
-            mOptions.AddRange(CommandLineOptionFactory.CreateSwitches(mDriver));
+            mParameters.AddRange(CommandLineOptionFactory.CreateParameters(mDriver));
+            mSwitches.AddRange(CommandLineOptionFactory.CreateSwitches(mDriver));
 
             mArguments.Clear();
             while (queue.Count > 0)
             {
-                var activatedOption = mOptions.FirstOrDefault(m => m.TryActivate(queue));
-                if (activatedOption != null)
+                var activatedSwitch = mSwitches.FirstOrDefault(m => m.TryActivate(queue));
+                if (activatedSwitch != null)
                 {
-                    break;
+                    continue;
+                }
+
+                var activatedParameter = mParameters.FirstOrDefault(p => p.TryActivate(queue));
+                if (activatedParameter != null)
+                {
+                    continue;
                 }
 
                 var arg = queue.Dequeue();
@@ -130,7 +136,12 @@ namespace Niche.CommandLine
                 mArguments.Add(arg);
             }
 
-            foreach (var o in mOptions)
+            foreach (var o in mSwitches)
+            {
+                o.Completed(mErrors);
+            }
+
+            foreach (var o in mParameters)
             {
                 o.Completed(mErrors);
             }
@@ -184,12 +195,30 @@ namespace Niche.CommandLine
                 mOptionHelp.Add(string.Empty);
             }
 
-            var optionHelp = mOptions.SelectMany(o => o.CreateHelp()).OrderBy(l => l).ToList();
-            mOptionHelp.AddRange(optionHelp);
+            var switchHelp = mSwitches.SelectMany(o => o.CreateHelp()).OrderBy(l => l).ToList();
+            mOptionHelp.AddRange(switchHelp);
+
+            var parameterHelp = mParameters.SelectMany(o => o.CreateHelp()).OrderBy(l => l).ToList();
+            if (parameterHelp.Any())
+            {
+                mOptionHelp.Add(string.Empty);
+                mOptionHelp.AddRange(parameterHelp);
+            }
         }
 
-        private readonly List<CommandLineOptionBase> mOptions = new List<CommandLineOptionBase>();
+        /// <summary>
+        /// Storage for all our switches
+        /// </summary>
+        private readonly List<CommandLineOptionBase> mSwitches = new List<CommandLineOptionBase>();
 
+        /// <summary>
+        /// Storage for all our parameters
+        /// </summary>
+        private readonly List<CommandLineOptionBase> mParameters = new List<CommandLineOptionBase>();
+
+        /// <summary>
+        /// List of unprocessed arguments
+        /// </summary>
         private readonly List<string> mArguments = new List<string>();
 
         private readonly List<string> mErrors = new List<string>();
