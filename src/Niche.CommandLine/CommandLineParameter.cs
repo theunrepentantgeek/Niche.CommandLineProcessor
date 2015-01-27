@@ -118,7 +118,7 @@ namespace Niche.CommandLine
             var text
                 = string.Format(
                     CultureInfo.CurrentCulture,
-                    "--{0} <{3}>\t-{1} <{3}>\t{2}",
+                    "{0} <{3}>\t{1} <{3}>\t{2}",
                     LongName,
                     ShortName,
                     Description,
