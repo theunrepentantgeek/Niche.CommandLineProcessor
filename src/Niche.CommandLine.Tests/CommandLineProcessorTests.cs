@@ -165,7 +165,7 @@ namespace Niche.CommandLine.Tests
         {
             var arguments = new List<string>();
             var processor = new CommandLineProcessor<SampleDriver>(arguments, new SampleDriver());
-            Assert.That(processor.OptionHelp.ToList(), Has.Count.EqualTo(5));
+            Assert.That(processor.OptionHelp.ToList(), Has.Count.EqualTo(6));
         }
 
         [Test]
