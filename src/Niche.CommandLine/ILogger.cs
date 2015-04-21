@@ -49,5 +49,11 @@ namespace Niche.CommandLine
         /// </summary>
         /// <param name="message">The message to write.</param>
         void Detail(string message);
+
+        /// <summary>
+        /// Write debug information
+        /// </summary>
+        /// <param name="message">The message to write.</param>
+        void Debug(string message);
     }
 }

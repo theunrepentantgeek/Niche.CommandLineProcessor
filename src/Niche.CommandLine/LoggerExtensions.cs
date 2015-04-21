@@ -222,7 +222,7 @@ namespace Niche.CommandLine
         }
 
         /// <summary>
-        /// Write pieces of information
+        /// Write several information messages, using tabs to create a table.
         /// </summary>
         /// <param name="messages">The messages to write.</param>
         public static void Information(this ILogger logger, IEnumerable<string> messages)
@@ -254,7 +254,7 @@ namespace Niche.CommandLine
         }
 
         /// <summary>
-        /// Write detailed pieces of information
+        /// Write several detail messages, using tabs to create a table.
         /// </summary>
         /// <param name="messages">The messages to write.</param>
         public static void Detail(this ILogger logger, IEnumerable<string> messages)
@@ -267,6 +267,38 @@ namespace Niche.CommandLine
             foreach (var line in Tablefy(messages))
             {
                 logger.Detail(line);
+            }
+        }
+
+        /// <summary>
+        /// Write debug information
+        /// </summary>
+        /// <param name="messageTemplate">Template for the message to write.</param>
+        /// <param name="parameters">Parameters to substitute in the template.</param>
+        public static void Debug(this ILogger logger, string messageTemplate, params object[] parameters)
+        {
+            if (logger == null)
+            {
+                throw new ArgumentNullException("logger");
+            }
+
+            logger.Debug(string.Format(CultureInfo.CurrentCulture, messageTemplate, parameters));
+        }
+
+        /// <summary>
+        /// Write several debug messages, using tabs to create a table.
+        /// </summary>
+        /// <param name="messages">The messages to write.</param>
+        public static void Debug(this ILogger logger, IEnumerable<string> messages)
+        {
+            if (logger == null)
+            {
+                throw new ArgumentNullException("logger");
+            }
+
+            foreach (var line in Tablefy(messages))
+            {
+                logger.Debug(line);
             }
         }
 
