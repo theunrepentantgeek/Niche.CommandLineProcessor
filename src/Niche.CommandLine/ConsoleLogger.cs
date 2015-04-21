@@ -53,7 +53,7 @@ namespace Niche.CommandLine
                 throw new ArgumentNullException("message");
             }
 
-            WriteMessage(ConsoleColor.Green, SuccessMarker, message);
+            WriteMessage(ConsoleColor.DarkGreen, SuccessMarker, message);
         }
 
         /// <summary>
@@ -95,7 +95,7 @@ namespace Niche.CommandLine
                 throw new ArgumentNullException("message");
             } 
             
-            WriteMessage(ConsoleColor.Gray, InformationMarker, message);
+            WriteMessage(ConsoleColor.White, InformationMarker, message);
         }
 
         /// <summary>
@@ -109,7 +109,21 @@ namespace Niche.CommandLine
                 throw new ArgumentNullException("message");
             } 
             
-            WriteMessage(ConsoleColor.DarkGray, DetailMarker, message);
+            WriteMessage(ConsoleColor.Gray, DetailMarker, message);
+        }
+
+        /// <summary>
+        /// Write debug information
+        /// </summary>
+        /// <param name="message">The message to write</param>
+        public void Debug(string message)
+        {
+            if (message == null)
+            {
+                throw new ArgumentNullException("message");
+            } 
+            
+            WriteMessage(ConsoleColor.DarkGray, DebugMarker, message);
         }
 
         [SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "Niche.CommandLine.ConsoleLogger.WriteMessage(System.ConsoleColor,System.String)")]
@@ -137,12 +151,15 @@ namespace Niche.CommandLine
             }
         }
 
-        private const char ActionMarker = '#';
         private const char SuccessMarker = '+';
         private const char FailureMarker = 'x';
+
+        private const char ActionMarker = '>';
         private const char WarningMarker = '!';
+        
         private const char InformationMarker = '-';
         private const char DetailMarker = ' ';
+        private const char DebugMarker = '.';
         private const char Space = ' ';
     }
 }

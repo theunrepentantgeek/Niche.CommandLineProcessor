@@ -30,6 +30,18 @@ namespace Niche.CommandLine.Demo
             }
 
             logger.Information("Configured foreground: {0}", processor.Driver.ForegroundColor);
+
+            logger.Heading("Heading");
+
+            logger.Action("Action");
+            logger.Information("Information");
+            logger.Detail("Detail");
+            logger.Debug("Debug");
+            logger.Warning("Warning");
+            logger.Success("Success");
+            logger.Failure("Failure");
+
+            Console.ReadLine();
         }
     }
 }
