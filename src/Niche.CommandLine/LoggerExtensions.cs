@@ -165,18 +165,26 @@ namespace Niche.CommandLine
                 throw new ArgumentNullException(nameof(exception));
             }
 
-            var e = exception;
-            while (e != null)
+            logger.Failure(exception.Message);
+            if (exception.Data != null && exception.Data.Count > 0)
             {
-                logger.Failure(e.Message);
-                if (e.Data != null && e.Data.Count > 0)
-                {
-                    logger.Failure(
-                        e.Data.Cast<DictionaryEntry>()
-                        .Select(de => string.Format(CultureInfo.CurrentCulture, "{0}\t{1}", de.Key, de.Value)));
-                }
+                logger.Failure(
+                    exception.Data.Cast<DictionaryEntry>()
+                    .Select(de => string.Format(CultureInfo.CurrentCulture, "{0}\t{1}", de.Key, de.Value)));
+            }
 
-                e = e.InnerException;
+            if (exception.InnerException != null)
+            {
+                Failure(logger, exception.InnerException);
+            }
+
+            var aggregateException = exception as AggregateException;
+            if (aggregateException != null)
+            {
+                foreach (var e in aggregateException.InnerExceptions)
+                {
+                    Failure(logger, e);
+                }
             }
         }
 
