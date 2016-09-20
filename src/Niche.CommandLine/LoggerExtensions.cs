@@ -19,7 +19,7 @@ namespace Niche.CommandLine
         {
             if (logger == null)
             {
-                throw new ArgumentNullException("logger");
+                throw new ArgumentNullException(nameof(logger));
             }
 
             var assembly = Assembly.GetEntryAssembly();
@@ -49,13 +49,14 @@ namespace Niche.CommandLine
         /// <summary>
         /// Write details of an action
         /// </summary>
+        /// <param name="logger">Logger to use for logging.</param>
         /// <param name="messageTemplate">Template for the message to write.</param>
         /// <param name="parameters">Parameters to substitute in the template.</param>
         public static void Action(this ILogger logger, string messageTemplate, params object[] parameters)
         {
             if (logger == null)
             {
-                throw new ArgumentNullException("logger");
+                throw new ArgumentNullException(nameof(logger));
             }
 
             logger.Action(string.Format(CultureInfo.CurrentCulture, messageTemplate, parameters));
@@ -64,12 +65,13 @@ namespace Niche.CommandLine
         /// <summary>
         /// Write details of several actions, using tabs to create a table
         /// </summary>
+        /// <param name="logger">Logger to use for logging.</param>
         /// <param name="messages">The messages to write.</param>
         public static void Action(this ILogger logger, IEnumerable<string> messages)
         {
             if (logger == null)
             {
-                throw new ArgumentNullException("logger");
+                throw new ArgumentNullException(nameof(logger));
             }
 
             foreach (var line in Tablefy(messages))
@@ -81,13 +83,14 @@ namespace Niche.CommandLine
         /// <summary>
         /// Write details of a successful action
         /// </summary>
+        /// <param name="logger">Logger to use for logging.</param>
         /// <param name="messageTemplate">Template for the message to write.</param>
         /// <param name="parameters">Parameters to substitute in the template.</param>
         public static void Success(this ILogger logger, string messageTemplate, params object[] parameters)
         {
             if (logger == null)
             {
-                throw new ArgumentNullException("logger");
+                throw new ArgumentNullException(nameof(logger));
             }
 
             logger.Success(string.Format(CultureInfo.CurrentCulture, messageTemplate, parameters));
@@ -96,12 +99,13 @@ namespace Niche.CommandLine
         /// <summary>
         /// Write details of several successful actions, using tabs to create a table
         /// </summary>
+        /// <param name="logger">Logger to use for logging.</param>
         /// <param name="messages">The messages to write.</param>
         public static void Success(this ILogger logger, IEnumerable<string> messages)
         {
             if (logger == null)
             {
-                throw new ArgumentNullException("logger");
+                throw new ArgumentNullException(nameof(logger));
             }
 
             foreach (var line in Tablefy(messages))
@@ -113,13 +117,14 @@ namespace Niche.CommandLine
         /// <summary>
         /// Write details of a failed action
         /// </summary>
+        /// <param name="logger">Logger to use for logging.</param>
         /// <param name="messageTemplate">Template for the message to write.</param>
         /// <param name="parameters">Parameters to substitute in the template.</param>
         public static void Failure(this ILogger logger, string messageTemplate, params object[] parameters)
         {
             if (logger == null)
             {
-                throw new ArgumentNullException("logger");
+                throw new ArgumentNullException(nameof(logger));
             }
 
             logger.Failure(string.Format(CultureInfo.CurrentCulture, messageTemplate, parameters));
@@ -128,12 +133,13 @@ namespace Niche.CommandLine
         /// <summary>
         /// Write details of several failed actions, using tabs to create a table
         /// </summary>
+        /// <param name="logger">Logger to use for logging.</param>
         /// <param name="messages">The messages to write.</param>
         public static void Failure(this ILogger logger, IEnumerable<string> messages)
         {
             if (logger == null)
             {
-                throw new ArgumentNullException("logger");
+                throw new ArgumentNullException(nameof(logger));
             }
 
             foreach (var line in Tablefy(messages))
@@ -151,12 +157,12 @@ namespace Niche.CommandLine
         {
             if (logger == null)
             {
-                throw new ArgumentNullException("logger");
+                throw new ArgumentNullException(nameof(logger));
             }
 
             if (exception == null)
             {
-                throw new ArgumentNullException("exception");
+                throw new ArgumentNullException(nameof(exception));
             }
 
             var e = exception;
@@ -177,13 +183,14 @@ namespace Niche.CommandLine
         /// <summary>
         /// Write a warning
         /// </summary>
+        /// <param name="logger">Logger to use for logging.</param>
         /// <param name="messageTemplate">Template for the message to write.</param>
         /// <param name="parameters">Parameters to substitute in the template.</param>
         public static void Warning(this ILogger logger, string messageTemplate, params object[] parameters)
         {
             if (logger == null)
             {
-                throw new ArgumentNullException("logger");
+                throw new ArgumentNullException(nameof(logger));
             }
 
             logger.Warning(string.Format(CultureInfo.CurrentCulture, messageTemplate, parameters));
@@ -192,12 +199,13 @@ namespace Niche.CommandLine
         /// <summary>
         /// Write several warnings, using tabs to create a table
         /// </summary>
+        /// <param name="logger">Logger to use for logging.</param>
         /// <param name="messages">The messages to write.</param>
         public static void Warning(this ILogger logger, IEnumerable<string> messages)
         {
             if (logger == null)
             {
-                throw new ArgumentNullException("logger");
+                throw new ArgumentNullException(nameof(logger));
             }
 
             foreach (var line in Tablefy(messages))
@@ -215,7 +223,7 @@ namespace Niche.CommandLine
         {
             if (logger == null)
             {
-                throw new ArgumentNullException("logger");
+                throw new ArgumentNullException(nameof(logger));
             }
 
             logger.Information(string.Format(CultureInfo.CurrentCulture, messageTemplate, parameters));
@@ -224,12 +232,13 @@ namespace Niche.CommandLine
         /// <summary>
         /// Write several information messages, using tabs to create a table.
         /// </summary>
+        /// <param name="logger">Logger to use for logging.</param>
         /// <param name="messages">The messages to write.</param>
         public static void Information(this ILogger logger, IEnumerable<string> messages)
         {
             if (logger == null)
             {
-                throw new ArgumentNullException("logger");
+                throw new ArgumentNullException(nameof(logger));
             }
 
             foreach (var line in Tablefy(messages))
@@ -241,13 +250,14 @@ namespace Niche.CommandLine
         /// <summary>
         /// Write detailed information
         /// </summary>
+        /// <param name="logger">Logger to use for logging.</param>
         /// <param name="messageTemplate">Template for the message to write.</param>
         /// <param name="parameters">Parameters to substitute in the template.</param>
         public static void Detail(this ILogger logger, string messageTemplate, params object[] parameters)
         {
             if (logger == null)
             {
-                throw new ArgumentNullException("logger");
+                throw new ArgumentNullException(nameof(logger));
             }
 
             logger.Detail(string.Format(CultureInfo.CurrentCulture, messageTemplate, parameters));
@@ -256,12 +266,13 @@ namespace Niche.CommandLine
         /// <summary>
         /// Write several detail messages, using tabs to create a table.
         /// </summary>
+        /// <param name="logger">Logger to use for logging.</param>
         /// <param name="messages">The messages to write.</param>
         public static void Detail(this ILogger logger, IEnumerable<string> messages)
         {
             if (logger == null)
             {
-                throw new ArgumentNullException("logger");
+                throw new ArgumentNullException(nameof(logger));
             }
 
             foreach (var line in Tablefy(messages))
@@ -273,13 +284,14 @@ namespace Niche.CommandLine
         /// <summary>
         /// Write debug information
         /// </summary>
+        /// <param name="logger">Logger to use for logging.</param>
         /// <param name="messageTemplate">Template for the message to write.</param>
         /// <param name="parameters">Parameters to substitute in the template.</param>
         public static void Debug(this ILogger logger, string messageTemplate, params object[] parameters)
         {
             if (logger == null)
             {
-                throw new ArgumentNullException("logger");
+                throw new ArgumentNullException(nameof(logger));
             }
 
             logger.Debug(string.Format(CultureInfo.CurrentCulture, messageTemplate, parameters));
@@ -288,12 +300,13 @@ namespace Niche.CommandLine
         /// <summary>
         /// Write several debug messages, using tabs to create a table.
         /// </summary>
+        /// <param name="logger">Logger to use for logging.</param>
         /// <param name="messages">The messages to write.</param>
         public static void Debug(this ILogger logger, IEnumerable<string> messages)
         {
             if (logger == null)
             {
-                throw new ArgumentNullException("logger");
+                throw new ArgumentNullException(nameof(logger));
             }
 
             foreach (var line in Tablefy(messages))
@@ -333,7 +346,7 @@ namespace Niche.CommandLine
                 {
                     builder.Append(string.Format(CultureInfo.CurrentCulture, formats[index++], c));
                 }
-                
+
                 result.Add(builder.ToString().TrimEnd());
             }
 
