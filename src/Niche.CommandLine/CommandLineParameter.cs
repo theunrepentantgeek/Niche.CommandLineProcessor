@@ -142,7 +142,7 @@ namespace Niche.CommandLine
             {
                 // Mandatory but not provided: create error
                 var message
-                    = string.Format(CultureInfo.CurrentCulture, "--{0}:\t{1}", LongName, "Required parameter not supplied.");
+                    = string.Format(CultureInfo.CurrentCulture, "{0}:\t{1}", LongName, "Required parameter not supplied.");
                 errors.Add(message);
                 return;
             }
