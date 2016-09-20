@@ -8,6 +8,8 @@ version: 2.0.{build}
 install:
   - nuget restore
 
+os: Visual Studio 2015
+  
 # enable patching of AssemblyInfo.* files
 assembly_info:
   patch: true
