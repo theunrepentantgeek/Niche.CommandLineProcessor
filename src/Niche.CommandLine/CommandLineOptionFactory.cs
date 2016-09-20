@@ -25,7 +25,7 @@ namespace Niche.CommandLine
         {
             if (method == null)
             {
-                throw new ArgumentNullException("method");
+                throw new ArgumentNullException(nameof(method));
             }
 
             return method.ReturnType == typeof(void)
@@ -44,7 +44,7 @@ namespace Niche.CommandLine
         {
             if (method == null)
             {
-                throw new ArgumentNullException("method");
+                throw new ArgumentNullException(nameof(method));
             }
 
             return method.ReturnType == typeof(void)
@@ -64,7 +64,7 @@ namespace Niche.CommandLine
         {
             if (method == null)
             {
-                throw new ArgumentNullException("method");
+                throw new ArgumentNullException(nameof(method));
             }
 
             return typeof(T).IsAssignableFrom(method.ReturnType)
@@ -81,7 +81,7 @@ namespace Niche.CommandLine
         {
             if (instance == null)
             {
-                throw new ArgumentNullException("instance");
+                throw new ArgumentNullException(nameof(instance));
             }
 
             var methods = instance.GetType().GetMethods();
@@ -103,7 +103,7 @@ namespace Niche.CommandLine
         {
             if (instance == null)
             {
-                throw new ArgumentNullException("instance");
+                throw new ArgumentNullException(nameof(instance));
             }
 
             var methods = instance.GetType().GetMethods()
@@ -139,7 +139,7 @@ namespace Niche.CommandLine
         {
             if (instance == null)
             {
-                throw new ArgumentNullException("instance");
+                throw new ArgumentNullException(nameof(instance));
             }
 
             var methods = instance.GetType().GetMethods();

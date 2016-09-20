@@ -34,7 +34,7 @@ namespace Niche.CommandLine
         {
             if (instance == null)
             {
-                throw new ArgumentNullException("instance");
+                throw new ArgumentNullException(nameof(instance));
             }
 
             if (!method.DeclaringType.IsAssignableFrom(instance.GetType()))
@@ -57,7 +57,7 @@ namespace Niche.CommandLine
         {
             if (arguments == null)
             {
-                throw new ArgumentNullException("arguments");
+                throw new ArgumentNullException(nameof(arguments));
             }
 
             if (arguments.Count==0)

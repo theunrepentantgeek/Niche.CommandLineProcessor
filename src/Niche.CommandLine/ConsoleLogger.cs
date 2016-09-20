@@ -31,7 +31,7 @@ namespace Niche.CommandLine
         {
             if (message == null)
             {
-                throw new ArgumentNullException("message");
+                throw new ArgumentNullException(nameof(message));
             }
 
             WriteMessage(ConsoleColor.DarkGray, new string('-', message.Length + 4));
@@ -47,7 +47,7 @@ namespace Niche.CommandLine
         {
             if (message == null)
             {
-                throw new ArgumentNullException("message");
+                throw new ArgumentNullException(nameof(message));
             }
 
             WriteMessage(ConsoleColor.White, ActionMarker, message);
@@ -61,7 +61,7 @@ namespace Niche.CommandLine
         {
             if (message == null)
             {
-                throw new ArgumentNullException("message");
+                throw new ArgumentNullException(nameof(message));
             }
 
             WriteMessage(ConsoleColor.DarkGreen, SuccessMarker, message);
@@ -75,7 +75,7 @@ namespace Niche.CommandLine
         {
             if (message == null)
             {
-                throw new ArgumentNullException("message");
+                throw new ArgumentNullException(nameof(message));
             }
 
             WriteMessage(ConsoleColor.Red, FailureMarker, message);
@@ -89,7 +89,7 @@ namespace Niche.CommandLine
         {
             if (message == null)
             {
-                throw new ArgumentNullException("message");
+                throw new ArgumentNullException(nameof(message));
             }
 
             WriteMessage(ConsoleColor.Yellow, WarningMarker, message);
@@ -103,7 +103,7 @@ namespace Niche.CommandLine
         {
             if (message == null)
             {
-                throw new ArgumentNullException("message");
+                throw new ArgumentNullException(nameof(message));
             }
 
             WriteMessage(ConsoleColor.White, InformationMarker, message);
@@ -117,7 +117,7 @@ namespace Niche.CommandLine
         {
             if (message == null)
             {
-                throw new ArgumentNullException("message");
+                throw new ArgumentNullException(nameof(message));
             }
 
             WriteMessage(ConsoleColor.Gray, DetailMarker, message);
@@ -131,7 +131,7 @@ namespace Niche.CommandLine
         {
             if (message == null)
             {
-                throw new ArgumentNullException("message");
+                throw new ArgumentNullException(nameof(message));
             }
 
             WriteMessage(ConsoleColor.DarkGray, DebugMarker, message);
@@ -142,7 +142,7 @@ namespace Niche.CommandLine
         {
             if (message == null)
             {
-                throw new ArgumentNullException("message");
+                throw new ArgumentNullException(nameof(message));
             }
 
             WriteMessage(color, string.Format(CultureInfo.CurrentCulture, "{0} {1}", prefix, message));

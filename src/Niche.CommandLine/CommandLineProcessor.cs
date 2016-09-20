@@ -81,7 +81,7 @@ namespace Niche.CommandLine
         {
             if (arguments == null)
             {
-                throw new ArgumentNullException("arguments");
+                throw new ArgumentNullException(nameof(arguments));
             }
 
             var queue = new Queue<string>(arguments);

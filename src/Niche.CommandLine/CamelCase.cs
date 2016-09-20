@@ -18,7 +18,7 @@ namespace Niche.CommandLine
         {
             if (camelCase == null)
             {
-                throw new ArgumentNullException("camelCase");
+                throw new ArgumentNullException(nameof(camelCase));
             }
 
             var result = new StringBuilder();
@@ -54,7 +54,7 @@ namespace Niche.CommandLine
         {
             if (camelCase == null)
             {
-                throw new ArgumentNullException("camelCase");
+                throw new ArgumentNullException(nameof(camelCase));
             }
 
             var result = new StringBuilder();

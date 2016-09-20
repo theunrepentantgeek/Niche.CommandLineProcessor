@@ -33,7 +33,7 @@ namespace Niche.CommandLine
         {
             if (member == null)
             {
-                throw new ArgumentNullException("member");
+                throw new ArgumentNullException(nameof(member));
             }
 
             Method = member;

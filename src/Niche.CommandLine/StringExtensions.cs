@@ -26,12 +26,12 @@ namespace Niche.CommandLine
         {
             if (original == null)
             {
-                throw new ArgumentNullException("original");
+                throw new ArgumentNullException(nameof(original));
             }
 
             if (string.IsNullOrEmpty(separator))
             {
-                throw new ArgumentException("Expect to have a separator defined", "separator");
+                throw new ArgumentException("Expect to have a separator defined", nameof(separator));
             }
 
             var index = original.IndexOf(separator, StringComparison.Ordinal);
@@ -54,12 +54,12 @@ namespace Niche.CommandLine
         {
             if (original == null)
             {
-                throw new ArgumentNullException("original");
+                throw new ArgumentNullException(nameof(original));
             }
 
             if (string.IsNullOrEmpty(separator))
             {
-                throw new ArgumentException("Expect to have a separator defined", "separator");
+                throw new ArgumentException("Expect to have a separator defined", nameof(separator));
             }
 
             var index = original.IndexOf(separator, StringComparison.Ordinal);

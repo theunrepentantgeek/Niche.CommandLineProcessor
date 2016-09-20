@@ -30,17 +30,17 @@ namespace Niche.CommandLine
         {
             if (driverType == null)
             {
-                throw new ArgumentNullException("driverType");
+                throw new ArgumentNullException(nameof(driverType));
             }
 
             if (instance == null)
             {
-                throw new ArgumentNullException("instance");
+                throw new ArgumentNullException(nameof(instance));
             }
 
             if (method == null)
             {
-                throw new ArgumentNullException("method");
+                throw new ArgumentNullException(nameof(method));
             }
 
             if (!method.DeclaringType.IsAssignableFrom(instance.GetType()))
