@@ -13,7 +13,7 @@ os: Visual Studio 2015
 # enable patching of AssemblyInfo.* files
 assembly_info:
   patch: true
-  file: AssemblyInfo.*
+  file: '**\AssemblyInfo.*'
   assembly_version: "{version}"
   assembly_file_version: "{version}"
 
