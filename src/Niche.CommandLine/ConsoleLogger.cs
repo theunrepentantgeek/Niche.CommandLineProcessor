@@ -10,11 +10,22 @@ namespace Niche.CommandLine
 {
     public class ConsoleLogger : ILogger
     {
+        private readonly ConsoleLoggerOptions _options;
+
+        /// <summary>
+        /// Initializes a new instance of the ConsoleLogger class
+        /// </summary>
+        /// <param name="options"></param>
+        public ConsoleLogger(ConsoleLoggerOptions options = ConsoleLoggerOptions.None)
+        {
+            _options = options;
+        }
+
         /// <summary>
         /// Display a heading
         /// </summary>
         /// <param name="message"></param>
-        [SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", 
+        [SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters",
             MessageId = "Niche.CommandLine.ConsoleLogger.WriteMessage(System.ConsoleColor,System.String)")]
         public void Heading(string message)
         {
@@ -65,8 +76,8 @@ namespace Niche.CommandLine
             if (message == null)
             {
                 throw new ArgumentNullException("message");
-            } 
-            
+            }
+
             WriteMessage(ConsoleColor.Red, FailureMarker, message);
         }
 
@@ -79,8 +90,8 @@ namespace Niche.CommandLine
             if (message == null)
             {
                 throw new ArgumentNullException("message");
-            } 
-            
+            }
+
             WriteMessage(ConsoleColor.Yellow, WarningMarker, message);
         }
 
@@ -93,8 +104,8 @@ namespace Niche.CommandLine
             if (message == null)
             {
                 throw new ArgumentNullException("message");
-            } 
-            
+            }
+
             WriteMessage(ConsoleColor.White, InformationMarker, message);
         }
 
@@ -107,8 +118,8 @@ namespace Niche.CommandLine
             if (message == null)
             {
                 throw new ArgumentNullException("message");
-            } 
-            
+            }
+
             WriteMessage(ConsoleColor.Gray, DetailMarker, message);
         }
 
@@ -121,27 +132,33 @@ namespace Niche.CommandLine
             if (message == null)
             {
                 throw new ArgumentNullException("message");
-            } 
-            
+            }
+
             WriteMessage(ConsoleColor.DarkGray, DebugMarker, message);
         }
 
         [SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "Niche.CommandLine.ConsoleLogger.WriteMessage(System.ConsoleColor,System.String)")]
-        private static void WriteMessage(ConsoleColor color, char prefix, string message)
+        private void WriteMessage(ConsoleColor color, char prefix, string message)
         {
             if (message == null)
             {
                 throw new ArgumentNullException("message");
-            } 
-            
+            }
+
             WriteMessage(color, string.Format(CultureInfo.CurrentCulture, "{0} {1}", prefix, message));
         }
 
-        private static void WriteMessage(ConsoleColor color, string message)
+        private void WriteMessage(ConsoleColor color, string message)
         {
             var foreground = Console.ForegroundColor;
             try
             {
+                if (_options.HasFlag(ConsoleLoggerOptions.ShowTime))
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkGray;
+                    Console.Write($"[{DateTimeOffset.Now:HH:mm:ss.fff}] ");
+                }
+
                 Console.ForegroundColor = color;
                 Console.WriteLine(message);
             }
@@ -156,10 +173,22 @@ namespace Niche.CommandLine
 
         private const char ActionMarker = '>';
         private const char WarningMarker = '!';
-        
+
         private const char InformationMarker = '-';
         private const char DetailMarker = ' ';
         private const char DebugMarker = '.';
         private const char Space = ' ';
+    }
+
+    /// <summary>
+    /// Options for configuration of a ConsoleLogger
+    /// </summary>
+    public enum ConsoleLoggerOptions
+    {
+        // Do nothing special
+        None = 0,
+
+        // Show a timestamp at the start of each line
+        ShowTime = 1
     }
 }
