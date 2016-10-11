@@ -126,13 +126,12 @@ namespace Niche.CommandLine
             // see http://www.nichesoftware.co.nz/2013/02/21/so-you-should-never-catch-exception.html
             catch (Exception ex)
             {
-                string failureMessage
-               = string.Format(
-                   CultureInfo.CurrentCulture,
-                   "Failed to convert \"{0}\" to {1}: {2}",
-                   value,
-                   convertTo.Name,
-                   ex.Message);
+                var failureMessage = string.Format(
+                    CultureInfo.CurrentCulture,
+                    "Failed to convert \"{0}\" to {1}: {2}",
+                    value,
+                    convertTo.Name,
+                    ex.Message);
                 throw new InvalidOperationException(failureMessage);
             }
         }

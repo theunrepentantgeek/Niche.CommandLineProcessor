@@ -136,6 +136,7 @@ namespace Niche.CommandLine
         /// <param name="instance">Instance for which modes should be created</param>
         /// <returns>Sequence of modes, possibly empty.</returns>
         public static IEnumerable<CommandLineMode> CreateModes<T>(T instance)
+            where T : class
         {
             if (instance == null)
             {
