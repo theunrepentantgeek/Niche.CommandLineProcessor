@@ -19,6 +19,17 @@ namespace Niche.CommandLine
         public ConsoleLogger(ConsoleLoggerOptions options = ConsoleLoggerOptions.None)
         {
             _options = options;
+
+            if (_options.HasFlag(ConsoleLoggerOptions.UseLabels))
+            {
+                SuccessMarker = "[succ]";
+                FailureMarker = "[fail]";
+                ActionMarker = "[actn]";
+                WarningMarker = "[warn]";
+                InformationMarker = "[info]";
+                DetailMarker = "[detl]";
+                DebugMarker = "[dbug]";
+            }
         }
 
         /// <summary>
@@ -138,7 +149,7 @@ namespace Niche.CommandLine
         }
 
         [SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "Niche.CommandLine.ConsoleLogger.WriteMessage(System.ConsoleColor,System.String)")]
-        private void WriteMessage(ConsoleColor color, char prefix, string message)
+        private void WriteMessage(ConsoleColor color, string prefix, string message)
         {
             if (message == null)
             {
@@ -168,16 +179,15 @@ namespace Niche.CommandLine
             }
         }
 
-        private const char SuccessMarker = '+';
-        private const char FailureMarker = 'x';
+        private readonly string SuccessMarker = "+";
+        private readonly string FailureMarker = "x";
 
-        private const char ActionMarker = '>';
-        private const char WarningMarker = '!';
+        private readonly string ActionMarker = ">";
+        private readonly string WarningMarker = "!";
 
-        private const char InformationMarker = '-';
-        private const char DetailMarker = ' ';
-        private const char DebugMarker = '.';
-        private const char Space = ' ';
+        private readonly string InformationMarker = "-";
+        private readonly string DetailMarker = " ";
+        private readonly string DebugMarker = ".";
     }
 
     /// <summary>
@@ -189,6 +199,10 @@ namespace Niche.CommandLine
         None = 0,
 
         // Show a timestamp at the start of each line
-        ShowTime = 1
+        ShowTime = 1,
+
+        // Use labels to show the severity of each line instead of symbols
+        UseLabels = 2,
+
     }
 }

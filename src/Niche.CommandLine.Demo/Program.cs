@@ -11,7 +11,7 @@ namespace Niche.CommandLine.Demo
     {
         static void Main(string[] args)
         {
-            var logger = new ConsoleLogger();
+            var logger = new ConsoleLogger(ConsoleLoggerOptions.UseLabels | ConsoleLoggerOptions.ShowTime);
             logger.ConsoleBanner();
 
             var processor = new CommandLineProcessor<Driver>(args, new Driver());
