@@ -1,5 +1,4 @@
-﻿using NUnit.Framework;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using FluentAssertions;
 using Xunit;
@@ -12,10 +11,7 @@ namespace Niche.CommandLine.Tests
         public void Constructor_givenNullForArguments_throwsException()
         {
             Assert.Throws<ArgumentNullException>(
-                () =>
-                {
-                    new CommandLineProcessor<BaseDriver>(null, new BaseDriver());
-                });
+                () => new CommandLineProcessor<BaseDriver>(null, new BaseDriver()));
         }
 
         [Fact]
@@ -23,10 +19,7 @@ namespace Niche.CommandLine.Tests
         {
             var arguments = new List<string> { "--help" };
             Assert.Throws<ArgumentNullException>(
-                () =>
-                {
-                    new CommandLineProcessor<BaseDriver>(arguments, null);
-                });
+                () => new CommandLineProcessor<BaseDriver>(arguments, null));
         }
 
         [Fact]
@@ -153,16 +146,14 @@ namespace Niche.CommandLine.Tests
         [Fact]
         public void OptionHelp_withNoOptions_returnsHelp()
         {
-            var arguments = new List<string>();
-            var processor = new CommandLineProcessor<SampleDriver>(arguments, new SampleDriver());
+            var processor = new CommandLineProcessor<SampleDriver>(new List<string>(), new SampleDriver());
             processor.OptionHelp.Should().HaveCount(c => c > 0);
         }
 
         [Fact]
         public void OptionHelp_withNoModes_listsOptions()
         {
-            var arguments = new List<string>();
-            var processor = new CommandLineProcessor<SampleDriver>(arguments, new SampleDriver());
+            var processor = new CommandLineProcessor<SampleDriver>(new List<string>(), new SampleDriver());
             processor.OptionHelp.Should().HaveCount(6);
         }
 

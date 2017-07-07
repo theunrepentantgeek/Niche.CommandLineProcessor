@@ -1,20 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Niche.CommandLine
 {
     /// <summary>
     /// Wrapper class that handles a simple parameter - something that takes a value
     /// </summary>
-    /// <typeparam name="TValue">Type of value expected by the parameter</typeparam>
-    public sealed class CommandLineParameter<TValue> : CommandLineOptionBase
+    /// <typeparam name="V">Type of value expected by the parameter</typeparam>
+    public sealed class CommandLineParameter<V> : CommandLineOptionBase
     {
+        // Information about the method we call to set this paraemeter
+        private readonly MethodInfo _method;
+
+        // Information about the single parameter to _method
+        private readonly ParameterInfo _parameterInfo;
+
+        // The instance we configure
+        private readonly object _instance;
+
+        // List of values passed for this parameter
+        private readonly List<V> _values = new List<V>();
+
         /// <summary>
         /// Gets the short form of this switch
         /// </summary>
@@ -43,7 +52,7 @@ namespace Niche.CommandLine
         /// <summary>
         /// Gets the sequence of values handled by this parameter
         /// </summary>
-        public IEnumerable<TValue> Values { get { return mValues; } }
+        public IEnumerable<V> Values => _values;
 
         public CommandLineParameter(object instance, MethodInfo method)
             : base(method)
@@ -92,8 +101,8 @@ namespace Niche.CommandLine
                 || LongName.Equals(arg, StringComparison.CurrentCultureIgnoreCase))
             {
                 arguments.Dequeue();
-                var value = arguments.Dequeue().As<TValue>();
-                mValues.Add(value);
+                var value = arguments.Dequeue().As<V>();
+                _values.Add(value);
                 return true;
             }
 
@@ -102,8 +111,8 @@ namespace Niche.CommandLine
                 || arg.StartsWith(LongName + ":", StringComparison.CurrentCultureIgnoreCase))
             {
                 arguments.Dequeue();
-                var value = arg.After(":").As<TValue>();
-                mValues.Add(value);
+                var value = arg.After(":").As<V>();
+                _values.Add(value);
                 return true;
             }
 

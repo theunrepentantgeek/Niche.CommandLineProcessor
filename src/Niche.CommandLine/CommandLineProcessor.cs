@@ -4,8 +4,6 @@ using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Niche.CommandLine
 {
@@ -75,7 +73,8 @@ namespace Niche.CommandLine
         /// <summary>
         /// Initializes a new instance of the CommandLineProcessor class
         /// </summary>
-        /// <param name="arguments"></param>
+        /// <param name="arguments">Command line arguments to process</param>
+        /// <param name="driver">Driver instance to configure from the command line</param>
         [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
         public CommandLineProcessor(IEnumerable<string> arguments, T driver)
         {

@@ -1,9 +1,6 @@
-﻿using NUnit.Framework;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using FluentAssertions;
 using Xunit;
 
@@ -17,10 +14,7 @@ namespace Niche.CommandLine.Tests
             var driver = new SampleDriver();
             var method = driver.GetType().GetMethod("Find");
             Assert.Throws<ArgumentNullException>(
-                () =>
-                {
-                    new CommandLineParameter<string>(null, method);
-                });
+                () => new CommandLineParameter<string>(null, method));
         }
 
         [Fact]
@@ -29,10 +23,7 @@ namespace Niche.CommandLine.Tests
             var driver = new SampleDriver();
             var method = driver.GetType().GetMethod("Find");
             Assert.Throws<ArgumentNullException>(
-                () =>
-                {
-                    new CommandLineParameter<string>(driver, null);
-                });
+                () => new CommandLineParameter<string>(driver, null));
         }
 
         [Fact]
@@ -41,10 +32,7 @@ namespace Niche.CommandLine.Tests
             var driver = new SampleDriver();
             var method = driver.GetType().GetMethod("Find");
             Assert.Throws<ArgumentException>(
-                () =>
-                {
-                    new CommandLineParameter<string>(this, method);
-                });
+                () => new CommandLineParameter<string>(this, method));
         }
 
         [Fact]

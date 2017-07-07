@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Niche.CommandLine
 {
     internal static class TypeExtensions
     {
         /// <summary>
-        /// Test to see if the passed Type implements IEnumerable&lt;T&gt for any T.
+        /// Test to see if the passed Type implements IEnumerable{T} for any T.
         /// </summary>
         /// <param name="type">Type to test</param>
         /// <returns>Results of the test. True if it implements IEnumerable&lt;T&gt;; false otherwise.</returns>
@@ -32,8 +30,8 @@ namespace Niche.CommandLine
         }
 
         /// <summary>
-        /// Gets the type of the argument to IEnumerable&lt;T&gt, 
-        /// or null if the type does not implement IEnumerable&lt;T&gt
+        /// Gets the type of the argument to IEnumerable{T} 
+        /// or null if the type does not implement IEnumerable{T}
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
@@ -57,7 +55,7 @@ namespace Niche.CommandLine
 
             return enumerableType.GetGenericArguments().Single();
         }
-    
+
         /// <summary>
         /// Test to see if the passed Type is a KeyValuePair<K,V> for any K, V
         /// </summary>

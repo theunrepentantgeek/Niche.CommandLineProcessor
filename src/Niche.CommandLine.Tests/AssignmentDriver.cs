@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Niche.CommandLine.Tests
 {
     /// <summary>
-    /// Driver used to test variable assignment functionality of the commanline processor
+    /// Driver used to test variable assignment functionality of the commandline processor
     /// </summary>
     public class AssignmentDriver
     {
