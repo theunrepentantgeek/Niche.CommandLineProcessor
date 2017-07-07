@@ -1,16 +1,13 @@
-﻿using NUnit.Framework;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using FluentAssertions;
+using Xunit;
 
 namespace Niche.CommandLine.Tests
 {
-    [TestFixture]
     public class CommandLineOptionFactoryTests
     {
-        [Test]
+        [Fact]
         public void IsSwitch_givenNull_throwsException()
         {
             Assert.Throws<ArgumentNullException>(
@@ -20,7 +17,7 @@ namespace Niche.CommandLine.Tests
                 });
         }
 
-        [Test]
+        [Fact]
         public void IsSwitch_givenSwitchMethod_returnsTrue()
         {
             var driver = new SampleDriver();
@@ -28,7 +25,7 @@ namespace Niche.CommandLine.Tests
             CommandLineOptionFactory.IsSwitch(method).Should().BeTrue();
         }
 
-        [Test]
+        [Fact]
         public void IsSwitch_givenParameterMethod_returnsFalse()
         {
             var driver = new SampleDriver();
@@ -36,7 +33,7 @@ namespace Niche.CommandLine.Tests
             CommandLineOptionFactory.IsSwitch(method).Should().BeFalse();
         }
 
-        [Test]
+        [Fact]
         public void IsSwitch_givenMethodMissingDescription_returnsFalse()
         {
             var driver = new SampleDriver();
@@ -44,7 +41,7 @@ namespace Niche.CommandLine.Tests
             CommandLineOptionFactory.IsSwitch(method).Should().BeFalse();
         }
 
-        [Test]
+        [Fact]
         public void IsSwitch_givenMethodWithParameters_returnsFalse()
         {
             var driver = new SampleDriver();
@@ -52,7 +49,7 @@ namespace Niche.CommandLine.Tests
             CommandLineOptionFactory.IsSwitch(method).Should().BeFalse();
         }
 
-        [Test]
+        [Fact]
         public void IsSwitch_givenModeMethod_returnsFalse()
         {
             var driver = new BaseDriver();
@@ -60,14 +57,14 @@ namespace Niche.CommandLine.Tests
             CommandLineOptionFactory.IsSwitch(method).Should().BeFalse();
         }
 
-        [Test]
+        [Fact]
         public void CreateSwitches_givenNullInstance_throwsException()
         {
             Assert.Throws<ArgumentNullException>(
                 () => CommandLineOptionFactory.CreateSwitches(null));
         }
 
-        [Test]
+        [Fact]
         public void IsParameter_givenNull_throwsException()
         {
             Assert.Throws<ArgumentNullException>(
@@ -77,7 +74,7 @@ namespace Niche.CommandLine.Tests
                 });
         }
 
-        [Test]
+        [Fact]
         public void IsParameter_givenParameterMethod_returnsTrue()
         {
             var driver = new SampleDriver();
@@ -85,7 +82,7 @@ namespace Niche.CommandLine.Tests
             CommandLineOptionFactory.IsParameter(method).Should().BeTrue();
         }
 
-        [Test]
+        [Fact]
         public void IsParameter_givenSwitchMethod_returnsFalse()
         {
             var driver = new SampleDriver();
@@ -93,7 +90,7 @@ namespace Niche.CommandLine.Tests
             CommandLineOptionFactory.IsParameter(method).Should().BeFalse();
         }
 
-        [Test]
+        [Fact]
         public void IsParameter_givenModeMethod_returnsFalse()
         {
             var driver = new BaseDriver();
@@ -101,14 +98,14 @@ namespace Niche.CommandLine.Tests
             CommandLineOptionFactory.IsParameter(method).Should().BeFalse();
         }
 
-        [Test]
+        [Fact]
         public void CreateParameters_givenNullInstance_throwsException()
         {
             Assert.Throws<ArgumentNullException>(
                 () => CommandLineOptionFactory.CreateParameters(null));
         }
 
-        [Test]
+        [Fact]
         public void CreateParameters_givenDriver_returnsParameters()
         {
             var driver = new SampleDriver();
@@ -116,7 +113,7 @@ namespace Niche.CommandLine.Tests
             parameters.Should().NotBeEmpty();
         }
 
-        [Test]
+        [Fact]
         public void CreateParameters_givenDriver_returnsParameterOfCorrectType()
         {
             var driver = new SampleDriver();
@@ -126,14 +123,14 @@ namespace Niche.CommandLine.Tests
             uploadParameter.Should().BeOfType<CommandLineParameter<string>>();
         }
 
-        [Test]
+        [Fact]
         public void IsMode_givenNull_throwsException()
         {
             Assert.Throws<ArgumentNullException>(
                 () => CommandLineOptionFactory.IsMode<BaseDriver>(null));
         }
 
-        [Test]
+        [Fact]
         public void IsMode_givenParameterMethod_returnsFalse()
         {
             var driver = new SampleDriver();
@@ -141,7 +138,7 @@ namespace Niche.CommandLine.Tests
             CommandLineOptionFactory.IsMode<BaseDriver>(method).Should().BeFalse();
         }
 
-        [Test]
+        [Fact]
         public void IsMode_givenSwitchMethod_returnsFalse()
         {
             var driver = new SampleDriver();
@@ -149,7 +146,7 @@ namespace Niche.CommandLine.Tests
             CommandLineOptionFactory.IsMode<BaseDriver>(method).Should().BeFalse();
         }
 
-        [Test]
+        [Fact]
         public void IsMode_givenModelMethod_returnsTrue()
         {
             var driver = new BaseDriver();
@@ -157,7 +154,7 @@ namespace Niche.CommandLine.Tests
             CommandLineOptionFactory.IsMode<BaseDriver>(method).Should().BeTrue();
         }
 
-        [Test]
+        [Fact]
         public void CreateModes_givenNullInstance_throwsException()
         {
             Assert.Throws<ArgumentNullException>(

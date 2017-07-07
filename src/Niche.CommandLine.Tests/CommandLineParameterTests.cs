@@ -5,13 +5,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using FluentAssertions;
+using Xunit;
 
 namespace Niche.CommandLine.Tests
 {
-    [TestFixture]
     public class CommandLineParameterTests
     {
-        [Test]
+        [Fact]
         public void Constructor_missingInstance_throwsException()
         {
             var driver = new SampleDriver();
@@ -23,7 +23,7 @@ namespace Niche.CommandLine.Tests
                 });
         }
 
-        [Test]
+        [Fact]
         public void Constructor_missingMethod_throwsException()
         {
             var driver = new SampleDriver();
@@ -35,7 +35,7 @@ namespace Niche.CommandLine.Tests
                 });
         }
 
-        [Test]
+        [Fact]
         public void Constructor_ifMethodDoesNotApplyToInstance_throwsException()
         {
             var driver = new SampleDriver();
@@ -47,7 +47,7 @@ namespace Niche.CommandLine.Tests
                 });
         }
 
-        [Test]
+        [Fact]
         public void TryActivate_givenNull_throwsException()
         {
             var driver = new SampleDriver();
@@ -57,14 +57,14 @@ namespace Niche.CommandLine.Tests
             () => commandLineParameter.TryActivate(null));
         }
 
-        [Test]
+        [Fact]
         public void ConfigureParameters_givenNullInstance_throwsException()
         {
             Assert.Throws<ArgumentNullException>(
             () => CommandLineOptionFactory.CreateParameters(null));
         }
 
-        [Test]
+        [Fact]
         public void CreateHelp_givenList_AddsEntry()
         {
             var driver = new SampleDriver();
@@ -74,7 +74,7 @@ namespace Niche.CommandLine.Tests
             help.Should().HaveCount(1);
         }
 
-        [Test]
+        [Fact]
         public void Completed_withNoErrorList_throwsException()
         {
             var driver = new SampleDriver();
@@ -84,7 +84,7 @@ namespace Niche.CommandLine.Tests
                 () => commandLineParameter.Completed(null));
         }
 
-        [Test]
+        [Fact]
         public void Completed_whenRequiredParameterOmitted_generatesError()
         {
             var driver = new SampleDriver();
@@ -95,7 +95,7 @@ namespace Niche.CommandLine.Tests
             errors.Should().NotBeEmpty();
         }
 
-        [Test]
+        [Fact]
         public void Completed_whenRequiredParameterSupplied_generatesNoErrors()
         {
             var driver = new SampleDriver();
@@ -111,7 +111,7 @@ namespace Niche.CommandLine.Tests
         }
 
 
-        [Test]
+        [Fact]
         public void Completed_whenRequiredParameterSupplied_configuresValue()
         {
             var driver = new SampleDriver();
@@ -126,7 +126,7 @@ namespace Niche.CommandLine.Tests
             commandLineParameter.Values.Should().BeEquivalentTo(new List<string> { "search" });
         }
 
-        [Test]
+        [Fact]
         public void Completed_whenParameterWithValue_configuresValue()
         {
             var driver = new SampleDriver();
@@ -140,7 +140,7 @@ namespace Niche.CommandLine.Tests
             commandLineParameter.Values.Should().BeEquivalentTo(new List<string> { "search" });
         }
 
-        [Test]
+        [Fact]
         public void Completed_whenOptionalParameterOmitted_generatesNoErrors()
         {
             var driver = new SampleDriver();
@@ -150,7 +150,7 @@ namespace Niche.CommandLine.Tests
             errors.Should().BeEmpty();
         }
 
-        [Test]
+        [Fact]
         public void Completed_whenSingleValuedParameterProvided_callsMethod()
         {
             var driver = new SampleDriver();
@@ -166,7 +166,7 @@ namespace Niche.CommandLine.Tests
             driver.TextSearch.Should().Be("search");
         }
 
-        [Test]
+        [Fact]
         public void Completed_whenSingleValuedParameterProvidedTwice_createsError()
         {
             var driver = new SampleDriver();
@@ -185,7 +185,7 @@ namespace Niche.CommandLine.Tests
             errors.Should().NotBeEmpty();
         }
 
-        [Test]
+        [Fact]
         public void Completed_whenMultiValuedParameterProvided_callsMethod()
         {
             var driver = new SampleDriver();

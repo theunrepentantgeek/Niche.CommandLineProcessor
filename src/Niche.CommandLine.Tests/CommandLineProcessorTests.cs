@@ -6,10 +6,9 @@ using Xunit;
 
 namespace Niche.CommandLine.Tests
 {
-    [TestFixture]
     public class CommandLineProcessorTests
     {
-        [Test]
+        [Fact]
         public void Constructor_givenNullForArguments_throwsException()
         {
             Assert.Throws<ArgumentNullException>(
@@ -19,7 +18,7 @@ namespace Niche.CommandLine.Tests
                 });
         }
 
-        [Test]
+        [Fact]
         public void Constructor_givenNullForDriver_throwsException()
         {
             var arguments = new List<string> { "--help" };
@@ -30,7 +29,7 @@ namespace Niche.CommandLine.Tests
                 });
         }
 
-        [Test]
+        [Fact]
         public void Constructor_withLongFormSwitch_callsMethod()
         {
             var arguments = new List<string> { "--help" };
@@ -38,7 +37,7 @@ namespace Niche.CommandLine.Tests
             processor.ShowHelp.Should().BeTrue();
         }
 
-        [Test]
+        [Fact]
         public void Constructor_withShortFormSwitch_callsMethod()
         {
             var arguments = new List<string> { "-h" };
@@ -46,7 +45,7 @@ namespace Niche.CommandLine.Tests
             processor.ShowHelp.Should().BeTrue();
         }
 
-        [Test]
+        [Fact]
         public void Constructor_withAlternateShortFormSwitch_callsMethod()
         {
             var arguments = new List<string> { "/h" };
@@ -54,7 +53,7 @@ namespace Niche.CommandLine.Tests
             processor.ShowHelp.Should().BeTrue();
         }
 
-        [Test]
+        [Fact]
         public void Constructor_withLongFormParameter_callsMethods()
         {
             var arguments = new List<string> { "--find", "file" };
@@ -62,7 +61,7 @@ namespace Niche.CommandLine.Tests
             processor.Driver.TextSearch.Should().Be("file");
         }
 
-        [Test]
+        [Fact]
         public void Constructor_withShortFormParameter_callsMethod()
         {
             var arguments = new List<string> { "-f", "file" };
@@ -70,7 +69,7 @@ namespace Niche.CommandLine.Tests
             processor.Driver.TextSearch.Should().Be("file");
         }
 
-        [Test]
+        [Fact]
         public void Constructor_withAlternateShortFormParameter_callsMethod()
         {
             var arguments = new List<string> { "/f", "file" };
@@ -78,7 +77,7 @@ namespace Niche.CommandLine.Tests
             processor.Driver.TextSearch.Should().Be("file");
         }
 
-        [Test]
+        [Fact]
         public void Constructor_withParameterRequiringConversion_callsMethod()
         {
             var arguments = new List<string> { "-r", "4" };
@@ -86,7 +85,7 @@ namespace Niche.CommandLine.Tests
             processor.Driver.Repeats.Should().Be(4);
         }
 
-        [Test]
+        [Fact]
         public void Constructor_withUnexpectedArgument_leavesItInList()
         {
             var arguments = new List<string> { "snafu" };
@@ -94,7 +93,7 @@ namespace Niche.CommandLine.Tests
             processor.Arguments.Should().BeEquivalentTo(new List<string> { "snafu" });
         }
 
-        [Test]
+        [Fact]
         public void Constructor_withUnexpectedOption_generatesError()
         {
             var arguments = new List<string> { "-s" };
@@ -102,7 +101,7 @@ namespace Niche.CommandLine.Tests
             processor.HasErrors.Should().BeTrue();
         }
 
-        [Test]
+        [Fact]
         public void Constructor_withValidValueForParameter_configuresDriver()
         {
             var arguments = new List<string> { "--repeat", "5" };
@@ -110,7 +109,7 @@ namespace Niche.CommandLine.Tests
             processor.Driver.Repeats.Should().Be(5);
         }
 
-        [Test]
+        [Fact]
         public void Constructor_withInvalidValueForParameter_generatesError()
         {
             var arguments = new List<string> { "--repeat", "twice" };
@@ -118,7 +117,7 @@ namespace Niche.CommandLine.Tests
             processor.HasErrors.Should().BeTrue();
         }
 
-        [Test]
+        [Fact]
         public void Constructor_specifyingMode_returnsDriverForMode()
         {
             var arguments = new List<string> { "test-performance", "--help" };
@@ -126,7 +125,7 @@ namespace Niche.CommandLine.Tests
             processor.Driver.Should().BeOfType<TestDriver>();
         }
 
-        [Test]
+        [Fact]
         public void OptionHelp_forValidDriver_returnsText()
         {
             var arguments = new List<string> { "test-performance", "--help" };
@@ -134,7 +133,7 @@ namespace Niche.CommandLine.Tests
             processor.OptionHelp.Should().NotBeEmpty();
         }
 
-        [Test]
+        [Fact]
         public void Help_forValidDriver_SetsShowHelp()
         {
             var arguments = new List<string> { "test-performance", "--help" };
@@ -143,7 +142,7 @@ namespace Niche.CommandLine.Tests
             processor.ShowHelp.Should().BeTrue();
         }
 
-        [Test]
+        [Fact]
         public void Errors_forInvalidParameter_ListsContent()
         {
             var arguments = new List<string> { "--not-an-option" };
@@ -151,7 +150,7 @@ namespace Niche.CommandLine.Tests
             processor.Errors.Should().NotBeEmpty();
         }
 
-        [Test]
+        [Fact]
         public void OptionHelp_withNoOptions_returnsHelp()
         {
             var arguments = new List<string>();
@@ -159,7 +158,7 @@ namespace Niche.CommandLine.Tests
             processor.OptionHelp.Should().HaveCount(c => c > 0);
         }
 
-        [Test]
+        [Fact]
         public void OptionHelp_withNoModes_listsOptions()
         {
             var arguments = new List<string>();
@@ -167,7 +166,7 @@ namespace Niche.CommandLine.Tests
             processor.OptionHelp.Should().HaveCount(6);
         }
 
-        [Test]
+        [Fact]
         public void Constructor_givenAssignment_setsValue()
         {
             var arguments = new List<string>() { "--define", "Name=Donald" };

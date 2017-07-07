@@ -7,13 +7,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using FluentAssertions;
+using Xunit;
 
 namespace Niche.CommandLine.Tests
 {
-    [TestFixture]
     public class StringExtensionsTests
     {
-        [Test]
+        [Fact]
         public void AsString_givenString_returnString()
         {
             var sample = "sample";
@@ -21,7 +21,7 @@ namespace Niche.CommandLine.Tests
             result.Should().Be(sample);
         }
 
-        [Test]
+        [Fact]
         public void AsInt_givenNumber_returnInt()
         {
             var sample = "42";
@@ -29,7 +29,7 @@ namespace Niche.CommandLine.Tests
             result.Should().Be(42);
         }
 
-        [Test]
+        [Fact]
         public void AsColor_givenColor_returnsColor()
         {
             var sample = "Red";
@@ -37,7 +37,7 @@ namespace Niche.CommandLine.Tests
             result.Should().Be(Color.Red);
         }
 
-        [Test]
+        [Fact]
         public void AsVersion_givenVersion_returnsVersion()
         {
             var sample = "1.2.3.4";
@@ -45,7 +45,7 @@ namespace Niche.CommandLine.Tests
             result.ToString(4).Should().Be("1.2.3.4");
         }
 
-        [Test]
+        [Fact]
         public void AsList_givenString_throwsException()
         {
             var sample = "sample";
@@ -53,7 +53,7 @@ namespace Niche.CommandLine.Tests
                 () => sample.As<List<int>>());
         }
 
-        [Test]
+        [Fact]
         public void AsDirectoryInfo_givenStringWithoutTrailingSlash_returnsInstance()
         {
             var dir = "C:\\SampleFolder";
@@ -61,7 +61,7 @@ namespace Niche.CommandLine.Tests
             info.Should().NotBeNull();
         }
 
-        [Test]
+        [Fact]
         public void AsDirectoryInfo_givenStringWithTrailingSlash_returnsInstance()
         {
             var dir = "C:\\SampleFolder\\";
@@ -69,7 +69,7 @@ namespace Niche.CommandLine.Tests
             info.Should().NotBeNull();
         }
 
-        [Test]
+        [Fact]
         public void AsKeyValuePair_givenStringWithEquals_returnsInstance()
         {
             var value = "Name=Bob";
@@ -77,7 +77,7 @@ namespace Niche.CommandLine.Tests
             instance.Should().NotBeNull();
         }
 
-        [Test]
+        [Fact]
         public void AsKeyValuePair_givenStringWithEquals_returnsKey()
         {
             var value = "Name=Bob";
@@ -85,7 +85,7 @@ namespace Niche.CommandLine.Tests
             instance.Key.Should().Be("Name");
         }
 
-        [Test]
+        [Fact]
         public void AsKeyValuePair_givenStringWithEquals_returnsValue()
         {
             var value = "Name=Bob";
@@ -93,7 +93,7 @@ namespace Niche.CommandLine.Tests
             instance.Value.Should().Be("Bob");
         }
 
-        [Test]
+        [Fact]
         public void AsKeyValuePair_givenStringWithEquals_returnsInt()
         {
             var value = "Count=42";

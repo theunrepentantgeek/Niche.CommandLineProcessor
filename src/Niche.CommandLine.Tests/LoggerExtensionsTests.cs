@@ -10,10 +10,9 @@ using Xunit;
 
 namespace Niche.CommandLine.Tests
 {
-    [TestFixture]
     public class LoggerExtensionsTests
     {
-        [Test]
+        [Fact]
         public void Tablefy_givenSimpleString_returnsString()
         {
             var original = new List<string> { "sample" };
@@ -21,7 +20,7 @@ namespace Niche.CommandLine.Tests
             result.Should().BeEquivalentTo(original);
         }
 
-        [Test]
+        [Fact]
         public void Tablefy_givenMultipleSimpleStrings_returnsStrings()
         {
             var original = new List<string> { "alpha", "beta", "gamma" };
@@ -29,7 +28,7 @@ namespace Niche.CommandLine.Tests
             result.Should().BeEquivalentTo(original);
         }
 
-        [Test]
+        [Fact]
         public void Tablefy_givenTabbedString_returnsConvertedString()
         {
             var original = new List<string> { "alpha\tbeta\tgamma" };
@@ -37,7 +36,7 @@ namespace Niche.CommandLine.Tests
             result.Single().Should().Be("alpha   beta   gamma");
         }
 
-        [Test]
+        [Fact]
         public void Tablefy_givenTwoTabbedStrings_returnsFormattedText()
         {
             var original = new List<string> { "alpha\tbeta\tgamma", "one\ttwo\tthree" };
@@ -46,7 +45,7 @@ namespace Niche.CommandLine.Tests
             result.Should().BeEquivalentTo(expected);
         }
         
-        [Test]
+        [Fact]
         public void Failure_givenSimpleException_logsOneMessage()
         {
             var logger = Substitute.For<ILogger>();
@@ -57,7 +56,7 @@ namespace Niche.CommandLine.Tests
             logger.Received(1).Failure(Arg.Any<string>());
         }
 
-        [Test]
+        [Fact]
         public void Failure_givenNestedException_logsExpectedMessageCount()
         {
             var logger = Substitute.For<ILogger>();
@@ -69,7 +68,7 @@ namespace Niche.CommandLine.Tests
             logger.Received(2).Failure(Arg.Any<string>());
         }
 
-        [Test]
+        [Fact]
         public void Failure_givenSimpleExceptionWithData_logsExpectedMessageCount()
         {
             var logger = Substitute.For<ILogger>();

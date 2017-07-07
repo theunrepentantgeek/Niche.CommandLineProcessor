@@ -1,16 +1,12 @@
-﻿using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
+using FluentAssertions;
+using Xunit;
 
 namespace Niche.CommandLine.Tests
 {
-    [TestFixture]
     public class CommandLineModeTests
     {
-        [Test]
+        [Fact]
         public void Constructor_givenNullInstance_throwsException()
         {
             var method = typeof(BaseDriver).GetMethod("Help");
@@ -18,7 +14,7 @@ namespace Niche.CommandLine.Tests
                 () => new CommandLineMode(typeof(BaseDriver), null, method));
         }
 
-        [Test]
+        [Fact]
         public void Constructor_givenNullMethod_throwsException()
         {
             var driver = new BaseDriver();
@@ -26,16 +22,16 @@ namespace Niche.CommandLine.Tests
                 () => new CommandLineMode(typeof(BaseDriver), driver, null));
         }
 
-        [Test]
+        [Fact]
         public void Constructor_forTestPerformance_initialisesName()
         {
             var driver = new BaseDriver();
             var method = typeof(BaseDriver).GetMethod("TestPerformance");
             var mode = new CommandLineMode(typeof(BaseDriver), driver, method);
-            Assert.That(mode.Name, Is.EqualTo("test-performance"));
+            mode.Name.Should().Be("test-performance");
         }
 
-        [Test]
+        [Fact]
         public void Constructor_forHelp_initialisesDescription()
         {
             var driver = new BaseDriver();
@@ -44,7 +40,7 @@ namespace Niche.CommandLine.Tests
             mode.Description.Should().Be("Performance tests");
         }
 
-        [Test]
+        [Fact]
         public void Constructor_givenNonModeMethod_throwsException()
         {
             var driver = new BaseDriver();
@@ -53,7 +49,7 @@ namespace Niche.CommandLine.Tests
                 () => new CommandLineMode(typeof(BaseDriver), driver, method));
         }
 
-        [Test]
+        [Fact]
         public void Constructor_givenMethodForOtherClass_throwsException()
         {
             var driver = new BaseDriver();
@@ -62,7 +58,7 @@ namespace Niche.CommandLine.Tests
                  () => new CommandLineMode(typeof(BaseDriver), driver, method));
         }
 
-        [Test]
+        [Fact]
         public void Activate_forTestPerformance_callsMethod()
         {
             var driver = new BaseDriver();
@@ -72,7 +68,7 @@ namespace Niche.CommandLine.Tests
             result.Should().BeOfType<TestDriver>();
         }
 
-        [Test]
+        [Fact]
         public void CreateHelp_forTestPerformance_generatesItem()
         {
             var driver = new BaseDriver();

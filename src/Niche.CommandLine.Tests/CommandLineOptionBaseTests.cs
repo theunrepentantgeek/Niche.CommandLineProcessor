@@ -1,16 +1,11 @@
-﻿using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using FluentAssertions;
+using Xunit;
 
 namespace Niche.CommandLine.Tests
 {
-    [TestFixture]
     public class CommandLineOptionBaseTests
     {
-        [Test]
+        [Fact]
         public void FindDescription_givenMemberWithDescription_returnsDescription()
         {
             var method = typeof(SampleDriver).GetMethod("Debug");
@@ -18,7 +13,7 @@ namespace Niche.CommandLine.Tests
             description.Should().Be("Show Diagnostics");
         }
 
-        [Test]
+        [Fact]
         public void FindDescription_givenMemberWithNoDescription_returnsEmptyString()
         {
             var method = typeof(SampleDriver).GetMethod("Verbose");

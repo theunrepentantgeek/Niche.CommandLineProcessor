@@ -4,15 +4,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using FluentAssertions;
 using Xunit;
 
 namespace Niche.CommandLine.Tests
 {
-    [TestFixture]
     public class CommandLineSwitchTests
     {
-        [Test]
+        [Fact]
         public void Constructor_missingInstance_throwsException()
         {
             var driver = new SampleDriver();
@@ -24,7 +22,7 @@ namespace Niche.CommandLine.Tests
                 });
         }
 
-        [Test]
+        [Fact]
         public void Constructor_missingMethod_throwsException()
         {
             var driver = new SampleDriver();
@@ -36,7 +34,7 @@ namespace Niche.CommandLine.Tests
                 });
         }
 
-        [Test]
+        [Fact]
         public void Constructor_ifMethodDoesNotApplyToInstance_throwsException()
         {
             var driver = new SampleDriver();
@@ -48,7 +46,7 @@ namespace Niche.CommandLine.Tests
                 });
         }
 
-        [Test]
+        [Fact]
         public void TryActivate_whenConfigured_callsMethod()
         {
             var driver = new SampleDriver();
@@ -60,7 +58,7 @@ namespace Niche.CommandLine.Tests
             driver.ShowDiagnostics.Should().BeTrue();
         }
 
-        [Test]
+        [Fact]
         public void ShortName_whenConfigured_isExpected()
         {
             var driver = new SampleDriver();
@@ -69,7 +67,7 @@ namespace Niche.CommandLine.Tests
             commandLineSwitch.ShortName.Should().Be("-d");
         }
 
-        [Test]
+        [Fact]
         public void LongName_whenConfigured_isExpected()
         {
             var driver = new SampleDriver();
@@ -78,7 +76,7 @@ namespace Niche.CommandLine.Tests
             commandLineSwitch.LongName.Should().Be("--debug");
         }
 
-        [Test]
+        [Fact]
         public void CreateHelp_givenList_AddsEntry()
         {
             var driver = new SampleDriver();
