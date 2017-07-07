@@ -17,34 +17,22 @@ namespace Niche.CommandLine
         /// <summary>
         /// Gets the list of arguments not already processed
         /// </summary>
-        public IEnumerable<string> Arguments
-        {
-            get { return mArguments; }
-        }
+        public IEnumerable<string> Arguments => _arguments;
 
         /// <summary>
         /// Gets a value indicating whether we have any errors
         /// </summary>
-        public bool HasErrors
-        {
-            get { return mErrors.Any(); }
-        }
+        public bool HasErrors => _errors.Any();
 
         /// <summary>
         /// Gets a value indicating whether we should should help
         /// </summary>
-        public bool ShowHelp
-        {
-            get { return mShowHelp; }
-        }
+        public bool ShowHelp => _showHelp;
 
         /// <summary>
         /// Gets the sequence of the errors already encountered
         /// </summary>
-        public IEnumerable<string> Errors
-        {
-            get { return mErrors; }
-        }
+        public IEnumerable<string> Errors => _errors;
 
         /// <summary>
         /// Gets a list of help text for display
@@ -65,10 +53,7 @@ namespace Niche.CommandLine
         /// <summary>
         /// Gets a reference to the driver instance we've configured from the command line
         /// </summary>
-        public T Driver
-        {
-            get { return mDriver; }
-        }
+        public T Driver => _driver;
 
         /// <summary>
         /// Initializes a new instance of the CommandLineProcessor class

@@ -10,12 +10,12 @@ namespace Niche.CommandLine
         /// <summary>
         /// Gets the name of this mode
         /// </summary>
-        public string Name { get; private set; }
+        public string Name { get; }
 
         /// <summary>
         /// Gets or sets a description of this option
         /// </summary>
-        public string Description { get; private set; }
+        public string Description { get; }
 
         /// <summary>
         /// Initializes a new instance of the CommandLineMode class
@@ -40,7 +40,7 @@ namespace Niche.CommandLine
                 throw new ArgumentNullException(nameof(method));
             }
 
-            if (!method.DeclaringType.IsAssignableFrom(instance.GetType()))
+            if (!method.DeclaringType.IsInstanceOfType(instance))
             {
                 throw new ArgumentException("Expect method to be callable on instance");
             }

@@ -8,10 +8,7 @@ namespace Niche.CommandLine.Tests
     /// </summary>
     public class AssignmentDriver
     {
-        public string this[string name]
-        {
-            get { return mVariables[name]; }
-        }
+        public string this[string name] => _variables[name];
 
         [Description("Verbose output for debugging.")]
         public void Verbose()

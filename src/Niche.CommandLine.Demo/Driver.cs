@@ -11,7 +11,7 @@ namespace Niche.CommandLine.Demo
     {
         public bool IsVerbose { get; private set; }
 
-        public IList<string> SearchTerms { get { return mSearchTerms; } }
+        public IList<string> SearchTerms => _searchTerms;
 
         public ConsoleColor ForegroundColor { get; private set; }
         

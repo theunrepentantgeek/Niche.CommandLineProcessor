@@ -27,27 +27,27 @@ namespace Niche.CommandLine
         /// <summary>
         /// Gets the short form of this switch
         /// </summary>
-        public string ShortName { get; private set; }
+        public string ShortName { get; }
 
         /// <summary>
         /// Gets the other short form of this switch
         /// </summary>
-        public string AlternateShortName { get; private set; }
+        public string AlternateShortName { get; }
 
         /// <summary>
         /// Gets the long form of this switch
         /// </summary>
-        public string LongName { get; private set; }
+        public string LongName { get; }
 
         /// <summary>
         /// Gets a value indicating whether this parameter is required
         /// </summary>
-        public bool IsRequired { get; private set; }
+        public bool IsRequired { get; }
 
         /// <summary>
         /// Gets a value indicating whether this parameter is multivalued
         /// </summary>
-        public bool IsMultivalued { get; private set; }
+        public bool IsMultivalued { get; }
 
         /// <summary>
         /// Gets the sequence of values handled by this parameter
@@ -62,7 +62,7 @@ namespace Niche.CommandLine
                 throw new ArgumentNullException(nameof(instance));
             }
 
-            if (!method.DeclaringType.IsAssignableFrom(instance.GetType()))
+            if (!method.DeclaringType.IsInstanceOfType(instance))
             {
                 throw new ArgumentException("Expect method to be callable on instance");
             }
