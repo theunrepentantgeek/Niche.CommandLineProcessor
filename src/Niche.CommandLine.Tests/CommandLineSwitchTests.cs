@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FluentAssertions;
+using Xunit;
 
 namespace Niche.CommandLine.Tests
 {
@@ -55,7 +57,7 @@ namespace Niche.CommandLine.Tests
             var arguments = new Queue<string>();
             arguments.Enqueue("-d");
             commandLineSwitch.TryActivate(arguments);
-            Assert.That(driver.ShowDiagnostics, Is.True);
+            driver.ShowDiagnostics.Should().BeTrue();
         }
 
         [Test]
@@ -64,7 +66,7 @@ namespace Niche.CommandLine.Tests
             var driver = new SampleDriver();
             var method = driver.GetType().GetMethod("Debug");
             var commandLineSwitch = new CommandLineSwitch(driver, method);
-            Assert.That(commandLineSwitch.ShortName, Is.EqualTo("-d"));
+            commandLineSwitch.ShortName.Should().Be("-d");
         }
 
         [Test]
@@ -73,7 +75,7 @@ namespace Niche.CommandLine.Tests
             var driver = new SampleDriver();
             var method = driver.GetType().GetMethod("Debug");
             var commandLineSwitch = new CommandLineSwitch(driver, method);
-            Assert.That(commandLineSwitch.LongName, Is.EqualTo("--debug"));
+            commandLineSwitch.LongName.Should().Be("--debug");
         }
 
         [Test]
@@ -82,7 +84,7 @@ namespace Niche.CommandLine.Tests
             var driver = new SampleDriver();
             var commandLineSwitch = CommandLineOptionFactory.CreateSwitches(driver).First();
             var help = commandLineSwitch.CreateHelp().ToList();
-            Assert.That(help, Has.Count.EqualTo(1));
+            help.Should().HaveCount(1);
         }
     }
 }

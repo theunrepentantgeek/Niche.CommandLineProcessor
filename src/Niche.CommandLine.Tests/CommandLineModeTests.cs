@@ -41,7 +41,7 @@ namespace Niche.CommandLine.Tests
             var driver = new BaseDriver();
             var method = typeof(BaseDriver).GetMethod("TestPerformance");
             var mode = new CommandLineMode(typeof(BaseDriver), driver, method);
-            Assert.That(mode.Description, Is.EqualTo("Performance tests"));
+            mode.Description.Should().Be("Performance tests");
         }
 
         [Test]
@@ -69,7 +69,7 @@ namespace Niche.CommandLine.Tests
             var method = typeof(BaseDriver).GetMethod("TestPerformance");
             var mode = new CommandLineMode(typeof(BaseDriver), driver, method);
             var result = mode.Activate();
-            Assert.That(result, Is.InstanceOf<TestDriver>());
+            result.Should().BeOfType<TestDriver>();
         }
 
         [Test]
@@ -78,7 +78,7 @@ namespace Niche.CommandLine.Tests
             var driver = new BaseDriver();
             var method = typeof(BaseDriver).GetMethod("TestPerformance");
             var mode = new CommandLineMode(typeof(BaseDriver), driver, method);
-            Assert.That(mode.CreateHelp().ToList(), Has.Count.EqualTo(1));
+            mode.CreateHelp().Should().HaveCount(1);
         }
     }
 }

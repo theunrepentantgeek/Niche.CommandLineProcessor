@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FluentAssertions;
 
 namespace Niche.CommandLine.Tests
 {
@@ -70,7 +71,7 @@ namespace Niche.CommandLine.Tests
             var findMethod = typeof(SampleDriver).GetMethod("Find");
             var commandLineParameter = new CommandLineParameter<string>(driver, findMethod);
             var help = commandLineParameter.CreateHelp().ToList();
-            Assert.That(help, Has.Count.EqualTo(1));
+            help.Should().HaveCount(1);
         }
 
         [Test]
@@ -91,7 +92,7 @@ namespace Niche.CommandLine.Tests
             var commandLineParameter = new CommandLineParameter<string>(driver, findMethod);
             var errors = new List<string>();
             commandLineParameter.Completed(errors);
-            Assert.That(errors, Is.Not.Empty);
+            errors.Should().NotBeEmpty();
         }
 
         [Test]
@@ -106,7 +107,7 @@ namespace Niche.CommandLine.Tests
             commandLineParameter.TryActivate(arguments);
             var errors = new List<string>();
             commandLineParameter.Completed(errors);
-            Assert.That(errors, Is.Empty);
+            errors.Should().BeEmpty();
         }
 
 
@@ -122,7 +123,7 @@ namespace Niche.CommandLine.Tests
             commandLineParameter.TryActivate(arguments);
             var errors = new List<string>();
             commandLineParameter.Completed(errors);
-            Assert.That(commandLineParameter.Values, Is.EquivalentTo(new List<string> { "search" }));
+            commandLineParameter.Values.Should().BeEquivalentTo(new List<string> { "search" });
         }
 
         [Test]
@@ -136,7 +137,7 @@ namespace Niche.CommandLine.Tests
             commandLineParameter.TryActivate(arguments);
             var errors = new List<string>();
             commandLineParameter.Completed(errors);
-            Assert.That(commandLineParameter.Values, Is.EquivalentTo(new List<string> { "search" }));
+            commandLineParameter.Values.Should().BeEquivalentTo(new List<string> { "search" });
         }
 
         [Test]
@@ -146,7 +147,7 @@ namespace Niche.CommandLine.Tests
             var findMethod = typeof(SampleDriver).GetMethod("Upload");
             var commandLineParameter = new CommandLineParameter<string>(driver, findMethod);
             var errors = new List<string>();
-            Assert.That(errors, Is.Empty);
+            errors.Should().BeEmpty();
         }
 
         [Test]
@@ -162,7 +163,7 @@ namespace Niche.CommandLine.Tests
             var commandLineParameter = new CommandLineParameter<string>(driver, method);
             commandLineParameter.TryActivate(arguments);
             commandLineParameter.Completed(errors);
-            Assert.That(driver.TextSearch, Is.EqualTo("search"));
+            driver.TextSearch.Should().Be("search");
         }
 
         [Test]
@@ -181,7 +182,7 @@ namespace Niche.CommandLine.Tests
             commandLineParameter.TryActivate(arguments);
             commandLineParameter.TryActivate(arguments);
             commandLineParameter.Completed(errors);
-            Assert.That(errors, Is.Not.Empty);
+            errors.Should().NotBeEmpty();
         }
 
         [Test]
@@ -204,7 +205,7 @@ namespace Niche.CommandLine.Tests
             commandLineParameter.TryActivate(arguments);
             commandLineParameter.Completed(errors);
 
-            Assert.That(driver.FilesToUpload, Is.EquivalentTo(new List<string> { "alpha", "beta", "gamma" }));
+            driver.FilesToUpload.Should().BeEquivalentTo(new List<string> { "alpha", "beta", "gamma" });
         }
     }
 }

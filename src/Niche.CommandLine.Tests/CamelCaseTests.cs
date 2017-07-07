@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FluentAssertions;
 
 namespace Niche.Commandline.Tests
 {
@@ -23,7 +24,7 @@ namespace Niche.Commandline.Tests
         {
             var camelCase = string.Empty;
             var dashedName = CamelCase.ToDashedName(camelCase);
-            Assert.That(dashedName, Is.EqualTo(string.Empty));
+            dashedName.Should().Be(string.Empty);
         }
 
         [Test]
@@ -31,7 +32,7 @@ namespace Niche.Commandline.Tests
         {
             var camelCase = "sample";
             var dashedName = CamelCase.ToDashedName(camelCase);
-            Assert.That(dashedName, Is.EqualTo(camelCase));
+            dashedName.Should().Be(camelCase);
         }
 
         [Test]
@@ -39,7 +40,7 @@ namespace Niche.Commandline.Tests
         {
             var camelCase = "X";
             var dashedName = CamelCase.ToDashedName(camelCase);
-            Assert.That(dashedName, Is.EqualTo("x"));
+            dashedName.Should().Be("x");
         }
 
         [Test]
@@ -47,7 +48,7 @@ namespace Niche.Commandline.Tests
         {
             var camelCase = "camelCase";
             var dashedName = CamelCase.ToDashedName(camelCase);
-            Assert.That(dashedName, Is.EqualTo("camel-case"));
+            dashedName.Should().Be("camel-case");
         }
 
         [Test]
@@ -55,7 +56,7 @@ namespace Niche.Commandline.Tests
         {
             var camelCase = "dorothyTheCamel";
             var dashedName = CamelCase.ToDashedName(camelCase);
-            Assert.That(dashedName, Is.EqualTo("dorothy-the-camel"));
+            dashedName.Should().Be("dorothy-the-camel");
         }
 
         [Test]
@@ -63,7 +64,7 @@ namespace Niche.Commandline.Tests
         {
             var camelCase = "PascalCase";
             var dashedName = CamelCase.ToDashedName(camelCase);
-            Assert.That(dashedName, Is.EqualTo("pascal-case"));
+            dashedName.Should().Be("pascal-case");
         }
 
         [Test]
@@ -71,7 +72,7 @@ namespace Niche.Commandline.Tests
         {
             var camelCase = "XMLFile";
             var dashedName = CamelCase.ToDashedName(camelCase);
-            Assert.That(dashedName, Is.EqualTo("xml-file"));
+            dashedName.Should().Be("xml-file");
         }
 
         [Test]
@@ -79,7 +80,7 @@ namespace Niche.Commandline.Tests
         {
             var camelCase = "SubmitXMLFile";
             var dashedName = CamelCase.ToDashedName(camelCase);
-            Assert.That(dashedName, Is.EqualTo("submit-xml-file"));
+            dashedName.Should().Be("submit-xml-file");
         }
 
         [Test]
@@ -87,7 +88,7 @@ namespace Niche.Commandline.Tests
         {
             var camelCase = "SubmitXML";
             var dashedName = CamelCase.ToDashedName(camelCase);
-            Assert.That(dashedName, Is.EqualTo("submit-xml"));
+            dashedName.Should().Be("submit-xml");
         }
 
         [Test]
@@ -102,7 +103,7 @@ namespace Niche.Commandline.Tests
         {
             var camelCase = string.Empty;
             var shortName = CamelCase.ToShortName(camelCase);
-            Assert.That(shortName, Is.EqualTo(string.Empty));
+            shortName.Should().Be(string.Empty);
         }
 
         [Test]
@@ -110,7 +111,7 @@ namespace Niche.Commandline.Tests
         {
             var camelCase = "sample";
             var shortName = CamelCase.ToShortName(camelCase);
-            Assert.That(shortName, Is.EqualTo("s"));
+            shortName.Should().Be("s");
         }
 
         [Test]
@@ -118,7 +119,7 @@ namespace Niche.Commandline.Tests
         {
             var camelCase = "fontFamily";
             var shortName = CamelCase.ToShortName(camelCase);
-            Assert.That(shortName, Is.EqualTo("ff"));
+            shortName.Should().Be("ff");
         }
 
         [Test]
@@ -126,7 +127,7 @@ namespace Niche.Commandline.Tests
         {
             var camelCase = "testFileName";
             var shortName = CamelCase.ToShortName(camelCase);
-            Assert.That(shortName, Is.EqualTo("tfn"));
+            shortName.Should().Be("tfn");
         }
 
         [Test]
@@ -134,7 +135,7 @@ namespace Niche.Commandline.Tests
         {
             var camelCase = "XMLFile";
             var shortName = CamelCase.ToShortName(camelCase);
-            Assert.That(shortName, Is.EqualTo("xf"));
+            shortName.Should().Be("xf");
         }
 
         [Test]
@@ -142,7 +143,7 @@ namespace Niche.Commandline.Tests
         {
             var camelCase = "SubmitXMLFile";
             var shortName = CamelCase.ToShortName(camelCase);
-            Assert.That(shortName, Is.EqualTo("sxf"));
+            shortName.Should().Be("sxf");
         }
 
         [Test]
@@ -150,7 +151,7 @@ namespace Niche.Commandline.Tests
         {
             var camelCase = "SubmitXML";
             var shortName = CamelCase.ToShortName(camelCase);
-            Assert.That(shortName, Is.EqualTo("sx"));
+            shortName.Should().Be("sx");
         }
     }
 }

@@ -15,7 +15,7 @@ namespace Niche.CommandLine.Tests
         {
             var method = typeof(SampleDriver).GetMethod("Debug");
             var description = CommandLineOptionBase.FindDescription(method);
-            Assert.That(description, Is.EqualTo("Show Diagnostics"));
+            description.Should().Be("Show Diagnostics");
         }
 
         [Test]
@@ -23,7 +23,7 @@ namespace Niche.CommandLine.Tests
         {
             var method = typeof(SampleDriver).GetMethod("Verbose");
             var description = CommandLineOptionBase.FindDescription(method);
-            Assert.That(description, Is.EqualTo(string.Empty));
+            description.Should().Be(string.Empty);
         }
 
     }

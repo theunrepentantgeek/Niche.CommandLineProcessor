@@ -1,9 +1,8 @@
 ﻿using NUnit.Framework;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using FluentAssertions;
+using Xunit;
 
 namespace Niche.CommandLine.Tests
 {
@@ -36,7 +35,7 @@ namespace Niche.CommandLine.Tests
         {
             var arguments = new List<string> { "--help" };
             var processor = new CommandLineProcessor<BaseDriver>(arguments, new BaseDriver());
-            Assert.That(processor.ShowHelp, Is.True);
+            processor.ShowHelp.Should().BeTrue();
         }
 
         [Test]
@@ -44,7 +43,7 @@ namespace Niche.CommandLine.Tests
         {
             var arguments = new List<string> { "-h" };
             var processor = new CommandLineProcessor<BaseDriver>(arguments, new BaseDriver());
-            Assert.That(processor.ShowHelp, Is.True);
+            processor.ShowHelp.Should().BeTrue();
         }
 
         [Test]
@@ -52,7 +51,7 @@ namespace Niche.CommandLine.Tests
         {
             var arguments = new List<string> { "/h" };
             var processor = new CommandLineProcessor<BaseDriver>(arguments, new BaseDriver());
-            Assert.That(processor.ShowHelp, Is.True);
+            processor.ShowHelp.Should().BeTrue();
         }
 
         [Test]
@@ -60,7 +59,7 @@ namespace Niche.CommandLine.Tests
         {
             var arguments = new List<string> { "--find", "file" };
             var processor = new CommandLineProcessor<SampleDriver>(arguments, new SampleDriver());
-            Assert.That(processor.Driver.TextSearch, Is.EqualTo("file"));
+            processor.Driver.TextSearch.Should().Be("file");
         }
 
         [Test]
@@ -68,7 +67,7 @@ namespace Niche.CommandLine.Tests
         {
             var arguments = new List<string> { "-f", "file" };
             var processor = new CommandLineProcessor<SampleDriver>(arguments, new SampleDriver());
-            Assert.That(processor.Driver.TextSearch, Is.EqualTo("file"));
+            processor.Driver.TextSearch.Should().Be("file");
         }
 
         [Test]
@@ -76,7 +75,7 @@ namespace Niche.CommandLine.Tests
         {
             var arguments = new List<string> { "/f", "file" };
             var processor = new CommandLineProcessor<SampleDriver>(arguments, new SampleDriver());
-            Assert.That(processor.Driver.TextSearch, Is.EqualTo("file"));
+            processor.Driver.TextSearch.Should().Be("file");
         }
 
         [Test]
@@ -84,7 +83,7 @@ namespace Niche.CommandLine.Tests
         {
             var arguments = new List<string> { "-r", "4" };
             var processor = new CommandLineProcessor<SampleDriver>(arguments, new SampleDriver());
-            Assert.That(processor.Driver.Repeats, Is.EqualTo(4));
+            processor.Driver.Repeats.Should().Be(4);
         }
 
         [Test]
@@ -92,7 +91,7 @@ namespace Niche.CommandLine.Tests
         {
             var arguments = new List<string> { "snafu" };
             var processor = new CommandLineProcessor<SampleDriver>(arguments, new SampleDriver());
-            Assert.That(processor.Arguments, Is.EquivalentTo(new List<string> { "snafu" }));
+            processor.Arguments.Should().BeEquivalentTo(new List<string> { "snafu" });
         }
 
         [Test]
@@ -100,7 +99,7 @@ namespace Niche.CommandLine.Tests
         {
             var arguments = new List<string> { "-s" };
             var processor = new CommandLineProcessor<BaseDriver>(arguments, new BaseDriver());
-            Assert.That(processor.HasErrors, Is.True);
+            processor.HasErrors.Should().BeTrue();
         }
 
         [Test]
@@ -108,7 +107,7 @@ namespace Niche.CommandLine.Tests
         {
             var arguments = new List<string> { "--repeat", "5" };
             var processor = new CommandLineProcessor<SampleDriver>(arguments, new SampleDriver());
-            Assert.That(processor.Driver.Repeats, Is.EqualTo(5));
+            processor.Driver.Repeats.Should().Be(5);
         }
 
         [Test]
@@ -116,7 +115,7 @@ namespace Niche.CommandLine.Tests
         {
             var arguments = new List<string> { "--repeat", "twice" };
             var processor = new CommandLineProcessor<BaseDriver>(arguments, new BaseDriver());
-            Assert.That(processor.HasErrors, Is.True);
+            processor.HasErrors.Should().BeTrue();
         }
 
         [Test]
@@ -124,7 +123,7 @@ namespace Niche.CommandLine.Tests
         {
             var arguments = new List<string> { "test-performance", "--help" };
             var processor = new CommandLineProcessor<BaseDriver>(arguments, new BaseDriver());
-            Assert.That(processor.Driver, Is.InstanceOf<TestDriver>());
+            processor.Driver.Should().BeOfType<TestDriver>();
         }
 
         [Test]
@@ -132,7 +131,7 @@ namespace Niche.CommandLine.Tests
         {
             var arguments = new List<string> { "test-performance", "--help" };
             var processor = new CommandLineProcessor<BaseDriver>(arguments, new BaseDriver());
-            Assert.That(processor.OptionHelp, Is.Not.Empty);
+            processor.OptionHelp.Should().NotBeEmpty();
         }
 
         [Test]
@@ -141,7 +140,7 @@ namespace Niche.CommandLine.Tests
             var arguments = new List<string> { "test-performance", "--help" };
             var processor = new CommandLineProcessor<BaseDriver>(arguments, new BaseDriver());
             processor.Help();
-            Assert.That(processor.ShowHelp, Is.True);
+            processor.ShowHelp.Should().BeTrue();
         }
 
         [Test]
@@ -149,7 +148,7 @@ namespace Niche.CommandLine.Tests
         {
             var arguments = new List<string> { "--not-an-option" };
             var processor = new CommandLineProcessor<BaseDriver>(arguments, new BaseDriver());
-            Assert.That(processor.Errors, Is.Not.Empty);
+            processor.Errors.Should().NotBeEmpty();
         }
 
         [Test]
@@ -157,7 +156,7 @@ namespace Niche.CommandLine.Tests
         {
             var arguments = new List<string>();
             var processor = new CommandLineProcessor<SampleDriver>(arguments, new SampleDriver());
-            Assert.That(processor.OptionHelp.ToList(), Has.Count.GreaterThan(0));
+            processor.OptionHelp.Should().HaveCount(c => c > 0);
         }
 
         [Test]
@@ -165,7 +164,7 @@ namespace Niche.CommandLine.Tests
         {
             var arguments = new List<string>();
             var processor = new CommandLineProcessor<SampleDriver>(arguments, new SampleDriver());
-            Assert.That(processor.OptionHelp.ToList(), Has.Count.EqualTo(6));
+            processor.OptionHelp.Should().HaveCount(6);
         }
 
         [Test]
@@ -174,7 +173,7 @@ namespace Niche.CommandLine.Tests
             var arguments = new List<string>() { "--define", "Name=Donald" };
             var driver = new AssignmentDriver();
             var processor = new CommandLineProcessor<AssignmentDriver>(arguments, driver);
-            Assert.That(driver["Name"], Is.EqualTo("Donald"));
+            driver["Name"].Should().Be("Donald");
         }
     }
 }

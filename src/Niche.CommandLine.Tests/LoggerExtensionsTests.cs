@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FluentAssertions;
+using Xunit;
 
 namespace Niche.CommandLine.Tests
 {
@@ -16,7 +18,7 @@ namespace Niche.CommandLine.Tests
         {
             var original = new List<string> { "sample" };
             var result = LoggerExtensions.Tablefy(original);
-            Assert.That(result, Is.EquivalentTo(original));
+            result.Should().BeEquivalentTo(original);
         }
 
         [Test]
@@ -24,7 +26,7 @@ namespace Niche.CommandLine.Tests
         {
             var original = new List<string> { "alpha", "beta", "gamma" };
             var result = LoggerExtensions.Tablefy(original);
-            Assert.That(result, Is.EquivalentTo(original));
+            result.Should().BeEquivalentTo(original);
         }
 
         [Test]
@@ -32,7 +34,7 @@ namespace Niche.CommandLine.Tests
         {
             var original = new List<string> { "alpha\tbeta\tgamma" };
             var result = LoggerExtensions.Tablefy(original);
-            Assert.That(result.Single(), Is.EqualTo("alpha   beta   gamma"));
+            result.Single().Should().Be("alpha   beta   gamma");
         }
 
         [Test]
@@ -41,7 +43,7 @@ namespace Niche.CommandLine.Tests
             var original = new List<string> { "alpha\tbeta\tgamma", "one\ttwo\tthree" };
             var result = LoggerExtensions.Tablefy(original);
             var expected = new List<string>{"alpha   beta   gamma", "one     two    three"};
-            Assert.That(result, Is.EquivalentTo(expected));
+            result.Should().BeEquivalentTo(expected);
         }
         
         [Test]

@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FluentAssertions;
 
 namespace Niche.CommandLine.Tests
 {
@@ -17,7 +18,7 @@ namespace Niche.CommandLine.Tests
         {
             var sample = "sample";
             var result = sample.As<string>();
-            Assert.That(result, Is.EqualTo(sample));
+            result.Should().Be(sample);
         }
 
         [Test]
@@ -25,7 +26,7 @@ namespace Niche.CommandLine.Tests
         {
             var sample = "42";
             var result = sample.As<int>();
-            Assert.That(result, Is.EqualTo(42));
+            result.Should().Be(42);
         }
 
         [Test]
@@ -33,7 +34,7 @@ namespace Niche.CommandLine.Tests
         {
             var sample = "Red";
             var result = sample.As<Color>();
-            Assert.That(result, Is.EqualTo(Color.Red));
+            result.Should().Be(Color.Red);
         }
 
         [Test]
@@ -41,7 +42,7 @@ namespace Niche.CommandLine.Tests
         {
             var sample = "1.2.3.4";
             var result = sample.As<Version>();
-            Assert.That(result.ToString(4), Is.EqualTo("1.2.3.4"));
+            result.ToString(4).Should().Be("1.2.3.4");
         }
 
         [Test]
@@ -57,7 +58,7 @@ namespace Niche.CommandLine.Tests
         {
             var dir = "C:\\SampleFolder";
             var info = dir.As<DirectoryInfo>();
-            Assert.That(info, Is.Not.Null);
+            info.Should().NotBeNull();
         }
 
         [Test]
@@ -65,7 +66,7 @@ namespace Niche.CommandLine.Tests
         {
             var dir = "C:\\SampleFolder\\";
             var info = dir.As<DirectoryInfo>();
-            Assert.That(info, Is.Not.Null);
+            info.Should().NotBeNull();
         }
 
         [Test]
@@ -73,7 +74,7 @@ namespace Niche.CommandLine.Tests
         {
             var value = "Name=Bob";
             var instance = value.As<KeyValuePair<string, string>>();
-            Assert.That(instance, Is.Not.Null);
+            instance.Should().NotBeNull();
         }
 
         [Test]
@@ -81,7 +82,7 @@ namespace Niche.CommandLine.Tests
         {
             var value = "Name=Bob";
             var instance = value.As<KeyValuePair<string, string>>();
-            Assert.That(instance.Key, Is.EqualTo("Name"));
+            instance.Key.Should().Be("Name");
         }
 
         [Test]
@@ -89,7 +90,7 @@ namespace Niche.CommandLine.Tests
         {
             var value = "Name=Bob";
             var instance = value.As<KeyValuePair<string, string>>();
-            Assert.That(instance.Value, Is.EqualTo("Bob"));
+            instance.Value.Should().Be("Bob");
         }
 
         [Test]
@@ -97,7 +98,7 @@ namespace Niche.CommandLine.Tests
         {
             var value = "Count=42";
             var instance = value.As<KeyValuePair<string, int>>();
-            Assert.That(instance.Value, Is.EqualTo(42));
+            instance.Value.Should().Be(42);
         }
     }
 }

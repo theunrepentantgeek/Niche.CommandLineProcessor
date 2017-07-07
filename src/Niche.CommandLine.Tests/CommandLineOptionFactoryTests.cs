@@ -25,7 +25,7 @@ namespace Niche.CommandLine.Tests
         {
             var driver = new SampleDriver();
             var method = driver.GetType().GetMethod("Debug");
-            Assert.That(CommandLineOptionFactory.IsSwitch(method), Is.True);
+            CommandLineOptionFactory.IsSwitch(method).Should().BeTrue();
         }
 
         [Test]
@@ -33,7 +33,7 @@ namespace Niche.CommandLine.Tests
         {
             var driver = new SampleDriver();
             var method = driver.GetType().GetMethod("Find");
-            Assert.That(CommandLineOptionFactory.IsSwitch(method), Is.False);
+            CommandLineOptionFactory.IsSwitch(method).Should().BeFalse();
         }
 
         [Test]
@@ -41,7 +41,7 @@ namespace Niche.CommandLine.Tests
         {
             var driver = new SampleDriver();
             var method = driver.GetType().GetMethod("Verbose");
-            Assert.That(CommandLineOptionFactory.IsSwitch(method), Is.False);
+            CommandLineOptionFactory.IsSwitch(method).Should().BeFalse();
         }
 
         [Test]
@@ -49,7 +49,7 @@ namespace Niche.CommandLine.Tests
         {
             var driver = new SampleDriver();
             var method = driver.GetType().GetMethod("Find");
-            Assert.That(CommandLineOptionFactory.IsSwitch(method), Is.False);
+            CommandLineOptionFactory.IsSwitch(method).Should().BeFalse();
         }
 
         [Test]
@@ -57,7 +57,7 @@ namespace Niche.CommandLine.Tests
         {
             var driver = new BaseDriver();
             var method = driver.GetType().GetMethod("TestPerformance");
-            Assert.That(CommandLineOptionFactory.IsSwitch(method), Is.False);
+            CommandLineOptionFactory.IsSwitch(method).Should().BeFalse();
         }
 
         [Test]
@@ -82,7 +82,7 @@ namespace Niche.CommandLine.Tests
         {
             var driver = new SampleDriver();
             var method = driver.GetType().GetMethod("Find");
-            Assert.That(CommandLineOptionFactory.IsParameter(method), Is.True);
+            CommandLineOptionFactory.IsParameter(method).Should().BeTrue();
         }
 
         [Test]
@@ -90,7 +90,7 @@ namespace Niche.CommandLine.Tests
         {
             var driver = new SampleDriver();
             var method = driver.GetType().GetMethod("Debug");
-            Assert.That(CommandLineOptionFactory.IsParameter(method), Is.False);
+            CommandLineOptionFactory.IsParameter(method).Should().BeFalse();
         }
 
         [Test]
@@ -98,7 +98,7 @@ namespace Niche.CommandLine.Tests
         {
             var driver = new BaseDriver();
             var method = driver.GetType().GetMethod("TestPerformance");
-            Assert.That(CommandLineOptionFactory.IsParameter(method), Is.False);
+            CommandLineOptionFactory.IsParameter(method).Should().BeFalse();
         }
 
         [Test]
@@ -113,7 +113,7 @@ namespace Niche.CommandLine.Tests
         {
             var driver = new SampleDriver();
             var parameters = CommandLineOptionFactory.CreateParameters(driver);
-            Assert.That(parameters, Is.Not.Empty);
+            parameters.Should().NotBeEmpty();
         }
 
         [Test]
@@ -123,7 +123,7 @@ namespace Niche.CommandLine.Tests
             var parameters
                 = CommandLineOptionFactory.CreateParameters(driver);
             var uploadParameter = parameters.Single(p => p.Method.Name == "Upload");
-            Assert.That(uploadParameter, Is.InstanceOf<CommandLineParameter<string>>());
+            uploadParameter.Should().BeOfType<CommandLineParameter<string>>();
         }
 
         [Test]
@@ -138,7 +138,7 @@ namespace Niche.CommandLine.Tests
         {
             var driver = new SampleDriver();
             var method = driver.GetType().GetMethod("Find");
-            Assert.That(CommandLineOptionFactory.IsMode<BaseDriver>(method), Is.False);
+            CommandLineOptionFactory.IsMode<BaseDriver>(method).Should().BeFalse();
         }
 
         [Test]
@@ -146,7 +146,7 @@ namespace Niche.CommandLine.Tests
         {
             var driver = new SampleDriver();
             var method = driver.GetType().GetMethod("Debug");
-            Assert.That(CommandLineOptionFactory.IsMode<BaseDriver>(method), Is.False);
+            CommandLineOptionFactory.IsMode<BaseDriver>(method).Should().BeFalse();
         }
 
         [Test]
@@ -154,7 +154,7 @@ namespace Niche.CommandLine.Tests
         {
             var driver = new BaseDriver();
             var method = driver.GetType().GetMethod("TestPerformance");
-            Assert.That(CommandLineOptionFactory.IsMode<BaseDriver>(method), Is.True);
+            CommandLineOptionFactory.IsMode<BaseDriver>(method).Should().BeTrue();
         }
 
         [Test]
