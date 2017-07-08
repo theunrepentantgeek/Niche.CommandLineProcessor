@@ -10,91 +10,87 @@ namespace Niche.CommandLine.Tests
     public class StringExtensionsTests
     {
         [Fact]
-        public void AsString_givenString_returnString()
+        public void AsString_GivenString_Returnstring()
         {
             var sample = "sample";
-            var result = sample.As<string>();
-            result.Should().Be(sample);
+            sample.As<string>().Should().Be(sample);
         }
 
         [Fact]
-        public void AsInt_givenNumber_returnInt()
+        public void AsInt_GivenNumber_returnInt()
         {
             var sample = "42";
-            var result = sample.As<int>();
-            result.Should().Be(42);
+            sample.As<int>().Should().Be(42);
         }
 
         [Fact]
-        public void AsColor_givenColor_returnsColor()
+        public void AsColor_GivenColor_ReturnsColor()
         {
             var sample = "Red";
-            var result = sample.As<Color>();
-            result.Should().Be(Color.Red);
+            sample.As<Color>().Should().Be(Color.Red);
         }
 
         [Fact]
-        public void AsVersion_givenVersion_returnsVersion()
+        public void AsVersion_GivenVersion_ReturnsVersion()
         {
             var sample = "1.2.3.4";
-            var result = sample.As<Version>();
-            result.ToString(4).Should().Be("1.2.3.4");
+            sample.As<Version>().ToString(4).Should().Be("1.2.3.4");
         }
 
         [Fact]
-        public void AsList_givenString_throwsException()
+        public void AsList_GivenString_ThrowsException()
         {
             var sample = "sample";
             Assert.Throws<InvalidOperationException>(
                 () => sample.As<List<int>>());
         }
 
-        [Fact]
-        public void AsDirectoryInfo_givenStringWithoutTrailingSlash_returnsInstance()
+        public class AsDirectoryInfo : StringExtensionsTests
         {
-            var dir = "C:\\SampleFolder";
-            var info = dir.As<DirectoryInfo>();
-            info.Should().NotBeNull();
+            private readonly string _dir = "C:\\SampleFolder\\";
+
+            [Fact]
+            public void GivenStringWithoutTrailingSlash_ReturnsInstance()
+            {
+                _dir.As<DirectoryInfo>().Should().NotBeNull();
+            }
+
+            [Fact]
+            public void GivenStringWithTrailingSlash_ReturnsInstance()
+            {
+                _dir.As<DirectoryInfo>().Should().NotBeNull();
+            }
         }
 
-        [Fact]
-        public void AsDirectoryInfo_givenStringWithTrailingSlash_returnsInstance()
+        public class AsKeyValuePair : StringExtensionsTests
         {
-            var dir = "C:\\SampleFolder\\";
-            var info = dir.As<DirectoryInfo>();
-            info.Should().NotBeNull();
-        }
+            [Fact]
+            public void GivenStringWithEquals_ReturnsInstance()
+            {
+                var value = "Name=Bob";
+                value.As<KeyValuePair<string, string>>().Should().NotBeNull();
+            }
 
-        [Fact]
-        public void AsKeyValuePair_givenStringWithEquals_returnsInstance()
-        {
-            var value = "Name=Bob";
-            var instance = value.As<KeyValuePair<string, string>>();
-            instance.Should().NotBeNull();
-        }
+            [Fact]
+            public void GivenStringWithEquals_ReturnsKey()
+            {
+                var value = "Name=Bob";
+                value.As<KeyValuePair<string, string>>().Key.Should().Be("Name");
+            }
 
-        [Fact]
-        public void AsKeyValuePair_givenStringWithEquals_returnsKey()
-        {
-            var value = "Name=Bob";
-            var instance = value.As<KeyValuePair<string, string>>();
-            instance.Key.Should().Be("Name");
-        }
+            [Fact]
+            public void GivenStringWithEquals_ReturnsValue()
+            {
+                var value = "Name=Bob";
+                value.As<KeyValuePair<string, string>>().Value.Should().Be("Bob");
+            }
 
-        [Fact]
-        public void AsKeyValuePair_givenStringWithEquals_returnsValue()
-        {
-            var value = "Name=Bob";
-            var instance = value.As<KeyValuePair<string, string>>();
-            instance.Value.Should().Be("Bob");
-        }
-
-        [Fact]
-        public void AsKeyValuePair_givenStringWithEquals_returnsInt()
-        {
-            var value = "Count=42";
-            var instance = value.As<KeyValuePair<string, int>>();
-            instance.Value.Should().Be(42);
+            [Fact]
+            public void GivenStringWithEquals_ReturnsInt()
+            {
+                var value = "Count=42";
+                value.As<KeyValuePair<string, int>>().Value.Should().Be(42);
+            }
         }
     }
 }

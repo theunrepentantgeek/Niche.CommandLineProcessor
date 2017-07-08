@@ -6,7 +6,7 @@ namespace Niche.CommandLine.Tests
     public class CommandLineOptionBaseTests
     {
         [Fact]
-        public void FindDescription_givenMemberWithDescription_returnsDescription()
+        public void FindDescription_GivenMemberWithDescription_ReturnsDescription()
         {
             var method = typeof(SampleDriver).GetMethod("Debug");
             var description = CommandLineOptionBase.FindDescription(method);
@@ -14,7 +14,7 @@ namespace Niche.CommandLine.Tests
         }
 
         [Fact]
-        public void FindDescription_givenMemberWithNoDescription_returnsEmptyString()
+        public void FindDescription_GivenMemberWithNoDescription_ReturnsEmptyString()
         {
             var method = typeof(SampleDriver).GetMethod("Verbose");
             var description = CommandLineOptionBase.FindDescription(method);

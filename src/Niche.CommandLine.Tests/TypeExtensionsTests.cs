@@ -6,107 +6,122 @@ namespace Niche.CommandLine.Tests
 {
     public class TypeExtensionsTests
     {
-        [Fact]
-        public void IsEnumerable_givenIEnumerableString_returnsTrue()
+        public class IsEnumerable : TypeExtensionsTests
         {
-            typeof(IEnumerable<string>).IsIEnumerable().Should().BeTrue();
+            [Fact]
+            public void GivenIEnumerableString_ReturnsTrue()
+            {
+                typeof(IEnumerable<string>).IsIEnumerable().Should().BeTrue();
+            }
+
+            [Fact]
+            public void GivenInt_ReturnsFalse()
+            {
+                typeof(int).IsIEnumerable().Should().BeFalse();
+            }
+
+            [Fact]
+            public void GivenIListString_ReturnsTrue()
+            {
+                typeof(IList<string>).IsIEnumerable().Should().BeTrue();
+            }
+
+            [Fact]
+            public void GivenICollectionString_ReturnsTrue()
+            {
+                typeof(ICollection<string>).IsIEnumerable().Should().BeTrue();
+            }
+
+            [Fact]
+            public void GivenListString_ReturnsTrue()
+            {
+                typeof(List<string>).IsIEnumerable().Should().BeTrue();
+            }
+
+            [Fact]
+            public void GivenString_ReturnsFalse()
+            {
+                typeof(string).IsIEnumerable().Should().BeFalse();
+            }
         }
 
-        [Fact]
-        public void IsEnumerable_givenInt_returnsFalse()
+        public class GetIEnumerableItemType : TypeExtensionsTests
         {
-            typeof(int).IsIEnumerable().Should().BeFalse();
+            [Fact]
+            public void GivenIEnumerableString_ReturnsString()
+            {
+                typeof(IEnumerable<string>).GetIEnumerableItemType().Should().Be(typeof(string));
+            }
+
+            [Fact]
+            public void GivenIListInt_ReturnsInt()
+            {
+                typeof(IList<int>).GetIEnumerableItemType().Should().Be(typeof(int));
+            }
+
+            [Fact]
+            public void GivenListString_ReturnsInt()
+            {
+                typeof(List<string>).GetIEnumerableItemType().Should().Be(typeof(string));
+            }
+
+            [Fact]
+            public void GivenString_ReturnsNull()
+            {
+                typeof(string).GetIEnumerableItemType().Should().BeNull();
+            }
         }
 
-        [Fact]
-        public void IsEnumerable_givenIListString_returnsTrue()
+        public class IsKeyValuePair : TypeExtensionsTests
         {
-            typeof(IList<string>).IsIEnumerable().Should().BeTrue();
+            [Fact]
+            public void GivenString_ReturnsFalse()
+            {
+                typeof(string).IsKeyValuePair().Should().BeFalse();
+            }
+
+            [Fact]
+            public void GivenInteger_ReturnsFalse()
+            {
+                typeof(int).IsKeyValuePair().Should().BeFalse();
+            }
+
+            [Fact]
+            public void GivenKeyValuePair_ReturnsFalse()
+            {
+                typeof(KeyValuePair<string, string>).IsKeyValuePair().Should().BeTrue();
+            }
         }
 
-        [Fact]
-        public void IsEnumerable_givenICollectionString_returnsTrue()
+        public class GetKeyValueKeyType : TypeExtensionsTests
         {
-            typeof(ICollection<string>).IsIEnumerable().Should().BeTrue();
+            [Fact]
+            public void GivenString_ReturnsNull()
+            {
+                typeof(string).GetKeyValueKeyType().Should().BeNull();
+            }
+
+            [Fact]
+            public void GivenKeyValuePair_ReturnsNull()
+            {
+                typeof(KeyValuePair<string, int>).GetKeyValueKeyType().Should().Be(typeof(string));
+            }
         }
 
-        [Fact]
-        public void IsEnumerable_givenListString_returnsTrue()
+        public class GetKeyValueValueType : TypeExtensionsTests
         {
-            typeof(List<string>).IsIEnumerable().Should().BeTrue();
-        }
+            [Fact]
+            public void GivenString_ReturnsNull()
+            {
+                typeof(string).GetKeyValueValueType().Should().BeNull();
 
-        [Fact]
-        public void IsEnumerable_givenString_returnsFalse()
-        {
-            typeof(string).IsIEnumerable().Should().BeFalse();
-        }
+            }
 
-        [Fact]
-        public void GetIEnumerableItemType_givenIEnumerableString_returnsString()
-        {
-            typeof(IEnumerable<string>).GetIEnumerableItemType().Should().Be(typeof(string));
-        }
-
-        [Fact]
-        public void GetIEnumerableItemType_givenIListInt_returnsInt()
-        {
-            typeof(IList<int>).GetIEnumerableItemType().Should().Be(typeof(int));
-        }
-
-        [Fact]
-        public void GetIEnumerableItemType_givenListString_returnsInt()
-        {
-            typeof(List<string>).GetIEnumerableItemType().Should().Be(typeof(string));
-        }
-
-        [Fact]
-        public void GetIEnumerableItemType_givenString_returnsNull()
-        {
-            typeof(string).GetIEnumerableItemType().Should().BeNull();
-        }
-
-        [Fact]
-        public void IsKeyValuePair_givenString_returnsFalse()
-        {
-            typeof(string).IsKeyValuePair().Should().BeFalse();
-        }
-
-        [Fact]
-        public void IsKeyValuePair_givenInteger_returnsFalse()
-        {
-            typeof(int).IsKeyValuePair().Should().BeFalse();
-        }
-
-        [Fact]
-        public void IsKeyValuePair_givenKeyValuePair_returnsFalse()
-        {
-            typeof(KeyValuePair<string, string>).IsKeyValuePair().Should().BeTrue();
-        }
-
-        [Fact]
-        public void GetKeyValueKeyType_givenString_returnsNull()
-        {
-            typeof(string).GetKeyValueKeyType().Should().BeNull();
-        }
-
-        [Fact]
-        public void GetKeyValueKeyType_givenKeyValuePair_returnsNull()
-        {
-            typeof(KeyValuePair<string,int>).GetKeyValueKeyType().Should().Be(typeof(string));
-        }
-
-        [Fact]
-        public void GetKeyValueValueType_givenString_returnsNull()
-        {
-            typeof(string).GetKeyValueValueType().Should().BeNull();
-            
-        }
-
-        [Fact]
-        public void GetKeyValueValueType_givenKeyValuePair_returnsNull()
-        {
-            typeof(KeyValuePair<string, int>).GetKeyValueValueType().Should().Be(typeof(int));
+            [Fact]
+            public void GivenKeyValuePair_ReturnsNull()
+            {
+                typeof(KeyValuePair<string, int>).GetKeyValueValueType().Should().Be(typeof(int));
+            }
         }
     }
 }
