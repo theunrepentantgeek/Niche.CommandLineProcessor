@@ -86,6 +86,11 @@ namespace Niche.CommandLine
                 throw new ArgumentNullException(nameof(arguments));
             }
 
+            if (driver == null)
+            {
+                throw new ArgumentNullException(nameof(driver));
+            }
+
             var queue = new Queue<string>(arguments);
             var selectedDriver = driver;
             _modes = CommandLineOptionFactory.CreateModes(selectedDriver);

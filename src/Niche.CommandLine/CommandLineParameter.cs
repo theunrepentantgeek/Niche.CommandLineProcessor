@@ -64,7 +64,8 @@ namespace Niche.CommandLine
 
             if (!method.DeclaringType.IsInstanceOfType(instance))
             {
-                throw new ArgumentException("Expect method to be callable on instance");
+                throw new ArgumentException(
+                    "Expect method to be callable on instance", nameof(method));
             }
 
             _instance = instance;

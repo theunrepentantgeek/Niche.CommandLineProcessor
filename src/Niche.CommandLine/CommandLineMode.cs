@@ -46,7 +46,7 @@ namespace Niche.CommandLine
 
             if (!method.DeclaringType.IsInstanceOfType(instance))
             {
-                throw new ArgumentException("Expect method to be callable on instance");
+                throw new ArgumentException("Expect method to be callable on instance", nameof(method));
             }
 
             if (!driverType.IsAssignableFrom(method.ReturnType))
@@ -56,7 +56,7 @@ namespace Niche.CommandLine
                         CultureInfo.CurrentCulture,
                         "Expected method return type to be compatible with {0}",
                         driverType.Name);
-                throw new ArgumentException(message);
+                throw new ArgumentException(message, nameof(method));
             }
 
             _instance = instance;

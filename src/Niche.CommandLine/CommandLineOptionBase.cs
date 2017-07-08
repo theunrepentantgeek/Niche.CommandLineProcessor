@@ -24,10 +24,10 @@ namespace Niche.CommandLine
         /// <summary>
         /// Initializes a new instance of the CommandLineOptionBase class
         /// </summary>
-        protected CommandLineOptionBase(MethodInfo member)
+        protected CommandLineOptionBase(MethodInfo method)
         {
-            Method = member ?? throw new ArgumentNullException(nameof(member));
-            Description = FindDescription(member);
+            Method = method ?? throw new ArgumentNullException(nameof(method));
+            Description = FindDescription(method);
         }
 
         /// <summary>
