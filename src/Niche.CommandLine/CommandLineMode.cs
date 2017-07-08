@@ -7,6 +7,10 @@ namespace Niche.CommandLine
 {
     public class CommandLineMode
     {
+        private readonly object _instance;
+
+        private readonly MethodInfo _method;
+
         /// <summary>
         /// Gets the name of this mode
         /// </summary>
@@ -55,8 +59,8 @@ namespace Niche.CommandLine
                 throw new ArgumentException(message);
             }
 
-            mInstance = instance;
-            mMethod = method;
+            _instance = instance;
+            _method = method;
             Description = CommandLineOptionBase.FindDescription(method);
 
             Name = CamelCase.ToDashedName(method.Name);
@@ -72,7 +76,7 @@ namespace Niche.CommandLine
         /// </summary>
         public object Activate()
         {
-            return mMethod.Invoke(mInstance, null);
+            return _method.Invoke(_instance, null);
         }
 
         /// <summary>
@@ -89,8 +93,5 @@ namespace Niche.CommandLine
 
             yield return text;
         }
-
-        private readonly object mInstance;
-        private readonly MethodInfo mMethod;
     }
 }

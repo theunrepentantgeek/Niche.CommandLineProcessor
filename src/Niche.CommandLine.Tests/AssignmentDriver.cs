@@ -8,12 +8,16 @@ namespace Niche.CommandLine.Tests
     /// </summary>
     public class AssignmentDriver
     {
+        private readonly Dictionary<string, string> _variables = new Dictionary<string, string>();
+
+        public bool IsVerbose { get; private set; }
+
         public string this[string name] => _variables[name];
 
         [Description("Verbose output for debugging.")]
         public void Verbose()
         {
-            mVerbose = true;
+            IsVerbose = true;
         }
 
         [Description("Define a variable.")]
@@ -21,12 +25,8 @@ namespace Niche.CommandLine.Tests
         {
             foreach (var p in variables)
             {
-                mVariables[p.Key] = p.Value;
+                _variables[p.Key] = p.Value;
             }
         }
-
-        private readonly Dictionary<string, string> mVariables = new Dictionary<string, string>();
-
-        private bool mVerbose;
     }
 }

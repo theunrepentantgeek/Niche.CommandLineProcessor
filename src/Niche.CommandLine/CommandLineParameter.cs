@@ -67,9 +67,9 @@ namespace Niche.CommandLine
                 throw new ArgumentException("Expect method to be callable on instance");
             }
 
-            mInstance = instance;
-            mMethod = method;
-            mParameterInfo = method.GetParameters().Single();
+            _instance = instance;
+            _method = method;
+            _parameterInfo = method.GetParameters().Single();
 
             var name = method.Name;
             ShortName = "-" + CamelCase.ToShortName(name);
@@ -77,7 +77,7 @@ namespace Niche.CommandLine
             LongName = "--" + CamelCase.ToDashedName(name);
 
             IsRequired = method.GetCustomAttribute<RequiredAttribute>() != null;
-            IsMultivalued = mParameterInfo.ParameterType.IsIEnumerable();
+            IsMultivalued = _parameterInfo.ParameterType.IsIEnumerable();
         }
 
         /// <summary>
@@ -131,7 +131,7 @@ namespace Niche.CommandLine
                     LongName,
                     ShortName,
                     Description,
-                    mParameterInfo.Name.ToLower(CultureInfo.CurrentCulture));
+                    _parameterInfo.Name.ToLower(CultureInfo.CurrentCulture));
 
             yield return text;
         }
@@ -147,7 +147,7 @@ namespace Niche.CommandLine
                 throw new ArgumentNullException(nameof(errors));
             }
 
-            if (IsRequired && !mValues.Any())
+            if (IsRequired && !_values.Any())
             {
                 // Mandatory but not provided: create error
                 var message
@@ -156,7 +156,7 @@ namespace Niche.CommandLine
                 return;
             }
 
-            if (mValues.Count == 0)
+            if (_values.Count == 0)
             {
                 // Nothing provided: return
                 return;
@@ -165,11 +165,11 @@ namespace Niche.CommandLine
             if (IsMultivalued)
             {
                 // Use all the values we have
-                mMethod.Invoke(mInstance, new object[] { mValues });
+                _method.Invoke(_instance, new object[] { _values });
                 return;
             }
 
-            if (mValues.Count > 1)
+            if (_values.Count > 1)
             {
                 // Single valued, but we have too many values
                 var message
@@ -179,16 +179,7 @@ namespace Niche.CommandLine
             }
 
             // Single valued: one value provided
-            mMethod.Invoke(mInstance, new object[] { mValues[0] });
+            _method.Invoke(_instance, new object[] { _values[0] });
         }
-
-        private readonly MethodInfo mMethod;
-        private readonly ParameterInfo mParameterInfo;
-        private readonly object mInstance;
-
-        /// <summary>
-        /// List of values passed for this parameter
-        /// </summary>
-        private readonly List<TValue> mValues = new List<TValue>();
     }
 }

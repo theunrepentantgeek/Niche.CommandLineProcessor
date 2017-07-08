@@ -10,6 +10,12 @@ namespace Niche.CommandLine
     /// </summary>
     public class CommandLineSwitch : CommandLineOptionBase
     {
+        // The instance we're configuring
+        private readonly object _instance;
+
+        // The method to call to activate this switch
+        private readonly MethodInfo _method;
+
         /// <summary>
         /// Gets the short form of this switch
         /// </summary>
@@ -38,8 +44,8 @@ namespace Niche.CommandLine
                 throw new ArgumentException("Expect method to be callable on instance");
             }
 
-            mInstance = instance;
-            mMethod = method;
+            _instance = instance;
+            _method = method;
 
             ShortName = "-" + CamelCase.ToShortName(method.Name);
             AlternateShortName = "/" + CamelCase.ToShortName(method.Name);
@@ -67,7 +73,7 @@ namespace Niche.CommandLine
                 || LongName.Equals(arg, StringComparison.CurrentCultureIgnoreCase))
             {
                 arguments.Dequeue();
-                mMethod.Invoke(mInstance, null);
+                _method.Invoke(_instance, null);
                 return true;
             }
 
@@ -98,8 +104,5 @@ namespace Niche.CommandLine
 
             yield return text;
         }
-
-        private readonly object mInstance;
-        private readonly MethodInfo mMethod;
     }
 }

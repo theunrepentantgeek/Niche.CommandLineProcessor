@@ -9,6 +9,8 @@ namespace Niche.CommandLine.Demo
     /// </summary>
     public class Driver
     {
+        private readonly List<string> _searchTerms = new List<string>();
+
         public bool IsVerbose { get; private set; }
 
         public IList<string> SearchTerms => _searchTerms;
@@ -24,7 +26,7 @@ namespace Niche.CommandLine.Demo
         [Description("Find items by keyword")]
         public void Find(string keyword)
         {
-            mSearchTerms.Add(keyword);
+            _searchTerms.Add(keyword);
         }
 
         [Description("Specify the color of output (and test automatic conversion)")]
@@ -38,7 +40,5 @@ namespace Niche.CommandLine.Demo
         {
             return this;
         }
-
-        private readonly List<string> mSearchTerms = new List<string>();
     }
 }

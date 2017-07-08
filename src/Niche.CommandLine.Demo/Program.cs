@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Niche.CommandLine;
+using System.Diagnostics;
 
 namespace Niche.CommandLine.Demo
 {
@@ -41,7 +37,10 @@ namespace Niche.CommandLine.Demo
             logger.Success("Success");
             logger.Failure("Failure");
 
-            Console.ReadLine();
+            if (Debugger.IsAttached)
+            {
+                Console.ReadLine();
+            }
         }
     }
 }
