@@ -8,7 +8,7 @@ version: 2.0.{build}
 install:
   - nuget restore
 
-os: Visual Studio 2015
+os: Visual Studio 2017
   
 # enable patching of AssemblyInfo.* files
 
@@ -28,3 +28,5 @@ deploy:
     api_key:
       secure: oQjllmGDfO1OQ5QYI0RdPZf0EMebCOMKc1axg3tZk5RFN8nOUlE4ACz4J5A4JMGn
     artifact: /.*\.nupkg/
+    on:
+      branch: master

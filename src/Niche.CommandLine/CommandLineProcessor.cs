@@ -4,8 +4,6 @@ using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Niche.CommandLine
 {
@@ -16,37 +14,43 @@ namespace Niche.CommandLine
     public class CommandLineProcessor<T>
         where T : class
     {
+        // List of unprocessed arguments
+        private readonly List<string> _arguments = new List<string>();
+
+        // List of errors encountered so far
+        private readonly List<string> _errors = new List<string>();
+
+        // Help text on available parameters
+        private readonly List<string> _optionHelp = new List<string>();
+
+        // The driver object we are configuring
+        private readonly T _driver;
+
+        // A flag for whether to show help
+        private bool _showHelp;
+
+        // A list of all the modes we support
+        private readonly IEnumerable<CommandLineMode> _modes;
+
         /// <summary>
         /// Gets the list of arguments not already processed
         /// </summary>
-        public IEnumerable<string> Arguments
-        {
-            get { return mArguments; }
-        }
+        public IEnumerable<string> Arguments => _arguments;
 
         /// <summary>
         /// Gets a value indicating whether we have any errors
         /// </summary>
-        public bool HasErrors
-        {
-            get { return mErrors.Any(); }
-        }
+        public bool HasErrors => _errors.Any();
 
         /// <summary>
         /// Gets a value indicating whether we should should help
         /// </summary>
-        public bool ShowHelp
-        {
-            get { return mShowHelp; }
-        }
+        public bool ShowHelp => _showHelp;
 
         /// <summary>
         /// Gets the sequence of the errors already encountered
         /// </summary>
-        public IEnumerable<string> Errors
-        {
-            get { return mErrors; }
-        }
+        public IEnumerable<string> Errors => _errors;
 
         /// <summary>
         /// Gets a list of help text for display
@@ -55,27 +59,25 @@ namespace Niche.CommandLine
         {
             get
             {
-                if (!mOptionHelp.Any())
+                if (!_optionHelp.Any())
                 {
                     CreateHelp();
                 }
 
-                return mOptionHelp;
+                return _optionHelp;
             }
         }
 
         /// <summary>
         /// Gets a reference to the driver instance we've configured from the command line
         /// </summary>
-        public T Driver
-        {
-            get { return mDriver; }
-        }
+        public T Driver => _driver;
 
         /// <summary>
         /// Initializes a new instance of the CommandLineProcessor class
         /// </summary>
-        /// <param name="arguments"></param>
+        /// <param name="arguments">Command line arguments to process</param>
+        /// <param name="driver">Driver instance to configure from the command line</param>
         [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
         public CommandLineProcessor(IEnumerable<string> arguments, T driver)
         {
@@ -84,42 +86,47 @@ namespace Niche.CommandLine
                 throw new ArgumentNullException(nameof(arguments));
             }
 
+            if (driver == null)
+            {
+                throw new ArgumentNullException(nameof(driver));
+            }
+
             var queue = new Queue<string>(arguments);
             var selectedDriver = driver;
-            mModes = CommandLineOptionFactory.CreateModes<T>(selectedDriver);
+            _modes = CommandLineOptionFactory.CreateModes(selectedDriver);
             while (queue.Any())
             {
                 var modeName = queue.Peek();
-                var mode = mModes.SingleOrDefault(m => m.HasName(modeName));
+                var mode = _modes.SingleOrDefault(m => m.HasName(modeName));
                 if (mode == null)
                 {
                     break;
                 }
 
                 selectedDriver = (T)mode.Activate();
-                mModes = CommandLineOptionFactory.CreateModes<T>(selectedDriver);
+                _modes = CommandLineOptionFactory.CreateModes(selectedDriver);
                 queue.Dequeue();
             }
 
-            mDriver = selectedDriver;
+            _driver = selectedDriver;
 
             // Default switches
-            mSwitches.AddRange(CommandLineOptionFactory.CreateSwitches(this));
+            _switches.AddRange(CommandLineOptionFactory.CreateSwitches(this));
 
             // Create options for our driver
-            mParameters.AddRange(CommandLineOptionFactory.CreateParameters(mDriver));
-            mSwitches.AddRange(CommandLineOptionFactory.CreateSwitches(mDriver));
+            _parameters.AddRange(CommandLineOptionFactory.CreateParameters(_driver));
+            _switches.AddRange(CommandLineOptionFactory.CreateSwitches(_driver));
 
-            mArguments.Clear();
+            _arguments.Clear();
             while (queue.Count > 0)
             {
-                var activatedSwitch = mSwitches.FirstOrDefault(m => m.TryActivate(queue));
+                var activatedSwitch = _switches.FirstOrDefault(m => m.TryActivate(queue));
                 if (activatedSwitch != null)
                 {
                     continue;
                 }
 
-                var activatedParameter = mParameters.FirstOrDefault(p => p.TryActivate(queue));
+                var activatedParameter = _parameters.FirstOrDefault(p => p.TryActivate(queue));
                 if (activatedParameter != null)
                 {
                     continue;
@@ -129,47 +136,28 @@ namespace Niche.CommandLine
                 if (IsOption(arg))
                 {
                     var message = string.Format(CultureInfo.CurrentCulture, "{0}\twas not expected.", arg);
-                    mErrors.Add(message);
+                    _errors.Add(message);
                     continue;
                 }
 
-                mArguments.Add(arg);
+                _arguments.Add(arg);
             }
 
-            foreach (var o in mSwitches)
+            foreach (var o in _switches)
             {
-                o.Completed(mErrors);
+                o.Completed(_errors);
             }
 
-            foreach (var o in mParameters)
+            foreach (var o in _parameters)
             {
-                o.Completed(mErrors);
+                o.Completed(_errors);
             }
-        }
-
-        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
-        private bool TryActivate(CommandLineOptionBase option, Queue<string> queue)
-        {
-            try
-            {
-                return option.TryActivate(queue);
-            }
-            // Shouldn't really catch "Exception", but the BCL throws it!
-            // See http://www.nichesoftware.co.nz/2013/02/21/so-you-should-never-catch-exception.html 
-            catch (Exception ex)
-            {
-                var message
-                    = string.Format(CultureInfo.CurrentCulture, "{0}:\t{1}", queue.Peek(), ex.Message);
-                mErrors.Add(message);
-            }
-
-            return false;
         }
 
         [Description("Show this help")]
         public void Help()
         {
-            mShowHelp = true;
+            _showHelp = true;
         }
 
         /// <summary>
@@ -188,47 +176,32 @@ namespace Niche.CommandLine
         /// </summary>
         private void CreateHelp()
         {
-            var modeHelp = mModes.SelectMany(m => m.CreateHelp()).OrderBy(l => l).ToList();
+            var modeHelp = _modes.SelectMany(m => m.CreateHelp()).OrderBy(l => l).ToList();
             if (modeHelp.Any())
             {
-                mOptionHelp.AddRange(modeHelp);
-                mOptionHelp.Add(string.Empty);
+                _optionHelp.AddRange(modeHelp);
+                _optionHelp.Add(string.Empty);
             }
 
-            var switchHelp = mSwitches.SelectMany(o => o.CreateHelp()).OrderBy(l => l).ToList();
-            mOptionHelp.AddRange(switchHelp);
+            var switchHelp = _switches.SelectMany(o => o.CreateHelp()).OrderBy(l => l).ToList();
+            _optionHelp.AddRange(switchHelp);
 
-            var parameterHelp = mParameters.SelectMany(o => o.CreateHelp()).OrderBy(l => l).ToList();
+            var parameterHelp = _parameters.SelectMany(o => o.CreateHelp()).OrderBy(l => l).ToList();
             if (parameterHelp.Any())
             {
-                mOptionHelp.Add(string.Empty);
-                mOptionHelp.AddRange(parameterHelp);
+                _optionHelp.Add(string.Empty);
+                _optionHelp.AddRange(parameterHelp);
             }
         }
 
         /// <summary>
         /// Storage for all our switches
         /// </summary>
-        private readonly List<CommandLineOptionBase> mSwitches = new List<CommandLineOptionBase>();
+        private readonly List<CommandLineOptionBase> _switches = new List<CommandLineOptionBase>();
 
         /// <summary>
         /// Storage for all our parameters
         /// </summary>
-        private readonly List<CommandLineOptionBase> mParameters = new List<CommandLineOptionBase>();
-
-        /// <summary>
-        /// List of unprocessed arguments
-        /// </summary>
-        private readonly List<string> mArguments = new List<string>();
-
-        private readonly List<string> mErrors = new List<string>();
-
-        private readonly List<string> mOptionHelp = new List<string>();
-
-        private readonly T mDriver;
-
-        private bool mShowHelp;
-
-        private IEnumerable<CommandLineMode> mModes;
+        private readonly List<CommandLineOptionBase> _parameters = new List<CommandLineOptionBase>();
     }
 }

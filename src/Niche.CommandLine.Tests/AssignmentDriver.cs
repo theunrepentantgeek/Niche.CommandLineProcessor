@@ -1,26 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Niche.CommandLine.Tests
 {
     /// <summary>
-    /// Driver used to test variable assignment functionality of the commanline processor
+    /// Driver used to test variable assignment functionality of the commandline processor
     /// </summary>
     public class AssignmentDriver
     {
-        public string this[string name]
-        {
-            get { return mVariables[name]; }
-        }
+        private readonly Dictionary<string, string> _variables = new Dictionary<string, string>();
+
+        public bool IsVerbose { get; private set; }
+
+        public string this[string name] => _variables[name];
 
         [Description("Verbose output for debugging.")]
         public void Verbose()
         {
-            mVerbose = true;
+            IsVerbose = true;
         }
 
         [Description("Define a variable.")]
@@ -28,12 +25,8 @@ namespace Niche.CommandLine.Tests
         {
             foreach (var p in variables)
             {
-                mVariables[p.Key] = p.Value;
+                _variables[p.Key] = p.Value;
             }
         }
-
-        private readonly Dictionary<string, string> mVariables = new Dictionary<string, string>();
-
-        private bool mVerbose;
     }
 }

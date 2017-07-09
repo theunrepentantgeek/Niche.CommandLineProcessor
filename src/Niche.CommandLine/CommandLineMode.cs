@@ -1,24 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Niche.CommandLine
 {
     public class CommandLineMode
     {
+        private readonly object _instance;
+
+        private readonly MethodInfo _method;
+
         /// <summary>
         /// Gets the name of this mode
         /// </summary>
-        public string Name { get; private set; }
+        public string Name { get; }
 
         /// <summary>
         /// Gets or sets a description of this option
         /// </summary>
-        public string Description { get; private set; }
+        public string Description { get; }
 
         /// <summary>
         /// Initializes a new instance of the CommandLineMode class
@@ -43,9 +44,9 @@ namespace Niche.CommandLine
                 throw new ArgumentNullException(nameof(method));
             }
 
-            if (!method.DeclaringType.IsAssignableFrom(instance.GetType()))
+            if (!method.DeclaringType.IsInstanceOfType(instance))
             {
-                throw new ArgumentException("Expect method to be callable on instance");
+                throw new ArgumentException("Expect method to be callable on instance", nameof(method));
             }
 
             if (!driverType.IsAssignableFrom(method.ReturnType))
@@ -55,11 +56,11 @@ namespace Niche.CommandLine
                         CultureInfo.CurrentCulture,
                         "Expected method return type to be compatible with {0}",
                         driverType.Name);
-                throw new ArgumentException(message);
+                throw new ArgumentException(message, nameof(method));
             }
 
-            mInstance = instance;
-            mMethod = method;
+            _instance = instance;
+            _method = method;
             Description = CommandLineOptionBase.FindDescription(method);
 
             Name = CamelCase.ToDashedName(method.Name);
@@ -75,7 +76,7 @@ namespace Niche.CommandLine
         /// </summary>
         public object Activate()
         {
-            return mMethod.Invoke(mInstance, null);
+            return _method.Invoke(_instance, null);
         }
 
         /// <summary>
@@ -92,8 +93,5 @@ namespace Niche.CommandLine
 
             yield return text;
         }
-
-        private readonly object mInstance;
-        private readonly MethodInfo mMethod;
     }
 }

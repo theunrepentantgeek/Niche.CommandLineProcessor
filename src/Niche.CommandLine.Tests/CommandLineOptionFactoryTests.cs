@@ -1,167 +1,175 @@
-﻿using NUnit.Framework;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using FluentAssertions;
+using Xunit;
 
 namespace Niche.CommandLine.Tests
 {
-    [TestFixture]
     public class CommandLineOptionFactoryTests
     {
-        [Test]
-        public void IsSwitch_givenNull_throwsException()
+        private readonly SampleDriver _driver = new SampleDriver();
+
+        public class IsSwitch : CommandLineOptionFactoryTests
         {
-            Assert.Throws<ArgumentNullException>(
-                () =>
-                {
-                    CommandLineOptionFactory.IsSwitch(null);
-                });
+            [Fact]
+            public void GivenNull_ThrowsException()
+            {
+                var exception =
+                    Assert.Throws<ArgumentNullException>(
+                        () => CommandLineOptionFactory.IsSwitch(null));
+                exception.ParamName.Should().Be("method");
+            }
+
+            [Fact]
+            public void GivenSwitchMethod_ReturnsTrue()
+            {
+                var method = _driver.GetType().GetMethod("Debug");
+                CommandLineOptionFactory.IsSwitch(method).Should().BeTrue();
+            }
+
+            [Fact]
+            public void GivenParameterMethod_ReturnsFalse()
+            {
+                var method = _driver.GetType().GetMethod("Find");
+                CommandLineOptionFactory.IsSwitch(method).Should().BeFalse();
+            }
+
+            [Fact]
+            public void GivenMethodMissingDescription_ReturnsFalse()
+            {
+                var method = _driver.GetType().GetMethod("Verbose");
+                CommandLineOptionFactory.IsSwitch(method).Should().BeFalse();
+            }
+
+            [Fact]
+            public void GivenMethodWithParameters_ReturnsFalse()
+            {
+                var method = _driver.GetType().GetMethod("Find");
+                CommandLineOptionFactory.IsSwitch(method).Should().BeFalse();
+            }
+
+            [Fact]
+            public void GivenModeMethod_ReturnsFalse()
+            {
+                var method = _driver.GetType().GetMethod("TestPerformance");
+                CommandLineOptionFactory.IsSwitch(method).Should().BeFalse();
+            }
         }
 
-        [Test]
-        public void IsSwitch_givenSwitchMethod_returnsTrue()
+        public class CreateSwitches : CommandLineOptionFactoryTests
         {
-            var driver = new SampleDriver();
-            var method = driver.GetType().GetMethod("Debug");
-            Assert.That(CommandLineOptionFactory.IsSwitch(method), Is.True);
+            [Fact]
+            public void GivenNullInstance_ThrowsException()
+            {
+                var exception =
+                    Assert.Throws<ArgumentNullException>(
+                        () => CommandLineOptionFactory.CreateSwitches(null));
+                exception.ParamName.Should().Be("instance");
+            }
         }
 
-        [Test]
-        public void IsSwitch_givenParameterMethod_returnsFalse()
+        public class IsParameter : CommandLineOptionFactoryTests
         {
-            var driver = new SampleDriver();
-            var method = driver.GetType().GetMethod("Find");
-            Assert.That(CommandLineOptionFactory.IsSwitch(method), Is.False);
+            [Fact]
+            public void GivenNull_ThrowsException()
+            {
+                Assert.Throws<ArgumentNullException>(
+                    () => CommandLineOptionFactory.IsParameter(null));
+            }
+
+            [Fact]
+            public void GivenParameterMethod_ReturnsTrue()
+            {
+                var method = _driver.GetType().GetMethod("Find");
+                CommandLineOptionFactory.IsParameter(method).Should().BeTrue();
+            }
+
+            [Fact]
+            public void GivenSwitchMethod_ReturnsFalse()
+            {
+                var method = _driver.GetType().GetMethod("Debug");
+                CommandLineOptionFactory.IsParameter(method).Should().BeFalse();
+            }
+
+            [Fact]
+            public void GivenModeMethod_ReturnsFalse()
+            {
+                var method = _driver.GetType().GetMethod("TestPerformance");
+                CommandLineOptionFactory.IsParameter(method).Should().BeFalse();
+            }
         }
 
-        [Test]
-        public void IsSwitch_givenMethodMissingDescription_returnsFalse()
+        public class CreateParameters : CommandLineOptionFactoryTests
         {
-            var driver = new SampleDriver();
-            var method = driver.GetType().GetMethod("Verbose");
-            Assert.That(CommandLineOptionFactory.IsSwitch(method), Is.False);
+            [Fact]
+            public void GivenNullInstance_ThrowsException()
+            {
+                var exception =
+                    Assert.Throws<ArgumentNullException>(
+                        () => CommandLineOptionFactory.CreateParameters(null));
+                exception.ParamName.Should().Be("instance");
+            }
+
+            [Fact]
+            public void GivenDriver_ReturnsParameters()
+            {
+                var parameters = CommandLineOptionFactory.CreateParameters(_driver);
+                parameters.Should().NotBeEmpty();
+            }
+
+            [Fact]
+            public void GivenDriver_ReturnsParameterOfCorrectType()
+            {
+                var parameters
+                    = CommandLineOptionFactory.CreateParameters(_driver);
+                var uploadParameter = parameters.Single(p => p.Method.Name == "Upload");
+                uploadParameter.Should().BeOfType<CommandLineParameter<string>>();
+            }
         }
 
-        [Test]
-        public void IsSwitch_givenMethodWithParameters_returnsFalse()
+        public class IsMode : CommandLineOptionFactoryTests
         {
-            var driver = new SampleDriver();
-            var method = driver.GetType().GetMethod("Find");
-            Assert.That(CommandLineOptionFactory.IsSwitch(method), Is.False);
+            [Fact]
+            public void GivenNull_ThrowsException()
+            {
+                var exception =
+                    Assert.Throws<ArgumentNullException>(
+                        () => CommandLineOptionFactory.IsMode<BaseDriver>(null));
+                exception.ParamName.Should().Be("method");
+            }
+
+            [Fact]
+            public void GivenParameterMethod_ReturnsFalse()
+            {
+                var method = _driver.GetType().GetMethod("Find");
+                CommandLineOptionFactory.IsMode<BaseDriver>(method).Should().BeFalse();
+            }
+
+            [Fact]
+            public void GivenSwitchMethod_ReturnsFalse()
+            {
+                var method = _driver.GetType().GetMethod("Debug");
+                CommandLineOptionFactory.IsMode<BaseDriver>(method).Should().BeFalse();
+            }
+
+            [Fact]
+            public void GivenModelMethod_ReturnsTrue()
+            {
+                var method = _driver.GetType().GetMethod("TestPerformance");
+                CommandLineOptionFactory.IsMode<BaseDriver>(method).Should().BeTrue();
+            }
         }
 
-        [Test]
-        public void IsSwitch_givenModeMethod_returnsFalse()
+        public class CreateModes : CommandLineOptionFactoryTests
         {
-            var driver = new BaseDriver();
-            var method = driver.GetType().GetMethod("TestPerformance");
-            Assert.That(CommandLineOptionFactory.IsSwitch(method), Is.False);
-        }
-
-        [Test]
-        public void CreateSwitches_givenNullInstance_throwsException()
-        {
-            Assert.Throws<ArgumentNullException>(
-                () => CommandLineOptionFactory.CreateSwitches(null));
-        }
-
-        [Test]
-        public void IsParameter_givenNull_throwsException()
-        {
-            Assert.Throws<ArgumentNullException>(
-                () =>
-                {
-                    CommandLineOptionFactory.IsParameter(null);
-                });
-        }
-
-        [Test]
-        public void IsParameter_givenParameterMethod_returnsTrue()
-        {
-            var driver = new SampleDriver();
-            var method = driver.GetType().GetMethod("Find");
-            Assert.That(CommandLineOptionFactory.IsParameter(method), Is.True);
-        }
-
-        [Test]
-        public void IsParameter_givenSwitchMethod_returnsFalse()
-        {
-            var driver = new SampleDriver();
-            var method = driver.GetType().GetMethod("Debug");
-            Assert.That(CommandLineOptionFactory.IsParameter(method), Is.False);
-        }
-
-        [Test]
-        public void IsParameter_givenModeMethod_returnsFalse()
-        {
-            var driver = new BaseDriver();
-            var method = driver.GetType().GetMethod("TestPerformance");
-            Assert.That(CommandLineOptionFactory.IsParameter(method), Is.False);
-        }
-
-        [Test]
-        public void CreateParameters_givenNullInstance_throwsException()
-        {
-            Assert.Throws<ArgumentNullException>(
-                () => CommandLineOptionFactory.CreateParameters(null));
-        }
-
-        [Test]
-        public void CreateParameters_givenDriver_returnsParameters()
-        {
-            var driver = new SampleDriver();
-            var parameters = CommandLineOptionFactory.CreateParameters(driver);
-            Assert.That(parameters, Is.Not.Empty);
-        }
-
-        [Test]
-        public void CreateParameters_givenDriver_returnsParameterOfCorrectType()
-        {
-            var driver = new SampleDriver();
-            var parameters
-                = CommandLineOptionFactory.CreateParameters(driver);
-            var uploadParameter = parameters.Single(p => p.Method.Name == "Upload");
-            Assert.That(uploadParameter, Is.InstanceOf<CommandLineParameter<string>>());
-        }
-
-        [Test]
-        public void IsMode_givenNull_throwsException()
-        {
-            Assert.Throws<ArgumentNullException>(
-                () => CommandLineOptionFactory.IsMode<BaseDriver>(null));
-        }
-
-        [Test]
-        public void IsMode_givenParameterMethod_returnsFalse()
-        {
-            var driver = new SampleDriver();
-            var method = driver.GetType().GetMethod("Find");
-            Assert.That(CommandLineOptionFactory.IsMode<BaseDriver>(method), Is.False);
-        }
-
-        [Test]
-        public void IsMode_givenSwitchMethod_returnsFalse()
-        {
-            var driver = new SampleDriver();
-            var method = driver.GetType().GetMethod("Debug");
-            Assert.That(CommandLineOptionFactory.IsMode<BaseDriver>(method), Is.False);
-        }
-
-        [Test]
-        public void IsMode_givenModelMethod_returnsTrue()
-        {
-            var driver = new BaseDriver();
-            var method = driver.GetType().GetMethod("TestPerformance");
-            Assert.That(CommandLineOptionFactory.IsMode<BaseDriver>(method), Is.True);
-        }
-
-        [Test]
-        public void CreateModes_givenNullInstance_throwsException()
-        {
-            Assert.Throws<ArgumentNullException>(
-                () => CommandLineOptionFactory.CreateModes<BaseDriver>(null));
+            [Fact]
+            public void GivenNullInstance_ThrowsException()
+            {
+                var exception =
+                    Assert.Throws<ArgumentNullException>(
+                        () => CommandLineOptionFactory.CreateModes<BaseDriver>(null));
+                exception.ParamName.Should().Be("instance");
+            }
         }
     }
 }

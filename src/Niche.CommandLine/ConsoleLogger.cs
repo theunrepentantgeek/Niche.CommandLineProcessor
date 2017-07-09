@@ -1,16 +1,22 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Niche.CommandLine
 {
     public class ConsoleLogger : ILogger
     {
         private readonly ConsoleLoggerOptions _options;
+
+        private readonly string _successMarker = "+";
+        private readonly string _failureMarker = "x";
+
+        private readonly string _actionMarker = ">";
+        private readonly string _warningMarker = "!";
+
+        private readonly string _informationMarker = "-";
+        private readonly string _detailMarker = " ";
+        private readonly string _debugMarker = ".";
 
         /// <summary>
         /// Initializes a new instance of the ConsoleLogger class
@@ -22,13 +28,13 @@ namespace Niche.CommandLine
 
             if (_options.HasFlag(ConsoleLoggerOptions.UseLabels))
             {
-                SuccessMarker = "[succ]";
-                FailureMarker = "[fail]";
-                ActionMarker = "[actn]";
-                WarningMarker = "[warn]";
-                InformationMarker = "[info]";
-                DetailMarker = "[detl]";
-                DebugMarker = "[dbug]";
+                _successMarker = "[succ]";
+                _failureMarker = "[fail]";
+                _actionMarker = "[actn]";
+                _warningMarker = "[warn]";
+                _informationMarker = "[info]";
+                _detailMarker = "[detl]";
+                _debugMarker = "[dbug]";
             }
         }
 
@@ -61,7 +67,7 @@ namespace Niche.CommandLine
                 throw new ArgumentNullException(nameof(message));
             }
 
-            WriteMessage(ConsoleColor.White, ActionMarker, message);
+            WriteMessage(ConsoleColor.White, _actionMarker, message);
         }
 
         /// <summary>
@@ -75,7 +81,7 @@ namespace Niche.CommandLine
                 throw new ArgumentNullException(nameof(message));
             }
 
-            WriteMessage(ConsoleColor.DarkGreen, SuccessMarker, message);
+            WriteMessage(ConsoleColor.DarkGreen, _successMarker, message);
         }
 
         /// <summary>
@@ -89,7 +95,7 @@ namespace Niche.CommandLine
                 throw new ArgumentNullException(nameof(message));
             }
 
-            WriteMessage(ConsoleColor.Red, FailureMarker, message);
+            WriteMessage(ConsoleColor.Red, _failureMarker, message);
         }
 
         /// <summary>
@@ -103,7 +109,7 @@ namespace Niche.CommandLine
                 throw new ArgumentNullException(nameof(message));
             }
 
-            WriteMessage(ConsoleColor.Yellow, WarningMarker, message);
+            WriteMessage(ConsoleColor.Yellow, _warningMarker, message);
         }
 
         /// <summary>
@@ -117,7 +123,7 @@ namespace Niche.CommandLine
                 throw new ArgumentNullException(nameof(message));
             }
 
-            WriteMessage(ConsoleColor.White, InformationMarker, message);
+            WriteMessage(ConsoleColor.White, _informationMarker, message);
         }
 
         /// <summary>
@@ -131,7 +137,7 @@ namespace Niche.CommandLine
                 throw new ArgumentNullException(nameof(message));
             }
 
-            WriteMessage(ConsoleColor.Gray, DetailMarker, message);
+            WriteMessage(ConsoleColor.Gray, _detailMarker, message);
         }
 
         /// <summary>
@@ -145,7 +151,7 @@ namespace Niche.CommandLine
                 throw new ArgumentNullException(nameof(message));
             }
 
-            WriteMessage(ConsoleColor.DarkGray, DebugMarker, message);
+            WriteMessage(ConsoleColor.DarkGray, _debugMarker, message);
         }
 
         [SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "Niche.CommandLine.ConsoleLogger.WriteMessage(System.ConsoleColor,System.String)")]
@@ -178,16 +184,6 @@ namespace Niche.CommandLine
                 Console.ForegroundColor = foreground;
             }
         }
-
-        private readonly string SuccessMarker = "+";
-        private readonly string FailureMarker = "x";
-
-        private readonly string ActionMarker = ">";
-        private readonly string WarningMarker = "!";
-
-        private readonly string InformationMarker = "-";
-        private readonly string DetailMarker = " ";
-        private readonly string DebugMarker = ".";
     }
 
     /// <summary>

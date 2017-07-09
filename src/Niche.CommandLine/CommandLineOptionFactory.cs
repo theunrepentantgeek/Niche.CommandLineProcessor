@@ -4,8 +4,6 @@ using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Niche.CommandLine
 {
@@ -107,7 +105,7 @@ namespace Niche.CommandLine
             }
 
             var methods = instance.GetType().GetMethods()
-                .Where(CommandLineOptionFactory.IsParameter);
+                .Where(IsParameter);
 
             var result = new List<CommandLineOptionBase>();
 
@@ -146,7 +144,7 @@ namespace Niche.CommandLine
             var methods = instance.GetType().GetMethods();
 
             var modes
-                = methods.Where(m => IsMode<T>(m))
+                = methods.Where(IsMode<T>)
                     .Select(m => new CommandLineMode(typeof(T), instance, m))
                     .ToList();
 

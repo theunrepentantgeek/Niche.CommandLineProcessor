@@ -1,12 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Niche.CommandLine
 {
@@ -18,26 +13,21 @@ namespace Niche.CommandLine
         /// <summary>
         /// Gets or sets a description of this option
         /// </summary>
-        public string Description { get; private set; }
+        public string Description { get; }
 
         /// <summary>
         /// Gets a reference to the method used to implement this option
         /// </summary>
         /// Mostly useful for debugging
-        public MethodInfo Method { get; private set; }
+        public MethodInfo Method { get; }
 
         /// <summary>
         /// Initializes a new instance of the CommandLineOptionBase class
         /// </summary>
-        protected CommandLineOptionBase(MethodInfo member)
+        protected CommandLineOptionBase(MethodInfo method)
         {
-            if (member == null)
-            {
-                throw new ArgumentNullException(nameof(member));
-            }
-
-            Method = member;
-            Description = FindDescription(member);
+            Method = method ?? throw new ArgumentNullException(nameof(method));
+            Description = FindDescription(method);
         }
 
         /// <summary>

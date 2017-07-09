@@ -6,7 +6,6 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Niche.CommandLine
 {
@@ -27,7 +26,7 @@ namespace Niche.CommandLine
             var heading = new StringBuilder();
 
             var title = assembly.GetCustomAttribute<AssemblyTitleAttribute>();
-            if (title != null && !String.IsNullOrWhiteSpace(title.Title))
+            if (title != null && !string.IsNullOrWhiteSpace(title.Title))
             {
                 heading.Append(title.Title);
             }
@@ -225,6 +224,7 @@ namespace Niche.CommandLine
         /// <summary>
         /// Write information (detail about an action)
         /// </summary>
+        /// <param name="logger">Logger to which we write our message.</param>
         /// <param name="messageTemplate">Template for the message to write.</param>
         /// <param name="parameters">Parameters to substitute in the template.</param>
         public static void Information(this ILogger logger, string messageTemplate, params object[] parameters)

@@ -1,49 +1,58 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Niche.CommandLine
 {
     /// <summary>
     /// Wrapper class that handles a simple parameter - something that takes a value
     /// </summary>
-    /// <typeparam name="TValue">Type of value expected by the parameter</typeparam>
-    public sealed class CommandLineParameter<TValue> : CommandLineOptionBase
+    /// <typeparam name="V">Type of value expected by the parameter</typeparam>
+    public sealed class CommandLineParameter<V> : CommandLineOptionBase
     {
+        // Information about the method we call to set this paraemeter
+        private readonly MethodInfo _method;
+
+        // Information about the single parameter to _method
+        private readonly ParameterInfo _parameterInfo;
+
+        // The instance we configure
+        private readonly object _instance;
+
+        // List of values passed for this parameter
+        private readonly List<V> _values = new List<V>();
+
         /// <summary>
         /// Gets the short form of this switch
         /// </summary>
-        public string ShortName { get; private set; }
+        public string ShortName { get; }
 
         /// <summary>
         /// Gets the other short form of this switch
         /// </summary>
-        public string AlternateShortName { get; private set; }
+        public string AlternateShortName { get; }
 
         /// <summary>
         /// Gets the long form of this switch
         /// </summary>
-        public string LongName { get; private set; }
+        public string LongName { get; }
 
         /// <summary>
         /// Gets a value indicating whether this parameter is required
         /// </summary>
-        public bool IsRequired { get; private set; }
+        public bool IsRequired { get; }
 
         /// <summary>
         /// Gets a value indicating whether this parameter is multivalued
         /// </summary>
-        public bool IsMultivalued { get; private set; }
+        public bool IsMultivalued { get; }
 
         /// <summary>
         /// Gets the sequence of values handled by this parameter
         /// </summary>
-        public IEnumerable<TValue> Values { get { return mValues; } }
+        public IEnumerable<V> Values => _values;
 
         public CommandLineParameter(object instance, MethodInfo method)
             : base(method)
@@ -53,14 +62,15 @@ namespace Niche.CommandLine
                 throw new ArgumentNullException(nameof(instance));
             }
 
-            if (!method.DeclaringType.IsAssignableFrom(instance.GetType()))
+            if (!method.DeclaringType.IsInstanceOfType(instance))
             {
-                throw new ArgumentException("Expect method to be callable on instance");
+                throw new ArgumentException(
+                    "Expect method to be callable on instance", nameof(method));
             }
 
-            mInstance = instance;
-            mMethod = method;
-            mParameterInfo = method.GetParameters().Single();
+            _instance = instance;
+            _method = method;
+            _parameterInfo = method.GetParameters().Single();
 
             var name = method.Name;
             ShortName = "-" + CamelCase.ToShortName(name);
@@ -68,7 +78,7 @@ namespace Niche.CommandLine
             LongName = "--" + CamelCase.ToDashedName(name);
 
             IsRequired = method.GetCustomAttribute<RequiredAttribute>() != null;
-            IsMultivalued = mParameterInfo.ParameterType.IsIEnumerable();
+            IsMultivalued = _parameterInfo.ParameterType.IsIEnumerable();
         }
 
         /// <summary>
@@ -92,8 +102,8 @@ namespace Niche.CommandLine
                 || LongName.Equals(arg, StringComparison.CurrentCultureIgnoreCase))
             {
                 arguments.Dequeue();
-                var value = arguments.Dequeue().As<TValue>();
-                mValues.Add(value);
+                var value = arguments.Dequeue().As<V>();
+                _values.Add(value);
                 return true;
             }
 
@@ -102,8 +112,8 @@ namespace Niche.CommandLine
                 || arg.StartsWith(LongName + ":", StringComparison.CurrentCultureIgnoreCase))
             {
                 arguments.Dequeue();
-                var value = arg.After(":").As<TValue>();
-                mValues.Add(value);
+                var value = arg.After(":").As<V>();
+                _values.Add(value);
                 return true;
             }
 
@@ -122,7 +132,7 @@ namespace Niche.CommandLine
                     LongName,
                     ShortName,
                     Description,
-                    mParameterInfo.Name.ToLower(CultureInfo.CurrentCulture));
+                    _parameterInfo.Name.ToLower(CultureInfo.CurrentCulture));
 
             yield return text;
         }
@@ -138,7 +148,7 @@ namespace Niche.CommandLine
                 throw new ArgumentNullException(nameof(errors));
             }
 
-            if (IsRequired && !mValues.Any())
+            if (IsRequired && !_values.Any())
             {
                 // Mandatory but not provided: create error
                 var message
@@ -147,7 +157,7 @@ namespace Niche.CommandLine
                 return;
             }
 
-            if (mValues.Count == 0)
+            if (_values.Count == 0)
             {
                 // Nothing provided: return
                 return;
@@ -156,11 +166,11 @@ namespace Niche.CommandLine
             if (IsMultivalued)
             {
                 // Use all the values we have
-                mMethod.Invoke(mInstance, new object[] { mValues });
+                _method.Invoke(_instance, new object[] { _values });
                 return;
             }
 
-            if (mValues.Count > 1)
+            if (_values.Count > 1)
             {
                 // Single valued, but we have too many values
                 var message
@@ -170,16 +180,7 @@ namespace Niche.CommandLine
             }
 
             // Single valued: one value provided
-            mMethod.Invoke(mInstance, new object[] { mValues[0] });
+            _method.Invoke(_instance, new object[] { _values[0] });
         }
-
-        private readonly MethodInfo mMethod;
-        private readonly ParameterInfo mParameterInfo;
-        private readonly object mInstance;
-
-        /// <summary>
-        /// List of values passed for this parameter
-        /// </summary>
-        private readonly List<TValue> mValues = new List<TValue>();
     }
 }

@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Globalization;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Niche.CommandLine
 {
@@ -14,20 +10,26 @@ namespace Niche.CommandLine
     /// </summary>
     public class CommandLineSwitch : CommandLineOptionBase
     {
+        // The instance we're configuring
+        private readonly object _instance;
+
+        // The method to call to activate this switch
+        private readonly MethodInfo _method;
+
         /// <summary>
         /// Gets the short form of this switch
         /// </summary>
-        public string ShortName { get; private set; }
+        public string ShortName { get; }
 
         /// <summary>
         /// Gets the other short form of this switch
         /// </summary>
-        public string AlternateShortName { get; private set; }
+        public string AlternateShortName { get; }
 
         /// <summary>
         /// Gets the long form of this switch
         /// </summary>
-        public string LongName { get; private set; }
+        public string LongName { get; }
 
         public CommandLineSwitch(object instance, MethodInfo method)
             : base(method)
@@ -37,13 +39,18 @@ namespace Niche.CommandLine
                 throw new ArgumentNullException(nameof(instance));
             }
 
-            if (!method.DeclaringType.IsAssignableFrom(instance.GetType()))
+            if (method == null)
             {
-                throw new ArgumentException("Expect method to be callable on instance");
+                throw new ArgumentNullException(nameof(method));
             }
 
-            mInstance = instance;
-            mMethod = method;
+            if (!method.DeclaringType.IsInstanceOfType(instance))
+            {
+                throw new ArgumentException("Expect method to be callable on instance", nameof(method));
+            }
+
+            _instance = instance;
+            _method = method;
 
             ShortName = "-" + CamelCase.ToShortName(method.Name);
             AlternateShortName = "/" + CamelCase.ToShortName(method.Name);
@@ -60,7 +67,7 @@ namespace Niche.CommandLine
                 throw new ArgumentNullException(nameof(arguments));
             }
 
-            if (arguments.Count==0)
+            if (arguments.Count == 0)
             {
                 return false;
             }
@@ -71,7 +78,7 @@ namespace Niche.CommandLine
                 || LongName.Equals(arg, StringComparison.CurrentCultureIgnoreCase))
             {
                 arguments.Dequeue();
-                mMethod.Invoke(mInstance, null);
+                _method.Invoke(_instance, null);
                 return true;
             }
 
@@ -102,8 +109,5 @@ namespace Niche.CommandLine
 
             yield return text;
         }
-
-        private readonly object mInstance;
-        private readonly MethodInfo mMethod;
     }
 }

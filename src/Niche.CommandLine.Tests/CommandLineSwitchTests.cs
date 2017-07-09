@@ -1,88 +1,92 @@
-﻿using NUnit.Framework;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using FluentAssertions;
+using Xunit;
 
 namespace Niche.CommandLine.Tests
 {
-    [TestFixture]
     public class CommandLineSwitchTests
     {
-        [Test]
-        public void Constructor_missingInstance_throwsException()
+        private readonly SampleDriver _driver = new SampleDriver();
+
+        public class Constructor : CommandLineSwitchTests
         {
-            var driver = new SampleDriver();
-            var method = driver.GetType().GetMethod("Help");
-            Assert.Throws<ArgumentNullException>(
-                () =>
-                {
-                    new CommandLineSwitch(null, method);
-                });
+            [Fact]
+            public void MissingInstance_ThrowsException()
+            {
+                var method = _driver.GetType().GetMethod("Verbose");
+                var exception =
+                    Assert.Throws<ArgumentNullException>(
+                        () => new CommandLineSwitch(null, method));
+                    exception.ParamName.Should().Be("instance");
+            }
+
+            [Fact]
+            public void MissingMethod_ThrowsException()
+            {
+                var exception =
+                    Assert.Throws<ArgumentNullException>(
+                        () => new CommandLineSwitch(_driver, null));
+                exception.ParamName.Should().Be("method");
+            }
+
+            [Fact]
+            public void IfMethodDoesNotApplyToInstance_ThrowsException()
+            {
+                var method = _driver.GetType().GetMethod("Debug");
+                var exception =
+                    Assert.Throws<ArgumentException>(
+                        () => new CommandLineSwitch(this, method));
+                exception.ParamName.Should().Be("method");
+            }
         }
 
-        [Test]
-        public void Constructor_missingMethod_throwsException()
+        public class TryActivate : CommandLineSwitchTests
         {
-            var driver = new SampleDriver();
-            var method = driver.GetType().GetMethod("Help");
-            Assert.Throws<ArgumentNullException>(
-                () =>
-                {
-                    new CommandLineSwitch(driver, null);
-                });
+            [Fact]
+            public void WhenConfigured_CallsMethod()
+            {
+                var method = _driver.GetType().GetMethod("Debug");
+                var commandLineSwitch = new CommandLineSwitch(_driver, method);
+                var arguments = new Queue<string>();
+                arguments.Enqueue("-d");
+                commandLineSwitch.TryActivate(arguments);
+                _driver.ShowDiagnostics.Should().BeTrue();
+            }
         }
 
-        [Test]
-        public void Constructor_ifMethodDoesNotApplyToInstance_throwsException()
+        public class ShortName : CommandLineSwitchTests
         {
-            var driver = new SampleDriver();
-            var method = driver.GetType().GetMethod("Debug");
-            Assert.Throws<ArgumentException>(
-                () =>
-                {
-                    new CommandLineSwitch(this, method);
-                });
+            [Fact]
+            public void WhenConfigured_isExpected()
+            {
+                var method = _driver.GetType().GetMethod("Debug");
+                var commandLineSwitch = new CommandLineSwitch(_driver, method);
+                commandLineSwitch.ShortName.Should().Be("-d");
+            }
         }
 
-        [Test]
-        public void TryActivate_whenConfigured_callsMethod()
+        public class LongName : CommandLineSwitchTests
         {
-            var driver = new SampleDriver();
-            var method = driver.GetType().GetMethod("Debug");
-            var commandLineSwitch = new CommandLineSwitch(driver, method);
-            var arguments = new Queue<string>();
-            arguments.Enqueue("-d");
-            commandLineSwitch.TryActivate(arguments);
-            Assert.That(driver.ShowDiagnostics, Is.True);
+            [Fact]
+            public void WhenConfigured_isExpected()
+            {
+                var method = _driver.GetType().GetMethod("Debug");
+                var commandLineSwitch = new CommandLineSwitch(_driver, method);
+                commandLineSwitch.LongName.Should().Be("--debug");
+            }
         }
 
-        [Test]
-        public void ShortName_whenConfigured_isExpected()
+        public class CreateHelp : CommandLineSwitchTests
         {
-            var driver = new SampleDriver();
-            var method = driver.GetType().GetMethod("Debug");
-            var commandLineSwitch = new CommandLineSwitch(driver, method);
-            Assert.That(commandLineSwitch.ShortName, Is.EqualTo("-d"));
-        }
-
-        [Test]
-        public void LongName_whenConfigured_isExpected()
-        {
-            var driver = new SampleDriver();
-            var method = driver.GetType().GetMethod("Debug");
-            var commandLineSwitch = new CommandLineSwitch(driver, method);
-            Assert.That(commandLineSwitch.LongName, Is.EqualTo("--debug"));
-        }
-
-        [Test]
-        public void CreateHelp_givenList_AddsEntry()
-        {
-            var driver = new SampleDriver();
-            var commandLineSwitch = CommandLineOptionFactory.CreateSwitches(driver).First();
-            var help = commandLineSwitch.CreateHelp().ToList();
-            Assert.That(help, Has.Count.EqualTo(1));
+            [Fact]
+            public void GivenList_AddsEntry()
+            {
+                var commandLineSwitch = CommandLineOptionFactory.CreateSwitches(_driver).First();
+                var help = commandLineSwitch.CreateHelp().ToList();
+                help.Should().HaveCount(1);
+            }
         }
     }
 }

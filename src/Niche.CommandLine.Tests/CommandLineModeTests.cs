@@ -1,84 +1,91 @@
-﻿using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
+using System.Reflection;
+using FluentAssertions;
+using Xunit;
 
 namespace Niche.CommandLine.Tests
 {
-    [TestFixture]
     public class CommandLineModeTests
     {
-        [Test]
-        public void Constructor_givenNullInstance_throwsException()
+        private readonly BaseDriver _driver = new BaseDriver();
+
+        private readonly MethodInfo _method = typeof(BaseDriver).GetMethod("TestPerformance");
+
+        private readonly CommandLineMode _mode;
+
+        public CommandLineModeTests()
         {
-            var method = typeof(BaseDriver).GetMethod("Help");
-            Assert.Throws<ArgumentNullException>(
-                () => new CommandLineMode(typeof(BaseDriver), null, method));
+            _mode = new CommandLineMode(typeof(BaseDriver), _driver, _method);
         }
 
-        [Test]
-        public void Constructor_givenNullMethod_throwsException()
+        public class Constructor : CommandLineModeTests
         {
-            var driver = new BaseDriver();
-            Assert.Throws<ArgumentNullException>(
-                () => new CommandLineMode(typeof(BaseDriver), driver, null));
+            [Fact]
+            public void GivenNullInstance_ThrowsException()
+            {
+                Assert.Throws<ArgumentNullException>(
+                    () => new CommandLineMode(typeof(BaseDriver), null, _method));
+            }
+
+            [Fact]
+            public void GivenNullMethod_ThrowsException()
+            {
+                var exception =
+                    Assert.Throws<ArgumentNullException>(
+                        () => new CommandLineMode(typeof(BaseDriver), _driver, null));
+                exception.ParamName.Should().Be("method");
+            }
+
+            [Fact]
+            public void ForTestPerformance_InitializesName()
+            {
+                _mode.Name.Should().Be("test-performance");
+            }
+
+            [Fact]
+            public void ForHelp_InitializesDescription()
+            {
+                _mode.Description.Should().Be("Performance tests");
+            }
+
+            [Fact]
+            public void GivenNonModeMethod_ThrowsException()
+            {
+                var method = typeof(BaseDriver).GetMethod("Debug");
+                var exception =
+                    Assert.Throws<ArgumentException>(
+                        () => new CommandLineMode(typeof(BaseDriver), _driver, method));
+                exception.ParamName.Should().Be("method");
+            }
+
+            [Fact]
+            public void GivenMethodForOtherClass_ThrowsException()
+            {
+                var method = typeof(string).GetMethod("Clone");
+                var exception =
+                    Assert.Throws<ArgumentException>(
+                        () => new CommandLineMode(typeof(BaseDriver), _driver, method));
+                exception.ParamName.Should().Be("method");
+            }
         }
 
-        [Test]
-        public void Constructor_forTestPerformance_initialisesName()
+        public class Activate : CommandLineModeTests
         {
-            var driver = new BaseDriver();
-            var method = typeof(BaseDriver).GetMethod("TestPerformance");
-            var mode = new CommandLineMode(typeof(BaseDriver), driver, method);
-            Assert.That(mode.Name, Is.EqualTo("test-performance"));
+            [Fact]
+            public void ForTestPerformance_CallsMethod()
+            {
+                var result = _mode.Activate();
+                result.Should().BeOfType<TestDriver>();
+            }
         }
 
-        [Test]
-        public void Constructor_forHelp_initialisesDescription()
+        public class CreateHelp : CommandLineModeTests
         {
-            var driver = new BaseDriver();
-            var method = typeof(BaseDriver).GetMethod("TestPerformance");
-            var mode = new CommandLineMode(typeof(BaseDriver), driver, method);
-            Assert.That(mode.Description, Is.EqualTo("Performance tests"));
-        }
-
-        [Test]
-        public void Constructor_givenNonModeMethod_throwsException()
-        {
-            var driver = new BaseDriver();
-            var method = typeof(BaseDriver).GetMethod("Debug");
-            Assert.Throws<ArgumentException>(
-                () => new CommandLineMode(typeof(BaseDriver), driver, method));
-        }
-
-        [Test]
-        public void Constructor_givenMethodForOtherClass_throwsException()
-        {
-            var driver = new BaseDriver();
-            var method = typeof(string).GetMethod("Clone");
-            Assert.Throws<ArgumentException>(
-                 () => new CommandLineMode(typeof(BaseDriver), driver, method));
-        }
-
-        [Test]
-        public void Activate_forTestPerformance_callsMethod()
-        {
-            var driver = new BaseDriver();
-            var method = typeof(BaseDriver).GetMethod("TestPerformance");
-            var mode = new CommandLineMode(typeof(BaseDriver), driver, method);
-            var result = mode.Activate();
-            Assert.That(result, Is.InstanceOf<TestDriver>());
-        }
-
-        [Test]
-        public void CreateHelp_forTestPerformance_generatesItem()
-        {
-            var driver = new BaseDriver();
-            var method = typeof(BaseDriver).GetMethod("TestPerformance");
-            var mode = new CommandLineMode(typeof(BaseDriver), driver, method);
-            Assert.That(mode.CreateHelp().ToList(), Has.Count.EqualTo(1));
+            [Fact]
+            public void ForTestPerformance_GeneratesItem()
+            {
+                _mode.CreateHelp().Should().HaveCount(1);
+            }
         }
     }
 }
