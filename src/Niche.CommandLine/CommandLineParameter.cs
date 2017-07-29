@@ -57,10 +57,7 @@ namespace Niche.CommandLine
         public CommandLineParameter(object instance, MethodInfo method)
             : base(method)
         {
-            if (instance == null)
-            {
-                throw new ArgumentNullException(nameof(instance));
-            }
+            _instance = instance ?? throw new ArgumentNullException(nameof(instance));
 
             if (!method.DeclaringType.IsInstanceOfType(instance))
             {
@@ -68,7 +65,6 @@ namespace Niche.CommandLine
                     "Expect method to be callable on instance", nameof(method));
             }
 
-            _instance = instance;
             _method = method;
             _parameterInfo = method.GetParameters().Single();
 

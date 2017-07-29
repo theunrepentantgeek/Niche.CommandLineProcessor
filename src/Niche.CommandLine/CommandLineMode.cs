@@ -34,15 +34,8 @@ namespace Niche.CommandLine
                 throw new ArgumentNullException(nameof(driverType));
             }
 
-            if (instance == null)
-            {
-                throw new ArgumentNullException(nameof(instance));
-            }
-
-            if (method == null)
-            {
-                throw new ArgumentNullException(nameof(method));
-            }
+            _instance = instance ?? throw new ArgumentNullException(nameof(instance));
+            _method = method ?? throw new ArgumentNullException(nameof(method));
 
             if (!method.DeclaringType.IsInstanceOfType(instance))
             {
@@ -59,10 +52,7 @@ namespace Niche.CommandLine
                 throw new ArgumentException(message, nameof(method));
             }
 
-            _instance = instance;
-            _method = method;
             Description = CommandLineOptionBase.FindDescription(method);
-
             Name = CamelCase.ToDashedName(method.Name);
         }
 
