@@ -45,6 +45,9 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.ValueTuple, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.ValueTuple.4.3.1\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -61,6 +64,9 @@
     <Compile Include="CommandLineSwitch.cs" />
     <Compile Include="ConsoleLogger.cs" />
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="StandardOptions.cs" />
+    <Compile Include="IInstanceProcessor.cs" />
+    <Compile Include="InstanceProcessor.cs" />
     <Compile Include="LoggerExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RequiredAttribute.cs" />
