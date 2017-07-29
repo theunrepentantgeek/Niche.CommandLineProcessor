@@ -81,10 +81,12 @@ namespace Niche.CommandLine
         [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
         public CommandLineProcessor(IEnumerable<string> arguments, T driver)
         {
-            if (arguments == null)
-            {
-                throw new ArgumentNullException(nameof(arguments));
-            }
+            _arguments = new Queue<string>(arguments ?? throw new ArgumentNullException(nameof(arguments)));
+            var instanceProcessor = new InstanceProcessor<StandardOptions>(_standardOptions);
+            instanceProcessor.Parse(_arguments, _errors);
+            _processors.Add(instanceProcessor);
+            _optionHelp = new Lazy<List<string>>(CreateHelp, LazyThreadSafetyMode.ExecutionAndPublication);
+        }
 
             if (driver == null)
             {
@@ -113,9 +115,20 @@ namespace Niche.CommandLine
             // Default switches
             _switches.AddRange(CommandLineOptionFactory.CreateSwitches(this));
 
-            // Create options for our driver
-            _parameters.AddRange(CommandLineOptionFactory.CreateParameters(_driver));
-            _switches.AddRange(CommandLineOptionFactory.CreateSwitches(_driver));
+        /// <summary>
+        /// Configure some program options from the command line
+        /// </summary>
+        /// <typeparam name="T">Type of options instance to configure.</typeparam>
+        /// <remarks>Any command line arguments that address the options will be consumed; the 
+        /// remaining arguments will be retained in original order.</remarks>
+        /// <param name="options">Driver instance to populate</param>
+        /// <returns>Instance of <see cref="ICommandLineExecuteActionSyntax{T}"/>.</returns>
+        public ICommandLineExecuteFuncSyntax<T> Parse<T>(T options)
+        where T : class
+        {
+            var processor = FindLeafProcessor(options ?? throw new ArgumentNullException(nameof(options)));
+            processor.Parse(_arguments, _errors);
+            _processors.Add(processor);
 
             _arguments.Clear();
             while (queue.Count > 0)
