@@ -75,7 +75,7 @@ namespace Niche.CommandLine
         /// </summary>
         /// <param name="instance">Instance for which switches should be created.</param>
         /// <returns>Sequence of switches, possibly empty.</returns>
-        public static IEnumerable<CommandLineSwitch> CreateSwitches(object instance)
+        public static IReadOnlyList<CommandLineSwitch> CreateSwitches(object instance)
         {
             if (instance == null)
             {
@@ -97,7 +97,7 @@ namespace Niche.CommandLine
         /// </summary>
         /// <param name="instance">Instance for which parameters should be created.</param>
         /// <returns>Sequence of parameters, possibly empty.</returns>
-        public static IEnumerable<CommandLineOptionBase> CreateParameters(object instance)
+        public static IReadOnlyList<CommandLineOptionBase> CreateParameters(object instance)
         {
             if (instance == null)
             {
@@ -133,7 +133,7 @@ namespace Niche.CommandLine
         /// <typeparam name="T">Base type of all modes.</typeparam>
         /// <param name="instance">Instance for which modes should be created</param>
         /// <returns>Sequence of modes, possibly empty.</returns>
-        public static IEnumerable<CommandLineMode> CreateModes<T>(T instance)
+        public static IReadOnlyList<CommandLineMode> CreateModes<T>(T instance)
             where T : class
         {
             if (instance == null)
