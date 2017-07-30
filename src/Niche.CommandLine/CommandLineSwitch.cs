@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Reflection;
 
@@ -8,6 +9,7 @@ namespace Niche.CommandLine
     /// <summary>
     ///  Wrapper class that handles a simple switch - something without a value
     /// </summary>
+    [DebuggerDisplay("Parameter: {" + nameof(LongName) + "}")]
     public class CommandLineSwitch : CommandLineOptionBase
     {
         // The instance we're configuring

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
@@ -10,6 +11,7 @@ namespace Niche.CommandLine
     /// Wrapper class that handles a simple parameter - something that takes a value
     /// </summary>
     /// <typeparam name="V">Type of value expected by the parameter</typeparam>
+    [DebuggerDisplay("Parameter: {" + nameof(LongName) + "}")]
     public sealed class CommandLineParameter<V> : CommandLineOptionBase
     {
         // Information about the method we call to set this paraemeter

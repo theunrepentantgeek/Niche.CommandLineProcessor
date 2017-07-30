@@ -1,10 +1,12 @@
-﻿using System;
+﻿ using System;
 using System.Collections.Generic;
-using System.Globalization;
+ using System.Diagnostics;
+ using System.Globalization;
 using System.Reflection;
 
 namespace Niche.CommandLine
 {
+    [DebuggerDisplay("Mode: {" + nameof(Name) + "}")]
     public class CommandLineMode
     {
         private readonly object _instance;
