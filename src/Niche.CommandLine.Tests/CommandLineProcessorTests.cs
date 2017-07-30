@@ -219,7 +219,7 @@ namespace Niche.CommandLine.Tests
             {
                 var arguments = new List<string> { "--not-an-option" };
                 var processor = new CommandLineProcessor<BaseDriver>(arguments);
-                processor.Configure(new BaseDriver());
+                processor.Process(new BaseDriver(), driver => { });
                 processor.Errors.Should().NotBeEmpty();
             }
         }

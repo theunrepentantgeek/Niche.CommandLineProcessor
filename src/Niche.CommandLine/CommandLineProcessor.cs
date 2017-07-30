@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
 using System.Linq;
+using System.Threading;
 
 namespace Niche.CommandLine
 {
@@ -20,7 +20,7 @@ namespace Niche.CommandLine
         private readonly List<string> _errors = new List<string>();
 
         // Help text on available parameters
-        private readonly List<string> _optionHelp = new List<string>();
+        private readonly Lazy<List<string>> _optionHelp;
 
         // A list of all the processors we've used
         private readonly List<IInstanceProcessor> _processors = new List<IInstanceProcessor>();
@@ -46,18 +46,7 @@ namespace Niche.CommandLine
         /// <summary>
         /// Gets a list of help text for display
         /// </summary>
-        public IEnumerable<string> OptionHelp
-        {
-            get
-            {
-                if (!_optionHelp.Any())
-                {
-                    CreateHelp();
-                }
-
-                return _optionHelp;
-            }
-        }
+        public IEnumerable<string> OptionHelp => _optionHelp.Value;
 
         /// <summary>
         /// Gets a value indicating whether we should should help
@@ -75,6 +64,7 @@ namespace Niche.CommandLine
             var instanceProcessor = new InstanceProcessor<StandardOptions>(_standardOptions);
             instanceProcessor.Populate(_arguments, _errors);
             _processors.Add(instanceProcessor);
+            _optionHelp = new Lazy<List<string>>(CreateHelp, LazyThreadSafetyMode.ExecutionAndPublication);
         }
 
         /// <summary>
@@ -88,6 +78,7 @@ namespace Niche.CommandLine
         {
             var processor = FindLeafProcessor(driver ?? throw new ArgumentNullException(nameof(driver)));
             processor.Populate(_arguments, _errors);
+            _processors.Add(processor);
             return this;
         }
 
@@ -219,24 +210,46 @@ namespace Niche.CommandLine
         /// <summary>
         /// Create help text
         /// </summary>
-        private void CreateHelp()
+        private List<string> CreateHelp()
         {
-            //            var modeHelp = _modes.SelectMany(m => m.CreateHelp()).OrderBy(l => l).ToList();
-            //            if (modeHelp.Any())
-            //            {
-            //                _optionHelp.AddRange(modeHelp);
-            //                _optionHelp.Add(string.Empty);
-            //            }
-            //
-            //            var switchHelp = _switches.SelectMany(o => o.CreateHelp()).OrderBy(l => l).ToList();
-            //            _optionHelp.AddRange(switchHelp);
-            //
-            //            var parameterHelp = _parameters.SelectMany(o => o.CreateHelp()).OrderBy(l => l).ToList();
-            //            if (parameterHelp.Any())
-            //            {
-            //                _optionHelp.Add(string.Empty);
-            //                _optionHelp.AddRange(parameterHelp);
-            //            }
+            var helpText = new List<string>();
+
+            var modeHelp =
+                from processor in _processors
+                from commandMode in processor.Modes
+                from line in commandMode.CreateHelp()
+                orderby line
+                select line;
+            AddHelp(modeHelp);
+
+            var switchHelp = (
+                from processor in _processors
+                from commandSwitch in processor.Switches
+                from line in commandSwitch.CreateHelp()
+                orderby line
+                select line).ToList();
+            AddHelp(switchHelp);
+
+            var parameterHelp = (
+                from processor in _processors
+                from commandParameter in processor.Parameters
+                from line in commandParameter.CreateHelp()
+                orderby line
+                select line).ToList();
+            AddHelp(parameterHelp);
+
+            return helpText;
+
+            void AddHelp(IEnumerable<string> lines)
+            {
+                var text = lines.ToList();
+                if (helpText.Any() && text.Any())
+                {
+                    helpText.Add(string.Empty);
+                }
+
+                helpText.AddRange(text);
+            }
         }
     }
 }
