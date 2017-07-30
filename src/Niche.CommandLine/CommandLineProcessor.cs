@@ -145,6 +145,14 @@ namespace Niche.CommandLine
             return this;
         }
 
+        private InstanceProcessor<T> FindLeafProcessor(T driver)
+        {
+            var processor = new InstanceProcessor<T>(driver);
+            while (_arguments.Any())
+            {
+                var modeName = _arguments.Peek();
+                var mode = processor.Modes.SingleOrDefault(m => m.HasName(modeName));
+                if (mode == null)
                 {
                     break;
                 }
@@ -173,22 +181,22 @@ namespace Niche.CommandLine
         /// </summary>
         private void CreateHelp()
         {
-            var modeHelp = _modes.SelectMany(m => m.CreateHelp()).OrderBy(l => l).ToList();
-            if (modeHelp.Any())
-            {
-                _optionHelp.AddRange(modeHelp);
-                _optionHelp.Add(string.Empty);
-            }
-
-            var switchHelp = _switches.SelectMany(o => o.CreateHelp()).OrderBy(l => l).ToList();
-            _optionHelp.AddRange(switchHelp);
-
-            var parameterHelp = _parameters.SelectMany(o => o.CreateHelp()).OrderBy(l => l).ToList();
-            if (parameterHelp.Any())
-            {
-                _optionHelp.Add(string.Empty);
-                _optionHelp.AddRange(parameterHelp);
-            }
+            //            var modeHelp = _modes.SelectMany(m => m.CreateHelp()).OrderBy(l => l).ToList();
+            //            if (modeHelp.Any())
+            //            {
+            //                _optionHelp.AddRange(modeHelp);
+            //                _optionHelp.Add(string.Empty);
+            //            }
+            //
+            //            var switchHelp = _switches.SelectMany(o => o.CreateHelp()).OrderBy(l => l).ToList();
+            //            _optionHelp.AddRange(switchHelp);
+            //
+            //            var parameterHelp = _parameters.SelectMany(o => o.CreateHelp()).OrderBy(l => l).ToList();
+            //            if (parameterHelp.Any())
+            //            {
+            //                _optionHelp.Add(string.Empty);
+            //                _optionHelp.AddRange(parameterHelp);
+            //            }
         }
     }
 }

@@ -78,58 +78,6 @@ namespace Niche.CommandLine.Tests
             */
         }
 
-        public class OptionHelp : CommandLineParameterTests
-        {
-            [Fact]
-            public void ForValidDriver_ReturnsText()
-            {
-                var arguments = new List<string> { "test-performance", "--help" };
-                var processor = new CommandLineProcessor<BaseDriver>(arguments);
-                processor.Configure(new BaseDriver());
-                processor.OptionHelp.Should().NotBeEmpty();
-            }
-
-            [Fact]
-            public void WithNoOptions_ReturnsHelp()
-            {
-                var processor = new CommandLineProcessor<SampleDriver>(new List<string>());
-                processor.Configure(new SampleDriver());
-                processor.OptionHelp.Should().HaveCount(c => c > 0);
-            }
-
-            [Fact]
-            public void WithKnownOptions_ReturnsHelp()
-            {
-                var processor = new CommandLineProcessor<SampleDriver>(new List<string>());
-                processor.Configure(new SampleDriver());
-                processor.OptionHelp.Should().HaveCount(8);
-            }
-        }
-
-        public class Help : CommandLineParameterTests
-        {
-            [Fact]
-            public void ForValidDriver_SetsShowHelp()
-            {
-                var arguments = new List<string> { "test-performance", "--help" };
-                var processor = new CommandLineProcessor<BaseDriver>(arguments);
-                processor.Configure(new BaseDriver());
-                processor.ShowHelp.Should().BeTrue();
-            }
-        }
-
-        public class Errors : CommandLineParameterTests
-        {
-            [Fact]
-            public void Errors_ForInvalidParameter_ListsContent()
-            {
-                var arguments = new List<string> { "--not-an-option" };
-                var processor = new CommandLineProcessor<BaseDriver>(arguments);
-                processor.Configure(new BaseDriver());
-                processor.Errors.Should().NotBeEmpty();
-            }
-        }
-
         public class Configure : CommandLineProcessorTests
         {
             [Fact]
@@ -221,6 +169,58 @@ namespace Niche.CommandLine.Tests
                 var driver = new SampleDriver();
                 processor.Configure(driver);
                 processor.Arguments.Should().Contain("--unexpected");
+            }
+        }
+
+        public class OptionHelp : CommandLineParameterTests
+        {
+            [Fact]
+            public void ForValidDriver_ReturnsText()
+            {
+                var arguments = new List<string> { "test-performance", "--help" };
+                var processor = new CommandLineProcessor<BaseDriver>(arguments);
+                processor.Configure(new BaseDriver());
+                processor.OptionHelp.Should().NotBeEmpty();
+            }
+
+            [Fact]
+            public void WithNoOptions_ReturnsHelp()
+            {
+                var processor = new CommandLineProcessor<SampleDriver>(new List<string>());
+                processor.Configure(new SampleDriver());
+                processor.OptionHelp.Should().HaveCount(c => c > 0);
+            }
+
+            [Fact]
+            public void WithKnownOptions_ReturnsHelp()
+            {
+                var processor = new CommandLineProcessor<SampleDriver>(new List<string>());
+                processor.Configure(new SampleDriver());
+                processor.OptionHelp.Should().HaveCount(8);
+            }
+        }
+
+        public class Help : CommandLineParameterTests
+        {
+            [Fact]
+            public void ForValidDriver_SetsShowHelp()
+            {
+                var arguments = new List<string> { "test-performance", "--help" };
+                var processor = new CommandLineProcessor<BaseDriver>(arguments);
+                processor.Configure(new BaseDriver());
+                processor.ShowHelp.Should().BeTrue();
+            }
+        }
+
+        public class Errors : CommandLineParameterTests
+        {
+            [Fact]
+            public void Errors_ForInvalidParameter_ListsContent()
+            {
+                var arguments = new List<string> { "--not-an-option" };
+                var processor = new CommandLineProcessor<BaseDriver>(arguments);
+                processor.Configure(new BaseDriver());
+                processor.Errors.Should().NotBeEmpty();
             }
         }
 

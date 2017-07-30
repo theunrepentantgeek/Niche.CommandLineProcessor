@@ -27,7 +27,7 @@ namespace Niche.CommandLine.Demo
                 logger.Detail(processor.OptionHelp);
             }
 
-            logger.Information("Configured foreground: {0}", processor.Driver.ForegroundColor);
+            logger.Information("Configured foreground: {0}", driver.ForegroundColor);
 
             logger.Heading("Heading");
 
