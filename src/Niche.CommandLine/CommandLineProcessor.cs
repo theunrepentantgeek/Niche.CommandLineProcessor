@@ -84,31 +84,15 @@ namespace Niche.CommandLine
             return this;
         }
 
-            }
-
-
-
         /// <summary>
-        /// Configure some program options from the command line
+        /// Populate a driver from the command line and then invoke an action with the result
         /// </summary>
-        /// <typeparam name="T">Type of options instance to configure.</typeparam>
-        /// <remarks>Any command line arguments that address the options will be consumed; the 
-        /// remaining arguments will be retained in original order.</remarks>
-        /// <param name="options">Driver instance to populate</param>
-        /// <returns>Instance of <see cref="ICommandLineExecuteActionSyntax{T}"/>.</returns>
-        public ICommandLineExecuteFuncSyntax<T> Parse<T>(T options)
-        where T : class
-        {
-            var processor = FindLeafProcessor(options ?? throw new ArgumentNullException(nameof(options)));
-            processor.Parse(_arguments, _errors);
-            _processors.Add(processor);
-
-            _arguments.Clear();
-            while (queue.Count > 0)
-            {
-
-
-        public CommandLineProcessor<T> Process(T driver, Action<T, IEnumerable<string>> action)
+        /// <remarks>The action won't be called if there are any extra arguments or any errors 
+        /// during processing.</remarks>
+        /// <param name="driver">Driver instance to populate.</param>
+        /// <param name="action">Action to trigger if there are no errors.</param>
+        /// <returns></returns>
+        public CommandLineProcessor<T> Process(T driver, Action<T> action)
         {
             if (action == null)
             {
@@ -118,27 +102,19 @@ namespace Niche.CommandLine
             var processor = FindLeafProcessor(driver ?? throw new ArgumentNullException(nameof(driver)));
             processor.Populate(_arguments, _errors);
 
-            foreach (var a in _arguments.Where(IsOption))
+            foreach (var a in _arguments)
             {
                 _errors.Add($"Did not expect: {a}");
             }
 
             if (!_errors.Any())
             {
-                action(processor.Instance, _arguments);
+                action(processor.Instance);
             }
 
             return this;
         }
 
-        private InstanceProcessor<T> FindLeafProcessor(T driver)
-        {
-            var processor = new InstanceProcessor<T>(driver);
-            while (_arguments.Any())
-            {
-                var modeName = _arguments.Peek();
-                var mode = processor.Modes.SingleOrDefault(m => m.HasName(modeName));
-                if (mode == null)
                 {
                     break;
                 }
