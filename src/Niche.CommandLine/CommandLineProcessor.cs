@@ -14,7 +14,7 @@ namespace Niche.CommandLine
         where T : class
     {
         // List of unprocessed arguments
-        private readonly List<string> _arguments = new List<string>();
+        private readonly Queue<string> _arguments;
 
         // List of errors encountered so far
         private readonly List<string> _errors = new List<string>();
