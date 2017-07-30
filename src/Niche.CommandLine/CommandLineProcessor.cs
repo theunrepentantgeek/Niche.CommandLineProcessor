@@ -165,6 +165,26 @@ namespace Niche.CommandLine
             return this;
         }
 
+        /// <summary>
+        /// Display help if it's requested
+        /// </summary>
+        /// <param name="displayAction"></param>
+        /// <returns></returns>
+        public CommandLineProcessor<T> WhenErrors(Action<IEnumerable<string>> displayAction)
+        {
+            if (displayAction == null)
+            {
+                throw new ArgumentNullException(nameof(displayAction));
+            }
+
+            if (Errors.Any())
+            {
+                displayAction(OptionHelp);
+            }
+
+            return this;
+        }
+
         private InstanceProcessor<T> FindLeafProcessor(T driver)
         {
             var processor = new InstanceProcessor<T>(driver);

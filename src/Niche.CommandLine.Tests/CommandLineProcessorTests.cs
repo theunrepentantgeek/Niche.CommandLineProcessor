@@ -412,5 +412,44 @@ namespace Niche.CommandLine.Tests
             }
         }
 
+        public class WhenErrors : CommandLineProcessorTests
+        {
+            [Fact]
+            public void WhenGivenNullAction_ThrowsException()
+            {
+                var processor = CreateProcessor<BaseDriver>();
+                var exception =
+                    Assert.Throws<ArgumentNullException>(
+                        () => processor.WhenErrors(null));
+                exception.ParamName.Should().Be("displayAction");
+            }
+
+            [Fact]
+            public void WhenErrorsEncountered_ActionIsCalled()
+            {
+                var called = false;
+                var processor = CreateProcessor<BaseDriver>("--repeat nine");
+                processor.Process(new SampleDriver(), Execute)
+                    .WhenErrors(errors => called = true);
+                called.Should().BeTrue();
+            }
+
+            [Fact]
+            public void WhenNoErrorsEncountered_ActionIsNotCalled()
+            {
+                var called = false;
+                var processor = CreateProcessor<BaseDriver>("--find", "term");
+                processor.Process(new SampleDriver(), Execute)
+                    .WhenErrors(errors => called = true);
+                processor.WhenErrors(errors => called = true);
+                called.Should().BeFalse();
+            }
+
+            private void Execute(BaseDriver driver)
+            {
+
+            }
+        }
+
     }
 }
