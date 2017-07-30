@@ -85,7 +85,7 @@ namespace Niche.CommandLine.Tests
             {
                 var arguments = new List<string> { "test-performance", "--help" };
                 var processor = new CommandLineProcessor<BaseDriver>(arguments);
-                processor.Process(new BaseDriver());
+                processor.Configure(new BaseDriver());
                 processor.OptionHelp.Should().NotBeEmpty();
             }
 
@@ -93,7 +93,7 @@ namespace Niche.CommandLine.Tests
             public void WithNoOptions_ReturnsHelp()
             {
                 var processor = new CommandLineProcessor<SampleDriver>(new List<string>());
-                processor.Process(new SampleDriver());
+                processor.Configure(new SampleDriver());
                 processor.OptionHelp.Should().HaveCount(c => c > 0);
             }
 
@@ -101,7 +101,7 @@ namespace Niche.CommandLine.Tests
             public void WithKnownOptions_ReturnsHelp()
             {
                 var processor = new CommandLineProcessor<SampleDriver>(new List<string>());
-                processor.Process(new SampleDriver());
+                processor.Configure(new SampleDriver());
                 processor.OptionHelp.Should().HaveCount(8);
             }
         }
@@ -113,7 +113,7 @@ namespace Niche.CommandLine.Tests
             {
                 var arguments = new List<string> { "test-performance", "--help" };
                 var processor = new CommandLineProcessor<BaseDriver>(arguments);
-                processor.Process(new BaseDriver());
+                processor.Configure(new BaseDriver());
                 processor.ShowHelp.Should().BeTrue();
             }
         }
@@ -125,12 +125,12 @@ namespace Niche.CommandLine.Tests
             {
                 var arguments = new List<string> { "--not-an-option" };
                 var processor = new CommandLineProcessor<BaseDriver>(arguments);
-                processor.Process(new BaseDriver());
+                processor.Configure(new BaseDriver());
                 processor.Errors.Should().NotBeEmpty();
             }
         }
 
-        public class ProcessWithDriver : CommandLineProcessorTests
+        public class Configure : CommandLineProcessorTests
         {
             [Fact]
             public void GivenNullDriver_ThrowsExpectedException()
@@ -138,7 +138,7 @@ namespace Niche.CommandLine.Tests
                 var processor = CreateProcessor<BaseDriver>();
                 var exception =
                     Assert.Throws<ArgumentNullException>(
-                        () => processor.Process(null));
+                        () => processor.Configure(null));
                 exception.ParamName.Should().Be("driver");
             }
 
@@ -147,7 +147,7 @@ namespace Niche.CommandLine.Tests
             {
                 var processor = CreateProcessor<BaseDriver>("--debug");
                 var driver = new BaseDriver();
-                processor.Process(driver);
+                processor.Configure(driver);
                 driver.ShowDiagnostics.Should().BeTrue();
             }
 
@@ -156,7 +156,7 @@ namespace Niche.CommandLine.Tests
             {
                 var processor = CreateProcessor<BaseDriver>("-d");
                 var driver = new BaseDriver();
-                processor.Process(driver);
+                processor.Configure(driver);
                 driver.ShowDiagnostics.Should().BeTrue();
             }
 
@@ -165,7 +165,7 @@ namespace Niche.CommandLine.Tests
             {
                 var processor = CreateProcessor<BaseDriver>("/d");
                 var driver = new BaseDriver();
-                processor.Process(driver);
+                processor.Configure(driver);
                 driver.ShowDiagnostics.Should().BeTrue();
             }
 
@@ -174,7 +174,7 @@ namespace Niche.CommandLine.Tests
             {
                 var processor = CreateProcessor<BaseDriver>("--find", "file");
                 var driver = new SampleDriver();
-                processor.Process(driver);
+                processor.Configure(driver);
                 driver.TextSearch.Should().Be("file");
             }
 
@@ -183,7 +183,7 @@ namespace Niche.CommandLine.Tests
             {
                 var processor = CreateProcessor<BaseDriver>("-f", "file");
                 var driver = new SampleDriver();
-                processor.Process(driver);
+                processor.Configure(driver);
                 driver.TextSearch.Should().Be("file");
             }
 
@@ -192,7 +192,7 @@ namespace Niche.CommandLine.Tests
             {
                 var processor = CreateProcessor<BaseDriver>("/f", "file");
                 var driver = new SampleDriver();
-                processor.Process(driver);
+                processor.Configure(driver);
                 driver.TextSearch.Should().Be("file");
             }
 
@@ -201,7 +201,7 @@ namespace Niche.CommandLine.Tests
             {
                 var processor = CreateProcessor<BaseDriver>("/r", "4");
                 var driver = new SampleDriver();
-                processor.Process(driver);
+                processor.Configure(driver);
                 driver.Repeats.Should().Be(4);
             }
 
@@ -210,7 +210,7 @@ namespace Niche.CommandLine.Tests
             {
                 var processor = CreateProcessor<BaseDriver>("unexpected");
                 var driver = new SampleDriver();
-                processor.Process(driver);
+                processor.Configure(driver);
                 processor.Arguments.Should().Contain("unexpected");
             }
 
@@ -219,7 +219,7 @@ namespace Niche.CommandLine.Tests
             {
                 var processor = CreateProcessor<BaseDriver>("--unexpected");
                 var driver = new SampleDriver();
-                processor.Process(driver);
+                processor.Configure(driver);
                 processor.Arguments.Should().Contain("--unexpected");
             }
         }

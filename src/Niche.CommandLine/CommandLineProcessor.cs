@@ -77,7 +77,14 @@ namespace Niche.CommandLine
             _processors.Add(instanceProcessor);
         }
 
-        public CommandLineProcessor<T> Process(T driver)
+        /// <summary>
+        /// Configure a driver instance, populating it from the command line
+        /// </summary>
+        /// <remarks>Any command line arguments that address the driver will be consumed; the 
+        /// remaining arguments will be retained in original order.</remarks>
+        /// <param name="driver">Driver instance to populate</param>
+        /// <returns>This processor, for method chaining.</returns>
+        public CommandLineProcessor<T> Configure(T driver)
         {
             var processor = FindLeafProcessor(driver ?? throw new ArgumentNullException(nameof(driver)));
             processor.Populate(_arguments, _errors);
