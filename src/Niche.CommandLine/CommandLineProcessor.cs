@@ -62,7 +62,7 @@ namespace Niche.CommandLine
         {
             _arguments = new Queue<string>(arguments ?? throw new ArgumentNullException(nameof(arguments)));
             var instanceProcessor = new InstanceProcessor<StandardOptions>(_standardOptions);
-            instanceProcessor.Populate(_arguments, _errors);
+            instanceProcessor.Parse(_arguments, _errors);
             _processors.Add(instanceProcessor);
             _optionHelp = new Lazy<List<string>>(CreateHelp, LazyThreadSafetyMode.ExecutionAndPublication);
         }
@@ -113,7 +113,16 @@ namespace Niche.CommandLine
             return this;
         }
 
-        public CommandLineProcessor<T> Process(T driver, Action<T, IEnumerable<string>> action)
+        /// <summary>
+        /// Configure some program options from the command line
+        /// </summary>
+        /// <typeparam name="T">Type of options instance to configure.</typeparam>
+        /// <remarks>Any command line arguments that address the options will be consumed; the 
+        /// remaining arguments will be retained in original order.</remarks>
+        /// <param name="options">Driver instance to populate</param>
+        /// <returns>Instance of <see cref="ICommandLineExecuteActionSyntax{T}"/>.</returns>
+        public ICommandLineExecuteFuncSyntax<T> Parse<T>(T options)
+        where T : class
         {
             if (action == null)
             {
@@ -143,14 +152,10 @@ namespace Niche.CommandLine
         /// <returns></returns>
         public CommandLineProcessor<T> WhenHelpRequired(Action<IEnumerable<string>> displayAction)
         {
-            if (displayAction == null)
-            {
-                throw new ArgumentNullException(nameof(displayAction));
-            }
-
+            var action = displayAction ?? throw new ArgumentNullException(nameof(displayAction));
             if (ShowHelp)
             {
-                displayAction(OptionHelp);
+                action(OptionHelp);
             }
 
             return this;
@@ -163,14 +168,10 @@ namespace Niche.CommandLine
         /// <returns></returns>
         public CommandLineProcessor<T> WhenErrors(Action<IEnumerable<string>> displayAction)
         {
-            if (displayAction == null)
-            {
-                throw new ArgumentNullException(nameof(displayAction));
-            }
-
+            var action = displayAction ?? throw new ArgumentNullException(nameof(displayAction));
             if (Errors.Any())
             {
-                displayAction(OptionHelp);
+                action(OptionHelp);
             }
 
             return this;
