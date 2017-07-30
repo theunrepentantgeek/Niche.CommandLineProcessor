@@ -77,6 +77,12 @@ namespace Niche.CommandLine
             _processors.Add(instanceProcessor);
         }
 
+        public CommandLineProcessor<T> Process(T driver)
+        {
+            var processor = FindLeafProcessor(driver ?? throw new ArgumentNullException(nameof(driver)));
+            processor.Populate(_arguments, _errors);
+            return this;
+        }
 
             }
 

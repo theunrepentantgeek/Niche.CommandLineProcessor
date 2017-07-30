@@ -22,83 +22,99 @@ namespace Niche.CommandLine.Tests
             public void GivenNullForDriver_ThrowsException()
             {
                 var arguments = new List<string> {"--help"};
+        public class ProcessWithDriver : CommandLineProcessorTests
+        {
+            [Fact]
+            public void GivenNullDriver_ThrowsExpectedException()
+            {
+                var processor = CreateProcessor<BaseDriver>();
                 var exception =
                     Assert.Throws<ArgumentNullException>(
-                        () => new CommandLineProcessor<BaseDriver>(arguments, null));
+                        () => processor.Process(null));
                 exception.ParamName.Should().Be("driver");
             }
 
             [Fact]
             public void WithLongFormSwitch_CallsMethod()
             {
-                var arguments = new List<string> {"--help"};
-                var processor = new CommandLineProcessor<BaseDriver>(arguments, new BaseDriver());
-                processor.ShowHelp.Should().BeTrue();
+                var processor = CreateProcessor<BaseDriver>("--debug");
+                var driver = new BaseDriver();
+                processor.Process(driver);
+                driver.ShowDiagnostics.Should().BeTrue();
             }
 
             [Fact]
             public void WithShortFormSwitch_CallsMethod()
             {
-                var arguments = new List<string> {"-h"};
-                var processor = new CommandLineProcessor<BaseDriver>(arguments, new BaseDriver());
-                processor.ShowHelp.Should().BeTrue();
+                var processor = CreateProcessor<BaseDriver>("-d");
+                var driver = new BaseDriver();
+                processor.Process(driver);
+                driver.ShowDiagnostics.Should().BeTrue();
             }
 
             [Fact]
             public void WithAlternateShortFormSwitch_CallsMethod()
             {
-                var arguments = new List<string> {"/h"};
-                var processor = new CommandLineProcessor<BaseDriver>(arguments, new BaseDriver());
-                processor.ShowHelp.Should().BeTrue();
+                var processor = CreateProcessor<BaseDriver>("/d");
+                var driver = new BaseDriver();
+                processor.Process(driver);
+                driver.ShowDiagnostics.Should().BeTrue();
             }
 
             [Fact]
             public void WithLongFormParameter_CallsMethods()
             {
-                var arguments = new List<string> {"--find", "file"};
-                var processor = new CommandLineProcessor<SampleDriver>(arguments, new SampleDriver());
-                processor.Driver.TextSearch.Should().Be("file");
+                var processor = CreateProcessor<BaseDriver>("--find", "file");
+                var driver = new SampleDriver();
+                processor.Process(driver);
+                driver.TextSearch.Should().Be("file");
             }
 
             [Fact]
             public void WithShortFormParameter_CallsMethod()
             {
-                var arguments = new List<string> {"-f", "file"};
-                var processor = new CommandLineProcessor<SampleDriver>(arguments, new SampleDriver());
-                processor.Driver.TextSearch.Should().Be("file");
+                var processor = CreateProcessor<BaseDriver>("-f", "file");
+                var driver = new SampleDriver();
+                processor.Process(driver);
+                driver.TextSearch.Should().Be("file");
             }
 
             [Fact]
             public void WithAlternateShortFormParameter_CallsMethod()
             {
-                var arguments = new List<string> {"/f", "file"};
-                var processor = new CommandLineProcessor<SampleDriver>(arguments, new SampleDriver());
-                processor.Driver.TextSearch.Should().Be("file");
+                var processor = CreateProcessor<BaseDriver>("/f", "file");
+                var driver = new SampleDriver();
+                processor.Process(driver);
+                driver.TextSearch.Should().Be("file");
             }
 
             [Fact]
             public void WithParameterRequiringConversion_CallsMethod()
             {
-                var arguments = new List<string> {"-r", "4"};
-                var processor = new CommandLineProcessor<SampleDriver>(arguments, new SampleDriver());
-                processor.Driver.Repeats.Should().Be(4);
+                var processor = CreateProcessor<BaseDriver>("/r", "4");
+                var driver = new SampleDriver();
+                processor.Process(driver);
+                driver.Repeats.Should().Be(4);
             }
 
             [Fact]
-            public void WithUnexpectedArgument_leavesItInList()
+            public void WithUnexpectedArgument_LeavesItInArguments()
             {
-                var arguments = new List<string> {"snafu"};
-                var processor = new CommandLineProcessor<SampleDriver>(arguments, new SampleDriver());
-                processor.Arguments.Should().BeEquivalentTo(new List<string> {"snafu"});
+                var processor = CreateProcessor<BaseDriver>("unexpected");
+                var driver = new SampleDriver();
+                processor.Process(driver);
+                processor.Arguments.Should().Contain("unexpected");
             }
 
             [Fact]
-            public void WithUnexpectedOption_GeneratesError()
+            public void WithUnexpectedOption_LeavesItInArguments()
             {
-                var arguments = new List<string> {"-s"};
-                var processor = new CommandLineProcessor<BaseDriver>(arguments, new BaseDriver());
-                processor.HasErrors.Should().BeTrue();
+                var processor = CreateProcessor<BaseDriver>("--unexpected");
+                var driver = new SampleDriver();
+                processor.Process(driver);
+                processor.Arguments.Should().Contain("--unexpected");
             }
+        }
 
             [Fact]
             public void WithValidValueForParameter_ConfiguresDriver()
