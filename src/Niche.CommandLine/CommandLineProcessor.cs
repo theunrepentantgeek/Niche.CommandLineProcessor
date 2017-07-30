@@ -26,11 +26,10 @@ namespace Niche.CommandLine
         // The driver object we are configuring
         private readonly T _driver;
 
-        // A flag for whether to show help
-        private bool _showHelp;
-
         // A list of all the modes we support
         private readonly IEnumerable<CommandLineMode> _modes;
+        // Standard options supplied for all programs
+        private readonly StandardOptions _standardOptions = new StandardOptions();
 
         /// <summary>
         /// Gets the list of arguments not already processed
@@ -41,11 +40,6 @@ namespace Niche.CommandLine
         /// Gets a value indicating whether we have any errors
         /// </summary>
         public bool HasErrors => _errors.Any();
-
-        /// <summary>
-        /// Gets a value indicating whether we should should help
-        /// </summary>
-        public bool ShowHelp => _showHelp;
 
         /// <summary>
         /// Gets the sequence of the errors already encountered
@@ -69,9 +63,9 @@ namespace Niche.CommandLine
         }
 
         /// <summary>
-        /// Gets a reference to the driver instance we've configured from the command line
+        /// Gets a value indicating whether we should should help
         /// </summary>
-        public T Driver => _driver;
+        public bool ShowHelp => _standardOptions.ShowHelp;
 
         /// <summary>
         /// Initializes a new instance of the CommandLineProcessor class
@@ -165,12 +159,6 @@ namespace Niche.CommandLine
             {
                 o.Completed(_errors);
             }
-        }
-
-        [Description("Show this help")]
-        public void Help()
-        {
-            _showHelp = true;
         }
 
         /// <summary>
