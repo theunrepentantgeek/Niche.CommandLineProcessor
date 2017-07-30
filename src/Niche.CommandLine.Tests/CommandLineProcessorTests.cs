@@ -381,5 +381,36 @@ namespace Niche.CommandLine.Tests
             }
         }
 
+        public class WhenHelpRequired : CommandLineProcessorTests
+        {
+            [Fact]
+            public void WhenGivenNullAction_ThrowsException()
+            {
+                var processor = CreateProcessor<BaseDriver>();
+                var exception =
+                    Assert.Throws<ArgumentNullException>(
+                        () => processor.WhenHelpRequired(null));
+                exception.ParamName.Should().Be("displayAction");
+            }
+
+            [Fact]
+            public void WhenHelpRequested_ActionIsCalled()
+            {
+                var called = false;
+                var processor = CreateProcessor<BaseDriver>("--help");
+                processor.WhenHelpRequired(help => called = true);
+                called.Should().BeTrue();
+            }
+
+            [Fact]
+            public void WhenHelpNotRequested_ActionIsNotCalled()
+            {
+                var called = false;
+                var processor = CreateProcessor<BaseDriver>();
+                processor.WhenHelpRequired(help => called = true);
+                called.Should().BeFalse();
+            }
+        }
+
     }
 }
