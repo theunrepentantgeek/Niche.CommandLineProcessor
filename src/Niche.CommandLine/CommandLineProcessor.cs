@@ -22,11 +22,9 @@ namespace Niche.CommandLine
         // Help text on available parameters
         private readonly List<string> _optionHelp = new List<string>();
 
-        // The driver object we are configuring
-        private readonly T _driver;
+        // A list of all the processors we've used
+        private readonly List<IInstanceProcessor> _processors = new List<IInstanceProcessor>();
 
-        // A list of all the modes we support
-        private readonly IEnumerable<CommandLineMode> _modes;
         // Standard options supplied for all programs
         private readonly StandardOptions _standardOptions = new StandardOptions();
 
@@ -70,43 +68,19 @@ namespace Niche.CommandLine
         /// Initializes a new instance of the CommandLineProcessor class
         /// </summary>
         /// <param name="arguments">Command line arguments to process</param>
-        /// <param name="driver">Driver instance to configure from the command line</param>
         [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
-        public CommandLineProcessor(IEnumerable<string> arguments, T driver)
+        public CommandLineProcessor(IEnumerable<string> arguments)
         {
             _arguments = new Queue<string>(arguments ?? throw new ArgumentNullException(nameof(arguments)));
             var instanceProcessor = new InstanceProcessor<StandardOptions>(_standardOptions);
-            instanceProcessor.Parse(_arguments, _errors);
+            instanceProcessor.Populate(_arguments, _errors);
             _processors.Add(instanceProcessor);
-            _optionHelp = new Lazy<List<string>>(CreateHelp, LazyThreadSafetyMode.ExecutionAndPublication);
         }
 
-            if (driver == null)
-            {
-                throw new ArgumentNullException(nameof(driver));
+
             }
 
-            var queue = new Queue<string>(arguments ?? throw new ArgumentNullException(nameof(arguments)));
-            var selectedDriver = driver;
-            _modes = CommandLineOptionFactory.CreateModes(selectedDriver);
-            while (queue.Any())
-            {
-                var modeName = queue.Peek();
-                var mode = _modes.SingleOrDefault(m => m.HasName(modeName));
-                if (mode == null)
-                {
-                    break;
-                }
 
-                selectedDriver = (T)mode.Activate();
-                _modes = CommandLineOptionFactory.CreateModes(selectedDriver);
-                queue.Dequeue();
-            }
-
-            _driver = selectedDriver;
-
-            // Default switches
-            _switches.AddRange(CommandLineOptionFactory.CreateSwitches(this));
 
         /// <summary>
         /// Configure some program options from the command line
@@ -126,38 +100,49 @@ namespace Niche.CommandLine
             _arguments.Clear();
             while (queue.Count > 0)
             {
-                var activatedSwitch = _switches.FirstOrDefault(m => m.TryActivate(queue));
-                if (activatedSwitch != null)
-                {
-                    continue;
-                }
 
-                var activatedParameter = _parameters.FirstOrDefault(p => p.TryActivate(queue));
-                if (activatedParameter != null)
-                {
-                    continue;
-                }
 
-                var arg = queue.Dequeue();
-                if (IsOption(arg))
-                {
-                    var message = string.Format(CultureInfo.CurrentCulture, "{0}\twas not expected.", arg);
-                    _errors.Add(message);
-                    continue;
-                }
-
-                _arguments.Add(arg);
-            }
-
-            foreach (var o in _switches)
+        public CommandLineProcessor<T> Process(T driver, Action<T, IEnumerable<string>> action)
+        {
+            if (action == null)
             {
-                o.Completed(_errors);
+                throw new ArgumentNullException(nameof(action));
             }
 
-            foreach (var o in _parameters)
+            var processor = FindLeafProcessor(driver ?? throw new ArgumentNullException(nameof(driver)));
+            processor.Populate(_arguments, _errors);
+
+            foreach (var a in _arguments.Where(IsOption))
             {
-                o.Completed(_errors);
+                _errors.Add($"Did not expect: {a}");
             }
+
+            if (!_errors.Any())
+            {
+                action(processor.Instance, _arguments);
+            }
+
+            return this;
+        }
+
+        private InstanceProcessor<T> FindLeafProcessor(T driver)
+        {
+            var processor = new InstanceProcessor<T>(driver);
+            while (_arguments.Any())
+            {
+                var modeName = _arguments.Peek();
+                var mode = processor.Modes.SingleOrDefault(m => m.HasName(modeName));
+                if (mode == null)
+                {
+                    break;
+                }
+
+                var newDriver = (T)mode.Activate();
+                processor = new InstanceProcessor<T>(newDriver);
+                _arguments.Dequeue();
+            }
+
+            return processor;
         }
 
         /// <summary>
@@ -193,15 +178,5 @@ namespace Niche.CommandLine
                 _optionHelp.AddRange(parameterHelp);
             }
         }
-
-        /// <summary>
-        /// Storage for all our switches
-        /// </summary>
-        private readonly List<CommandLineOptionBase> _switches = new List<CommandLineOptionBase>();
-
-        /// <summary>
-        /// Storage for all our parameters
-        /// </summary>
-        private readonly List<CommandLineOptionBase> _parameters = new List<CommandLineOptionBase>();
     }
 }
