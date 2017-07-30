@@ -82,6 +82,7 @@ namespace Niche.CommandLine
         /// <summary>
         /// Activate this parameter when found
         /// </summary>
+        /// <param name="arguments">Arguments to process.</param>
         public override bool TryActivate(Queue<string> arguments)
         {
             if (arguments == null)

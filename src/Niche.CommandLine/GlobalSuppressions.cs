@@ -7,7 +7,12 @@
 using System.Diagnostics.CodeAnalysis;
 
 [assembly: SuppressMessage(
-    "Naming", 
-    "CA1715:Type parameter names should be prefixed with 'T'", 
+    "Naming",
+    "CA1715:Type parameter names should be prefixed with 'T'",
     Justification = "This project prefers single character capital letters for type parameters.")]
+
+[assembly:SuppressMessage(
+    "Performance",
+    "RCS1080:Use 'Count/Length' property instead of 'Any' method.",
+    Justification = "This project prefers the clarity of Any()")]
 

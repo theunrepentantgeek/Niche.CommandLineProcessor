@@ -1,9 +1,8 @@
-﻿using Niche.CommandLine;
-using System;
+﻿using System;
 using FluentAssertions;
 using Xunit;
 
-namespace Niche.Commandline.Tests
+namespace Niche.CommandLine.Tests
 {
     public class CamelCaseTests
     {
@@ -16,80 +15,31 @@ namespace Niche.Commandline.Tests
                     () => CamelCase.ToDashedName(null));
             }
 
-            [Fact]
-            public void GivenEmptyIdentifier_ReturnsEmptyString()
+            [Theory]
+            [InlineData("", "")]
+            [InlineData("sample", "sample")]
+            [InlineData("X", "x")]
+            [InlineData("camelCase", "camel-case")]
+            [InlineData("PascalCase", "pascal-case")]
+            [InlineData("aliceTheCamel", "alice-the-camel")]
+            [InlineData("XMLFile", "xml-file")]
+            [InlineData("SubmitXMLFile", "submit-xml-file")]
+            [InlineData("SubmitXML", "submit-xml")]
+            public void GivenString_ReturnsExpectedValue(string original, string expected)
             {
-                var camelCase = string.Empty;
-                var dashedName = CamelCase.ToDashedName(camelCase);
-                dashedName.Should().Be(string.Empty);
+                CamelCase.ToDashedName(original).Should().Be(expected);
             }
 
             [Fact]
-            public void GivenLowercaseIdentifier_ReturnsSameIdentifier()
+            public void GivenPascalCaseName_ReturnsDashedName()
             {
-                var camelCase = "sample";
-                var dashedName = CamelCase.ToDashedName(camelCase);
-                dashedName.Should().Be(camelCase);
-            }
-
-            [Fact]
-            public void givenSingleUppercaseCharacter_ReturnsSameIdentifier()
-            {
-                var camelCase = "X";
-                var dashedName = CamelCase.ToDashedName(camelCase);
-                dashedName.Should().Be("x");
-            }
-
-            [Fact]
-            public void givenSingleCamelCase_ReturnsDashedIdentifier()
-            {
-                var camelCase = "camelCase";
-                var dashedName = CamelCase.ToDashedName(camelCase);
-                dashedName.Should().Be("camel-case");
-            }
-
-            [Fact]
-            public void givenDoubleCamelCase_ReturnsDashedIdentifier()
-            {
-                var camelCase = "dorothyTheCamel";
-                var dashedName = CamelCase.ToDashedName(camelCase);
-                dashedName.Should().Be("dorothy-the-camel");
-            }
-
-            [Fact]
-            public void givenSinglePascalCase_ReturnsDashedIdentifier()
-            {
-                var camelCase = "PascalCase";
-                var dashedName = CamelCase.ToDashedName(camelCase);
-                dashedName.Should().Be("pascal-case");
-            }
-
-            [Fact]
-            public void withLeadingAbbreviation_ReturnsDashedIdentifier()
-            {
-                var camelCase = "XMLFile";
-                var dashedName = CamelCase.ToDashedName(camelCase);
-                dashedName.Should().Be("xml-file");
-            }
-
-            [Fact]
-            public void withEmbeddedAbbreviation_ReturnsDashedIdentifer()
-            {
-                var camelCase = "SubmitXMLFile";
-                var dashedName = CamelCase.ToDashedName(camelCase);
-                dashedName.Should().Be("submit-xml-file");
-            }
-
-            [Fact]
-            public void withTrailingAbbreviation_ReturnsDashedIdentifier()
-            {
-                var camelCase = "SubmitXML";
-                var dashedName = CamelCase.ToDashedName(camelCase);
-                dashedName.Should().Be("submit-xml");
+                const string name = "InputSpecification";
+                var result = CamelCase.ToDashedName(name);
+                result.Should().Be("input-specification");
             }
         }
 
-        public class ToShorName : CamelCaseTests
+        public class ToShortName : CamelCaseTests
         {
             [Fact]
             public void GivenNull_ThrowsException()
@@ -98,60 +48,20 @@ namespace Niche.Commandline.Tests
                     () => CamelCase.ToShortName(null));
             }
 
-            [Fact]
-            public void GivenEmptyIdentifier_ReturnsEmptyString()
+            [Theory]
+            [InlineData("", "")]
+            [InlineData("sample", "s")]
+            [InlineData("X", "x")]
+            [InlineData("camelCase", "cc")]
+            [InlineData("PascalCase", "pc")]
+            [InlineData("aliceTheCamel", "atc")]
+            [InlineData("XMLFile", "xf")]
+            [InlineData("SubmitXMLFile", "sxf")]
+            [InlineData("SubmitXML", "sx")]
+            [InlineData("fontFamily", "ff")]
+            public void GivenString_ReturnsExpectedValue(string original, string expected)
             {
-                var camelCase = string.Empty;
-                var shortName = CamelCase.ToShortName(camelCase);
-                shortName.Should().Be(string.Empty);
-            }
-
-            [Fact]
-            public void GivenLowercaseIdentifier_ReturnsSingleCharacter()
-            {
-                var camelCase = "sample";
-                var shortName = CamelCase.ToShortName(camelCase);
-                shortName.Should().Be("s");
-            }
-
-            [Fact]
-            public void GivenSingleCamelCase_ReturnsShortName()
-            {
-                var camelCase = "fontFamily";
-                var shortName = CamelCase.ToShortName(camelCase);
-                shortName.Should().Be("ff");
-            }
-
-            [Fact]
-            public void GivenDoubleCamelCase_ReturnsShortName()
-            {
-                var camelCase = "testFileName";
-                var shortName = CamelCase.ToShortName(camelCase);
-                shortName.Should().Be("tfn");
-            }
-
-            [Fact]
-            public void WithLeadingAbbreviation_ReturnsShortName()
-            {
-                var camelCase = "XMLFile";
-                var shortName = CamelCase.ToShortName(camelCase);
-                shortName.Should().Be("xf");
-            }
-
-            [Fact]
-            public void WithEmbeddedAbbreviation_ReturnsShortName()
-            {
-                var camelCase = "SubmitXMLFile";
-                var shortName = CamelCase.ToShortName(camelCase);
-                shortName.Should().Be("sxf");
-            }
-
-            [Fact]
-            public void WithTrailingAbbreviation_ReturnsShortName()
-            {
-                var camelCase = "SubmitXML";
-                var shortName = CamelCase.ToShortName(camelCase);
-                shortName.Should().Be("sx");
+                CamelCase.ToShortName(original).Should().Be(expected);
             }
         }
     }

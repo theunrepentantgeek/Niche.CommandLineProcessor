@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using System.Reflection;
+using FluentAssertions;
 using Xunit;
 
 namespace Niche.CommandLine.Tests
@@ -20,6 +21,5 @@ namespace Niche.CommandLine.Tests
             var description = CommandLineOptionBase.FindDescription(method);
             description.Should().Be(string.Empty);
         }
-
     }
 }

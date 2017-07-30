@@ -53,13 +53,13 @@ namespace Niche.CommandLine.Tests
             }
         }
 
-        public class Populate : InstanceProcessorTests
+        public class Parse : InstanceProcessorTests
         {
             private readonly Queue<string> _arguments = new Queue<string>();
 
             private readonly List<string> _errors = new List<string>();
 
-            public Populate()
+            public Parse()
             {
                 _arguments.Enqueue("alpha");
                 _arguments.Enqueue("beta");

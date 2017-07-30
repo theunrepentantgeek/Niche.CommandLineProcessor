@@ -76,15 +76,13 @@ namespace Niche.CommandLine
 
         private static object As(string value, Type convertTo)
         {
-            object result;
-
             // If a string, just return it
             if (convertTo == typeof(string))
             {
                 return value;
             }
 
-            if (TryConvention(convertTo, value, out result))
+            if (TryConvention(convertTo, value, out object result))
             {
                 return result;
             }
