@@ -115,6 +115,29 @@ namespace Niche.CommandLine
             return this;
         }
 
+        public CommandLineProcessor<T> Process(T driver, Action<T, IEnumerable<string>> action)
+        {
+            if (action == null)
+            {
+                throw new ArgumentNullException(nameof(action));
+            }
+
+            var processor = FindLeafProcessor(driver ?? throw new ArgumentNullException(nameof(driver)));
+            processor.Populate(_arguments, _errors);
+
+            foreach (var a in _arguments.Where(IsOption))
+            {
+                _errors.Add($"Did not expect: {a}");
+            }
+
+            if (!_errors.Any())
+            {
+                action(processor.Instance, _arguments);
+            }
+
+            return this;
+        }
+
                 {
                     break;
                 }

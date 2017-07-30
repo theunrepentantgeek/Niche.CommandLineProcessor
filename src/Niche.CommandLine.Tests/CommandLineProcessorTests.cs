@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Linq;
 using FluentAssertions;
 using Xunit;
 
@@ -7,21 +9,127 @@ namespace Niche.CommandLine.Tests
 {
     public class CommandLineProcessorTests
     {
-        public class Constructor : CommandLineParameterTests
+
+        private CommandLineProcessor<T> CreateProcessor<T>(params string[] arguments)
+            where T : class
+        {
+            return new CommandLineProcessor<T>(arguments);
+        }
+
+        public class Constructor : CommandLineProcessorTests
         {
             [Fact]
             public void GivenNullForArguments_ThrowsException()
             {
                 var exception =
                     Assert.Throws<ArgumentNullException>(
-                        () => new CommandLineProcessor<BaseDriver>(null, new BaseDriver()));
+                        () => new CommandLineProcessor<BaseDriver>(null));
                 exception.ParamName.Should().Be("arguments");
             }
 
             [Fact]
-            public void GivenNullForDriver_ThrowsException()
+            public void WhenArgumentsSpecifyHelp_ConfiguresForHelp()
             {
-                var arguments = new List<string> {"--help"};
+                var processor = CreateProcessor<BaseDriver>("--help");
+                processor.ShowHelp.Should().BeTrue();
+            }
+
+            [Fact]
+            public void WhenArgumentsSpecifyHelp_RemovesArgumentFromList()
+            {
+                var processor = CreateProcessor<BaseDriver>("--help");
+                processor.Arguments.Should().NotContain("--help");
+            }
+
+            /*
+            [Fact]
+            public void WithValidValueForParameter_ConfiguresDriver()
+            {
+                var arguments = new List<string> {"--repeat", "5"};
+                var processor = new CommandLineProcessor<SampleDriver>(arguments, new SampleDriver());
+                processor.Driver.Repeats.Should().Be(5);
+            }
+
+            [Fact]
+            public void WithInvalidValueForParameter_GeneratesError()
+            {
+                var arguments = new List<string> {"--repeat", "twice"};
+                var processor = new CommandLineProcessor<BaseDriver>(arguments, new BaseDriver());
+                processor.HasErrors.Should().BeTrue();
+            }
+
+            [Fact]
+            public void SpecifyingMode_ReturnsDriverForMode()
+            {
+                var arguments = new List<string> {"test-performance", "--help"};
+                var processor = new CommandLineProcessor<BaseDriver>(arguments, new BaseDriver());
+                processor.Driver.Should().BeOfType<TestDriver>();
+            }
+
+            [Fact]
+            public void GivenAssignment_setsValue()
+            {
+                var arguments = new List<string>() { "--define", "Name=Donald" };
+                var driver = new AssignmentDriver();
+                var processor = new CommandLineProcessor<AssignmentDriver>(arguments, driver);
+                driver["Name"].Should().Be("Donald");
+            }
+
+            */
+        }
+
+        public class OptionHelp : CommandLineParameterTests
+        {
+            [Fact]
+            public void ForValidDriver_ReturnsText()
+            {
+                var arguments = new List<string> { "test-performance", "--help" };
+                var processor = new CommandLineProcessor<BaseDriver>(arguments);
+                processor.Process(new BaseDriver());
+                processor.OptionHelp.Should().NotBeEmpty();
+            }
+
+            [Fact]
+            public void WithNoOptions_ReturnsHelp()
+            {
+                var processor = new CommandLineProcessor<SampleDriver>(new List<string>());
+                processor.Process(new SampleDriver());
+                processor.OptionHelp.Should().HaveCount(c => c > 0);
+            }
+
+            [Fact]
+            public void WithKnownOptions_ReturnsHelp()
+            {
+                var processor = new CommandLineProcessor<SampleDriver>(new List<string>());
+                processor.Process(new SampleDriver());
+                processor.OptionHelp.Should().HaveCount(8);
+            }
+        }
+
+        public class Help : CommandLineParameterTests
+        {
+            [Fact]
+            public void ForValidDriver_SetsShowHelp()
+            {
+                var arguments = new List<string> { "test-performance", "--help" };
+                var processor = new CommandLineProcessor<BaseDriver>(arguments);
+                processor.Process(new BaseDriver());
+                processor.ShowHelp.Should().BeTrue();
+            }
+        }
+
+        public class Errors : CommandLineParameterTests
+        {
+            [Fact]
+            public void Errors_ForInvalidParameter_ListsContent()
+            {
+                var arguments = new List<string> { "--not-an-option" };
+                var processor = new CommandLineProcessor<BaseDriver>(arguments);
+                processor.Process(new BaseDriver());
+                processor.Errors.Should().NotBeEmpty();
+            }
+        }
+
         public class ProcessWithDriver : CommandLineProcessorTests
         {
             [Fact]
@@ -159,52 +267,119 @@ namespace Niche.CommandLine.Tests
                 _executedDriver.Should().BeNull();
             }
 
-        public class OptionHelp : CommandLineParameterTests
-        {
             [Fact]
-            public void ForValidDriver_ReturnsText()
+            public void WithExtraOption_CreatesErrorForExtraOption()
             {
-                var arguments = new List<string> {"test-performance", "--help"};
-                var processor = new CommandLineProcessor<BaseDriver>(arguments, new BaseDriver());
-                processor.OptionHelp.Should().NotBeEmpty();
+                var processor = CreateProcessor<BaseDriver>("--debug", "--find", "term", "--upload", "this", "--dingbat");
+                var driver = new SampleDriver();
+                processor.Process(driver, Execute);
+                processor.Errors.Should().HaveCount(1);
+                processor.Errors.Should().Contain(e => e.Contains("--dingbat"));
             }
 
             [Fact]
-            public void WithNoOptions_ReturnsHelp()
+            public void WithExtraValue_DoesNotCallAction()
             {
-                var processor = new CommandLineProcessor<SampleDriver>(new List<string>(), new SampleDriver());
-                processor.OptionHelp.Should().HaveCount(c => c > 0);
+                var processor = CreateProcessor<BaseDriver>("--debug", "--find", "term", "--upload", "this", "value");
+                var driver = new SampleDriver();
+                processor.Process(driver, Execute);
+                _executedDriver.Should().BeNull();
             }
 
             [Fact]
-            public void WithNoModes_listsOptions()
+            public void WithExtraValue_CreatesErrorForExtraValue()
             {
-                var processor = new CommandLineProcessor<SampleDriver>(new List<string>(), new SampleDriver());
-                processor.OptionHelp.Should().HaveCount(6);
+                var processor = CreateProcessor<BaseDriver>("--debug", "--find", "term", "--upload", "this", "value");
+                var driver = new SampleDriver();
+                processor.Process(driver, Execute);
+                processor.Errors.Should().HaveCount(1);
+                processor.Errors.Should().Contain(e => e.Contains("value"));
+            }
+
+            private void Execute(BaseDriver driver)
+            {
+                _executedDriver = driver;
             }
         }
 
-        public class Help : CommandLineParameterTests
+        public class ProcessWithDriverAndActionAcceptingArguments : CommandLineProcessorTests
         {
+            private BaseDriver _executedDriver;
+            private List<string> _arguments;
+
             [Fact]
-            public void ForValidDriver_SetsShowHelp()
+            public void GivenNullDriver_ThrowsExpectedException()
             {
-                var arguments = new List<string> {"test-performance", "--help"};
-                var processor = new CommandLineProcessor<BaseDriver>(arguments, new BaseDriver());
-                processor.Help();
-                processor.ShowHelp.Should().BeTrue();
+                var processor = CreateProcessor<BaseDriver>();
+                var exception =
+                    Assert.Throws<ArgumentNullException>(
+                        () => processor.Process(null, Execute));
+                exception.ParamName.Should().Be("driver");
+            }
+
+            [Fact]
+            public void GivenNullAction_ThrowsExpectedException()
+            {
+                var processor = CreateProcessor<BaseDriver>();
+                var driver = new SampleDriver();
+                var exception =
+                    Assert.Throws<ArgumentNullException>(
+                        () => processor.Process(driver, (Action<BaseDriver>)null));
+                exception.ParamName.Should().Be("action");
+            }
+
+            [Fact]
+            public void WithValidArguments_CallsAction()
+            {
+                var processor = CreateProcessor<BaseDriver>("--debug", "--find", "term", "--upload", "this");
+                var driver = new SampleDriver();
+                processor.Process(driver, Execute);
+                _executedDriver.Should().Be(driver);
+            }
+
+            [Fact]
+            public void WithExtraOption_DoesNotCallAction()
+            {
+                var processor = CreateProcessor<BaseDriver>("--debug", "--find", "term", "--upload", "this", "--dingbat");
+                var driver = new SampleDriver();
+                processor.Process(driver, Execute);
+                _executedDriver.Should().BeNull();
+            }
+
+            [Fact]
+            public void WithExtraOption_CreatesErrorForExtraOption()
+            {
+                var processor = CreateProcessor<BaseDriver>("--debug", "--find", "term", "--upload", "this", "--dingbat");
+                var driver = new SampleDriver();
+                processor.Process(driver, Execute);
+                processor.Errors.Should().HaveCount(1);
+                processor.Errors.Should().Contain(e => e.Contains("--dingbat"));
+            }
+
+            [Fact]
+            public void WithExtraValue_CallsActionWithValue()
+            {
+                var processor = CreateProcessor<BaseDriver>("--debug", "--find", "term", "--upload", "this", "value");
+                var driver = new SampleDriver();
+                processor.Process(driver, Execute);
+                _arguments.Should().BeEquivalentTo("value");
+            }
+
+            [Fact]
+            public void WithExtraValue_CreatesNoError()
+            {
+                var processor = CreateProcessor<BaseDriver>("--debug", "--find", "term", "--upload", "this", "value");
+                var driver = new SampleDriver();
+                processor.Process(driver, Execute);
+                processor.Errors.Should().BeEmpty();
+            }
+
+            private void Execute(BaseDriver driver, IEnumerable<string> arguments)
+            {
+                _executedDriver = driver;
+                _arguments = arguments.ToList();
             }
         }
 
-        public class Errors : CommandLineParameterTests
-        {
-            [Fact]
-            public void Errors_ForInvalidParameter_ListsContent()
-            {
-                var arguments = new List<string> {"--not-an-option"};
-                var processor = new CommandLineProcessor<BaseDriver>(arguments, new BaseDriver());
-                processor.Errors.Should().NotBeEmpty();
-            }
-        }
     }
 }
