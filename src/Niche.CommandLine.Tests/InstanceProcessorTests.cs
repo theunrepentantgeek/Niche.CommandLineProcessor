@@ -73,7 +73,7 @@ namespace Niche.CommandLine.Tests
             {
                 var exception =
                     Assert.Throws<ArgumentNullException>(
-                        () => _processor.Populate(null, _errors));
+                        () => _processor.Parse(null, _errors));
                 exception.ParamName.Should().Be("arguments");
             }
 
@@ -82,7 +82,7 @@ namespace Niche.CommandLine.Tests
             {
                 var exception =
                     Assert.Throws<ArgumentNullException>(
-                        () => _processor.Populate(_arguments, null));
+                        () => _processor.Parse(_arguments, null));
                 exception.ParamName.Should().Be("errors");
             }
 
@@ -90,14 +90,14 @@ namespace Niche.CommandLine.Tests
             public void WhenArgumentsMatchDriver_ReturnsFewerArguments()
             {
                 var count = _arguments.Count;
-                _processor.Populate(_arguments, _errors);
+                _processor.Parse(_arguments, _errors);
                 _arguments.Count().Should().BeLessThan(count);
             }
 
             [Fact]
             public void WhenArgumentsMatchDriver_ConfiguresDriver()
             {
-                _processor.Populate(_arguments, _errors);
+                _processor.Parse(_arguments, _errors);
                 _driver.TextSearch.Should().Be("term");
             }
         }

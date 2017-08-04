@@ -36,6 +36,11 @@ namespace Niche.CommandLine
                 _detailMarker = "[detl]";
                 _debugMarker = "[dbug]";
             }
+
+            if (options.HasFlag(ConsoleLoggerOptions.DisplayBanner))
+            {
+                this.ConsoleBanner();
+            }
         }
 
         /// <summary>
@@ -189,6 +194,7 @@ namespace Niche.CommandLine
     /// <summary>
     /// Options for configuration of a ConsoleLogger
     /// </summary>
+    [Flags]
     public enum ConsoleLoggerOptions
     {
         // Do nothing special
@@ -200,5 +206,7 @@ namespace Niche.CommandLine
         // Use labels to show the severity of each line instead of symbols
         UseLabels = 2,
 
+        // Show a banner on startup
+        DisplayBanner = 4
     }
 }

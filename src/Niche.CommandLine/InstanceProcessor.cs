@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Niche.CommandLine
 {
-    public class InstanceProcessor<T> : IInstanceProcessor 
+    public class InstanceProcessor<T> : IInstanceProcessor
         where T : class
     {
         /// <summary>
@@ -35,7 +35,7 @@ namespace Niche.CommandLine
             Modes = CommandLineOptionFactory.CreateModes(Instance);
         }
 
-        public void Populate(Queue<string> arguments, IList<string> errors)
+        public void Parse(Queue<string> arguments, IList<string> errors)
         {
             if (errors == null)
             {

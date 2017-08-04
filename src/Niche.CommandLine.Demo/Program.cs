@@ -7,12 +7,14 @@ namespace Niche.CommandLine.Demo
     {
         static void Main(string[] args)
         {
-            var logger = new ConsoleLogger(ConsoleLoggerOptions.UseLabels | ConsoleLoggerOptions.ShowTime);
-            logger.ConsoleBanner();
+            var logger = new ConsoleLogger(
+                ConsoleLoggerOptions.DisplayBanner
+                | ConsoleLoggerOptions.UseLabels
+                | ConsoleLoggerOptions.ShowTime);
 
             var driver = new Driver();
-            var processor = new CommandLineProcessor<Driver>(args);
-            processor.Configure(driver);
+            var processor = new CommandLineProcessor(args);
+            //processor.(driver);
 
             // If we had any errors, output the list and then exit
             if (processor.HasErrors)
