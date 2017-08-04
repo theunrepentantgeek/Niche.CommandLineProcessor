@@ -124,24 +124,24 @@ namespace Niche.CommandLine.Tests
             public void ForValidDriver_ReturnsText()
             {
                 var arguments = new List<string> { "test-performance", "--help" };
-                var processor = new CommandLineProcessor<BaseDriver>(arguments);
-                processor.Configure(new BaseDriver());
+                var processor = new CommandLineProcessor(arguments);
+                processor.Parse(new BaseDriver());
                 processor.OptionHelp.Should().NotBeEmpty();
             }
 
             [Fact]
             public void WithNoOptions_ReturnsHelp()
             {
-                var processor = new CommandLineProcessor<SampleDriver>(new List<string>());
-                processor.Configure(new SampleDriver());
+                var processor = new CommandLineProcessor(new List<string>());
+                processor.Parse(new SampleDriver());
                 processor.OptionHelp.Should().HaveCount(c => c > 0);
             }
 
             [Fact]
             public void WithKnownOptions_ReturnsHelp()
             {
-                var processor = new CommandLineProcessor<SampleDriver>(new List<string>());
-                processor.Configure(new SampleDriver());
+                var processor = new CommandLineProcessor(new List<string>());
+                processor.Parse(new SampleDriver());
                 processor.OptionHelp.Should().HaveCount(8);
             }
         }
@@ -152,8 +152,8 @@ namespace Niche.CommandLine.Tests
             public void ForValidDriver_SetsShowHelp()
             {
                 var arguments = new List<string> { "test-performance", "--help" };
-                var processor = new CommandLineProcessor<BaseDriver>(arguments);
-                processor.Configure(new BaseDriver());
+                var processor = new CommandLineProcessor(arguments);
+                processor.Parse(new BaseDriver());
                 processor.ShowHelp.Should().BeTrue();
             }
         }
@@ -164,8 +164,8 @@ namespace Niche.CommandLine.Tests
             public void Errors_ForInvalidParameter_ListsContent()
             {
                 var arguments = new List<string> { "--not-an-option" };
-                var processor = new CommandLineProcessor<BaseDriver>(arguments);
-                processor.Process(new BaseDriver(), driver => { });
+                var processor = new CommandLineProcessor(arguments);
+                processor.Parse(new BaseDriver()).Execute(options => -1);
                 processor.Errors.Should().NotBeEmpty();
             }
         }
@@ -175,7 +175,7 @@ namespace Niche.CommandLine.Tests
             [Fact]
             public void WhenGivenNullAction_ThrowsException()
             {
-                var processor = CreateProcessor<BaseDriver>();
+                var processor = CreateProcessor();
                 var exception =
                     Assert.Throws<ArgumentNullException>(
                         () => processor.WhenHelpRequired(null));
@@ -186,7 +186,7 @@ namespace Niche.CommandLine.Tests
             public void WhenHelpRequested_ActionIsCalled()
             {
                 var called = false;
-                var processor = CreateProcessor<BaseDriver>("--help");
+                var processor = CreateProcessor("--help");
                 processor.WhenHelpRequired(help => called = true);
                 called.Should().BeTrue();
             }
@@ -195,7 +195,7 @@ namespace Niche.CommandLine.Tests
             public void WhenHelpNotRequested_ActionIsNotCalled()
             {
                 var called = false;
-                var processor = CreateProcessor<BaseDriver>();
+                var processor = CreateProcessor();
                 processor.WhenHelpRequired(help => called = true);
                 called.Should().BeFalse();
             }
@@ -206,7 +206,7 @@ namespace Niche.CommandLine.Tests
             [Fact]
             public void WhenGivenNullAction_ThrowsException()
             {
-                var processor = CreateProcessor<BaseDriver>();
+                var processor = CreateProcessor();
                 var exception =
                     Assert.Throws<ArgumentNullException>(
                         () => processor.WhenErrors(null));
@@ -217,9 +217,9 @@ namespace Niche.CommandLine.Tests
             public void WhenErrorsEncountered_ActionIsCalled()
             {
                 var called = false;
-                var processor = CreateProcessor<BaseDriver>("--repeat nine");
-                processor.Process(new SampleDriver(), Execute)
-                    .WhenErrors(errors => called = true);
+                var processor = CreateProcessor("--repeat nine");
+                processor.Parse(new SampleDriver()).Execute(Execute);
+                processor.WhenErrors(errors => called = true);
                 called.Should().BeTrue();
             }
 
@@ -227,16 +227,15 @@ namespace Niche.CommandLine.Tests
             public void WhenNoErrorsEncountered_ActionIsNotCalled()
             {
                 var called = false;
-                var processor = CreateProcessor<BaseDriver>("--find", "term");
-                processor.Process(new SampleDriver(), Execute)
-                    .WhenErrors(errors => called = true);
+                var processor = CreateProcessor("--find", "term");
+                processor.Parse(new SampleDriver()).Execute(Execute);
                 processor.WhenErrors(errors => called = true);
                 called.Should().BeFalse();
             }
 
-            private void Execute(BaseDriver driver)
+            private int Execute(BaseDriver driver)
             {
-
+                return -1;
             }
         }
 
