@@ -68,18 +68,39 @@ namespace Niche.CommandLine
         }
 
         /// <summary>
-        /// Configure a driver instance, populating it from the command line
+        /// Configure a options instance, populating it from the command line
         /// </summary>
-        /// <remarks>Any command line arguments that address the driver will be consumed; the 
+        /// <typeparam name="T">Type of options instance to configure.</typeparam>
+        /// <remarks>Any command line arguments that address the options will be consumed; the 
         /// remaining arguments will be retained in original order.</remarks>
-        /// <param name="driver">Driver instance to populate</param>
-        /// <returns>This processor, for method chaining.</returns>
-        public CommandLineProcessor<T> Configure(T driver)
+        /// <returns>Instance of <see cref="ICommandLineExecuteActionSyntax{T}"/>.</returns>
+        public ICommandLineExecuteActionSyntax<T> ParseGlobal<T>()
+            where T : class, new()
         {
-            var processor = FindLeafProcessor(driver ?? throw new ArgumentNullException(nameof(driver)));
-            processor.Populate(_arguments, _errors);
+            return ParseGlobal(new T());
+        }
+
+        /// <summary>
+        /// Configure some global options from the command line
+        /// </summary>
+        /// <typeparam name="T">Type of options instance to configure.</typeparam>
+        /// <remarks>Any command line arguments that address the options will be consumed; the 
+        /// remaining arguments will be retained in original order.</remarks>
+        /// <param name="options">Driver instance to populate</param>
+        /// <returns>Instance of <see cref="ICommandLineExecuteActionSyntax{T}"/>.</returns>
+        public ICommandLineExecuteActionSyntax<T> ParseGlobal<T>(T options)
+            where T : class
+        {
+            var processor = FindLeafProcessor(options ?? throw new ArgumentNullException(nameof(options)));
+            processor.Parse(_arguments, _errors);
             _processors.Add(processor);
-            return this;
+
+            if (_errors.Any())
+            {
+                return new NullCommandLineExecuteActionSyntax<T>();
+            }
+
+            return new CommandLineExecuteActionSyntax<T>(options, _errors);
         }
 
         /// <summary>

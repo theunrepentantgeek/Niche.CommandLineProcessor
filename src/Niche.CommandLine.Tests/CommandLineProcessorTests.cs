@@ -78,19 +78,46 @@ namespace Niche.CommandLine.Tests
             */
         }
 
-        public class Configure : CommandLineProcessorTests
+        public class ParseGlobalInstance : CommandLineProcessorTests
         {
+            private readonly CommandLineProcessor _processor =
+                CreateProcessor("--alpha", "beta", "gamma", "--verbose");
+
             [Fact]
-            public void GivenNullDriver_ThrowsExpectedException()
+            public void GivenNullOptions_ThrowsException()
             {
-                var processor = CreateProcessor<BaseDriver>();
                 var exception =
                     Assert.Throws<ArgumentNullException>(
-                        () => processor.Configure(null));
-                exception.ParamName.Should().Be("driver");
+                        () => _processor.ParseGlobal<LoggingOptions>(null));
+                exception.ParamName.Should().Be("options");
             }
 
             [Fact]
+            public void GivenInstance_ConfiguresProperty()
+            {
+                var options = new LoggingOptions();
+                _processor.ParseGlobal(options);
+                options.IsVerbose.Should().BeTrue();
+            }
+
+            [Fact]
+            public void GivenInstance_ReturnsExecutor()
+            {
+                var options = new LoggingOptions();
+                _processor.ParseGlobal(options).Should().NotBeNull();
+            }
+        }
+
+        public class ParseGlobalOfType : CommandLineProcessorTests
+        {
+            private readonly CommandLineProcessor _processor =
+                CreateProcessor("--alpha", "beta", "gamma", "--verbose");
+
+            [Fact]
+            public void GivenInstance_ReturnsExecutor()
+            {
+                _processor.ParseGlobal<LoggingOptions>().Should().NotBeNull();
+            }
             public void WithLongFormSwitch_CallsMethod()
             {
                 var processor = CreateProcessor<BaseDriver>("--debug");

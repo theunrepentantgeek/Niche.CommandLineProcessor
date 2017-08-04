@@ -56,6 +56,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CamelCase.cs" />
+    <Compile Include="CommandLineExecuteActionSyntax.cs" />
     <Compile Include="CommandLineMode.cs" />
     <Compile Include="CommandLineOptionBase.cs" />
     <Compile Include="CommandLineOptionFactory.cs" />
@@ -64,6 +65,8 @@
     <Compile Include="CommandLineSwitch.cs" />
     <Compile Include="ConsoleLogger.cs" />
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="ICommandLineExecuteActionSyntax.cs" />
+    <Compile Include="ICommandLineExecuteFuncSyntax.cs" />
     <Compile Include="StandardOptions.cs" />
     <Compile Include="IInstanceProcessor.cs" />
     <Compile Include="InstanceProcessor.cs" />
