@@ -65,6 +65,7 @@
     <Compile Include="CommandLineProcessor.cs" />
     <Compile Include="CommandLineSwitch.cs" />
     <Compile Include="ConsoleLogger.cs" />
+    <Compile Include="ExceptionExtensions.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="ICommandLineExecuteActionSyntax.cs" />
     <Compile Include="ICommandLineExecuteFuncSyntax.cs" />
