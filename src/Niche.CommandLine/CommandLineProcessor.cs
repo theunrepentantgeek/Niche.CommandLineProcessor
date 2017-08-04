@@ -7,7 +7,7 @@ using System.Threading;
 namespace Niche.CommandLine
 {
     /// <summary>
-    /// Utility class used to parse command line parameters and populate a driver instance
+    /// Utility class used to parse command line parameters and populate a options instance
     /// </summary>
     public class CommandLineProcessor
     {
@@ -188,17 +188,6 @@ namespace Niche.CommandLine
             }
 
             return processor;
-        }
-
-        /// <summary>
-        /// Test to see if the passed argument is an option
-        /// </summary>
-        /// <param name="argument">Argument to test</param>
-        /// <returns>True if the argument is an option, false otherwise.</returns>
-        private static bool IsOption(string argument)
-        {
-            return argument.StartsWith("-", StringComparison.Ordinal)
-                || argument.StartsWith("/", StringComparison.Ordinal);
         }
 
         /// <summary>

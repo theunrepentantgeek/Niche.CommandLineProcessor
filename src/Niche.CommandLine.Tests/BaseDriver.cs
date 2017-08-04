@@ -25,6 +25,5 @@ namespace Niche.CommandLine.Tests
         {
             return new TestDriver();
         }
-
     }
 }
