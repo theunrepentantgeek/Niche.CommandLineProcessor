@@ -139,67 +139,6 @@ namespace Niche.CommandLine
             return new CommandLineExecuteFuncSyntax<T>(options, _arguments.ToList(), _errors, -1);
         }
 
-        /// </summary>
-        /// <remarks>The action won't be called if there are any extra arguments or any errors 
-        /// during processing.</remarks>
-        /// <param name="driver">Driver instance to populate.</param>
-        /// <param name="action">Action to trigger if there are no errors.</param>
-        /// <returns></returns>
-        public CommandLineProcessor<T> Process(T driver, Action<T> action)
-        {
-            if (action == null)
-            {
-                throw new ArgumentNullException(nameof(action));
-            }
-
-            var processor = FindLeafProcessor(driver ?? throw new ArgumentNullException(nameof(driver)));
-            processor.Populate(_arguments, _errors);
-
-            foreach (var a in _arguments)
-            {
-                _errors.Add($"Did not expect: {a}");
-            }
-
-            if (!_errors.Any())
-            {
-                action(processor.Instance);
-            }
-
-            return this;
-        }
-
-        /// <summary>
-        /// Configure some program options from the command line
-        /// </summary>
-        /// <typeparam name="T">Type of options instance to configure.</typeparam>
-        /// <remarks>Any command line arguments that address the options will be consumed; the 
-        /// remaining arguments will be retained in original order.</remarks>
-        /// <param name="options">Driver instance to populate</param>
-        /// <returns>Instance of <see cref="ICommandLineExecuteActionSyntax{T}"/>.</returns>
-        public ICommandLineExecuteFuncSyntax<T> Parse<T>(T options)
-        where T : class
-        {
-            if (action == null)
-            {
-                throw new ArgumentNullException(nameof(action));
-            }
-
-            var processor = FindLeafProcessor(driver ?? throw new ArgumentNullException(nameof(driver)));
-            processor.Populate(_arguments, _errors);
-
-            foreach (var a in _arguments.Where(IsOption))
-            {
-                _errors.Add($"Did not expect: {a}");
-            }
-
-            if (!_errors.Any())
-            {
-                action(processor.Instance, _arguments);
-            }
-
-            return this;
-        }
-
         /// <summary>
         /// Display help if it's requested
         /// </summary>
