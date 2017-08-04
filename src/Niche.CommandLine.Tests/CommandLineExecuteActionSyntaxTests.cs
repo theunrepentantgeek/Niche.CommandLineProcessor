@@ -23,7 +23,7 @@ namespace Niche.CommandLine.Tests
                 var exception =
                     Assert.Throws<ArgumentNullException>(
                         () => new CommandLineExecuteActionSyntax<LoggingOptions>(null, _errors));
-                exception.ParamName.Should().Be("instance");
+                exception.ParamName.Should().Be("options");
             }
 
             [Fact]

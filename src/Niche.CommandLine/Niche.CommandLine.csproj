@@ -57,6 +57,7 @@
   <ItemGroup>
     <Compile Include="CamelCase.cs" />
     <Compile Include="CommandLineExecuteActionSyntax.cs" />
+    <Compile Include="CommandLineExecuteFuncSyntax.cs" />
     <Compile Include="CommandLineMode.cs" />
     <Compile Include="CommandLineOptionBase.cs" />
     <Compile Include="CommandLineOptionFactory.cs" />

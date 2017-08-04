@@ -78,6 +78,7 @@
     <Compile Include="AssignmentDriver.cs" />
     <Compile Include="CamelCaseTests.cs" />
     <Compile Include="CommandLineExecuteActionSyntaxTests.cs" />
+    <Compile Include="CommandLineExecuteFuncSyntaxTests.cs" />
     <Compile Include="CommandLineModeTests.cs" />
     <Compile Include="CommandLineOptionBaseTests.cs" />
     <Compile Include="CommandLineOptionFactoryTests.cs" />
