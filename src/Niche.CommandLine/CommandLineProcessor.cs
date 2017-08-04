@@ -9,9 +9,7 @@ namespace Niche.CommandLine
     /// <summary>
     /// Utility class used to parse command line parameters and populate a driver instance
     /// </summary>
-    /// <typeparam name="T">Type of the driver instances to support</typeparam>
-    public class CommandLineProcessor<T>
-        where T : class
+    public class CommandLineProcessor
     {
         // List of unprocessed arguments
         private readonly Queue<string> _arguments;
@@ -144,7 +142,7 @@ namespace Niche.CommandLine
         /// </summary>
         /// <param name="displayAction"></param>
         /// <returns></returns>
-        public CommandLineProcessor<T> WhenHelpRequired(Action<IEnumerable<string>> displayAction)
+        public CommandLineProcessor WhenHelpRequired(Action<IEnumerable<string>> displayAction)
         {
             var action = displayAction ?? throw new ArgumentNullException(nameof(displayAction));
             if (ShowHelp)
@@ -160,7 +158,7 @@ namespace Niche.CommandLine
         /// </summary>
         /// <param name="displayAction"></param>
         /// <returns></returns>
-        public CommandLineProcessor<T> WhenErrors(Action<IEnumerable<string>> displayAction)
+        public CommandLineProcessor WhenErrors(Action<IEnumerable<string>> displayAction)
         {
             var action = displayAction ?? throw new ArgumentNullException(nameof(displayAction));
             if (Errors.Any())
@@ -171,7 +169,8 @@ namespace Niche.CommandLine
             return this;
         }
 
-        private InstanceProcessor<T> FindLeafProcessor(T driver)
+        private InstanceProcessor<T> FindLeafProcessor<T>(T driver)
+            where T : class
         {
             var processor = new InstanceProcessor<T>(driver);
             while (_arguments.Any())

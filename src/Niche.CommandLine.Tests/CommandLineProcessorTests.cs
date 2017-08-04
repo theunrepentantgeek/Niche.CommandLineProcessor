@@ -9,11 +9,9 @@ namespace Niche.CommandLine.Tests
 {
     public class CommandLineProcessorTests
     {
-
-        private CommandLineProcessor<T> CreateProcessor<T>(params string[] arguments)
-            where T : class
+        private static CommandLineProcessor CreateProcessor(params string[] arguments)
         {
-            return new CommandLineProcessor<T>(arguments);
+            return new CommandLineProcessor(arguments);
         }
 
         public class Constructor : CommandLineProcessorTests
@@ -23,21 +21,21 @@ namespace Niche.CommandLine.Tests
             {
                 var exception =
                     Assert.Throws<ArgumentNullException>(
-                        () => new CommandLineProcessor<BaseDriver>(null));
+                        () => new CommandLineProcessor(null));
                 exception.ParamName.Should().Be("arguments");
             }
 
             [Fact]
             public void WhenArgumentsSpecifyHelp_ConfiguresForHelp()
             {
-                var processor = CreateProcessor<BaseDriver>("--help");
+                var processor = CreateProcessor("--help");
                 processor.ShowHelp.Should().BeTrue();
             }
 
             [Fact]
             public void WhenArgumentsSpecifyHelp_RemovesArgumentFromList()
             {
-                var processor = CreateProcessor<BaseDriver>("--help");
+                var processor = CreateProcessor("--help");
                 processor.Arguments.Should().NotContain("--help");
             }
 
@@ -46,7 +44,7 @@ namespace Niche.CommandLine.Tests
             public void WithValidValueForParameter_ConfiguresDriver()
             {
                 var arguments = new List<string> {"--repeat", "5"};
-                var processor = new CommandLineProcessor<SampleDriver>(arguments, new SampleDriver());
+                var processor = new CommandLineProcessor(arguments, new SampleDriver());
                 processor.Driver.Repeats.Should().Be(5);
             }
 
@@ -54,7 +52,7 @@ namespace Niche.CommandLine.Tests
             public void WithInvalidValueForParameter_GeneratesError()
             {
                 var arguments = new List<string> {"--repeat", "twice"};
-                var processor = new CommandLineProcessor<BaseDriver>(arguments, new BaseDriver());
+                var processor = new CommandLineProcessor(arguments, new BaseDriver());
                 processor.HasErrors.Should().BeTrue();
             }
 
@@ -62,7 +60,7 @@ namespace Niche.CommandLine.Tests
             public void SpecifyingMode_ReturnsDriverForMode()
             {
                 var arguments = new List<string> {"test-performance", "--help"};
-                var processor = new CommandLineProcessor<BaseDriver>(arguments, new BaseDriver());
+                var processor = new CommandLineProcessor(arguments, new BaseDriver());
                 processor.Driver.Should().BeOfType<TestDriver>();
             }
 
@@ -129,7 +127,7 @@ namespace Niche.CommandLine.Tests
             [Fact]
             public void WithShortFormSwitch_CallsMethod()
             {
-                var processor = CreateProcessor<BaseDriver>("-d");
+                var processor = CreateProcessor("-d");
                 var driver = new BaseDriver();
                 processor.Configure(driver);
                 driver.ShowDiagnostics.Should().BeTrue();
@@ -138,7 +136,7 @@ namespace Niche.CommandLine.Tests
             [Fact]
             public void WithAlternateShortFormSwitch_CallsMethod()
             {
-                var processor = CreateProcessor<BaseDriver>("/d");
+                var processor = CreateProcessor("/d");
                 var driver = new BaseDriver();
                 processor.Configure(driver);
                 driver.ShowDiagnostics.Should().BeTrue();
@@ -147,7 +145,7 @@ namespace Niche.CommandLine.Tests
             [Fact]
             public void WithLongFormParameter_CallsMethods()
             {
-                var processor = CreateProcessor<BaseDriver>("--find", "file");
+                var processor = CreateProcessor("--find", "file");
                 var driver = new SampleDriver();
                 processor.Configure(driver);
                 driver.TextSearch.Should().Be("file");
@@ -156,7 +154,7 @@ namespace Niche.CommandLine.Tests
             [Fact]
             public void WithShortFormParameter_CallsMethod()
             {
-                var processor = CreateProcessor<BaseDriver>("-f", "file");
+                var processor = CreateProcessor("-f", "file");
                 var driver = new SampleDriver();
                 processor.Configure(driver);
                 driver.TextSearch.Should().Be("file");
@@ -165,7 +163,7 @@ namespace Niche.CommandLine.Tests
             [Fact]
             public void WithAlternateShortFormParameter_CallsMethod()
             {
-                var processor = CreateProcessor<BaseDriver>("/f", "file");
+                var processor = CreateProcessor("/f", "file");
                 var driver = new SampleDriver();
                 processor.Configure(driver);
                 driver.TextSearch.Should().Be("file");
@@ -174,7 +172,7 @@ namespace Niche.CommandLine.Tests
             [Fact]
             public void WithParameterRequiringConversion_CallsMethod()
             {
-                var processor = CreateProcessor<BaseDriver>("/r", "4");
+                var processor = CreateProcessor("/r", "4");
                 var driver = new SampleDriver();
                 processor.Configure(driver);
                 driver.Repeats.Should().Be(4);
@@ -183,7 +181,7 @@ namespace Niche.CommandLine.Tests
             [Fact]
             public void WithUnexpectedArgument_LeavesItInArguments()
             {
-                var processor = CreateProcessor<BaseDriver>("unexpected");
+                var processor = CreateProcessor("unexpected");
                 var driver = new SampleDriver();
                 processor.Configure(driver);
                 processor.Arguments.Should().Contain("unexpected");
@@ -192,7 +190,7 @@ namespace Niche.CommandLine.Tests
             [Fact]
             public void WithUnexpectedOption_LeavesItInArguments()
             {
-                var processor = CreateProcessor<BaseDriver>("--unexpected");
+                var processor = CreateProcessor("--unexpected");
                 var driver = new SampleDriver();
                 processor.Configure(driver);
                 processor.Arguments.Should().Contain("--unexpected");
