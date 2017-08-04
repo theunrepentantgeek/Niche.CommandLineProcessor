@@ -87,6 +87,7 @@
     <Compile Include="CommandLineSwitchTests.cs" />
     <Compile Include="InstanceProcessorTests.cs" />
     <Compile Include="LoggerExtensionsTests.cs" />
+    <Compile Include="LoggingOptions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SampleDriver.cs" />
     <Compile Include="BaseDriver.cs" />
