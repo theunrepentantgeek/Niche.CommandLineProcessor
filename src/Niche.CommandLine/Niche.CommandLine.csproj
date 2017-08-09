@@ -69,6 +69,7 @@
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="ICommandLineExecuteActionSyntax.cs" />
     <Compile Include="ICommandLineExecuteFuncSyntax.cs" />
+    <Compile Include="Properties\VersionInfo.cs" />
     <Compile Include="StandardOptions.cs" />
     <Compile Include="IInstanceProcessor.cs" />
     <Compile Include="InstanceProcessor.cs" />
