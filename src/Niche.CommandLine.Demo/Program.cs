@@ -1,50 +1,60 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace Niche.CommandLine.Demo
 {
     class Program
     {
-        static void Main(string[] args)
+        private static ConsoleLogger _logger;
+
+        static int Main(string[] args)
         {
-            var logger = new ConsoleLogger(
+            _logger = new ConsoleLogger(
                 ConsoleLoggerOptions.DisplayBanner
                 | ConsoleLoggerOptions.UseLabels
                 | ConsoleLoggerOptions.ShowTime);
 
-            var driver = new Driver();
             var processor = new CommandLineProcessor(args);
-            //processor.(driver);
+            var exitCode = processor.Parse<ProgramOptions>()
+                .Execute(Main);
 
-            // If we had any errors, output the list and then exit
-            if (processor.HasErrors)
-            {
-                logger.Failure(processor.Errors);
-                return;
-            }
+            processor.WhenHelpRequired(ShowHelp)
+                .WhenErrors(ShowErrors);
 
-            if (processor.ShowHelp)
-            {
-                logger.Information("Available commandline options:");
-                logger.Detail(processor.OptionHelp);
-            }
+            return exitCode;
+        }
 
-            logger.Information("Configured foreground: {0}", driver.ForegroundColor);
+        private static int Main(ProgramOptions options)
+        {
+            _logger.Information("Configured foreground: {0}", options.ForegroundColor);
 
-            logger.Heading("Heading");
-
-            logger.Action("Action");
-            logger.Information("Information");
-            logger.Detail("Detail");
-            logger.Debug("Debug");
-            logger.Warning("Warning");
-            logger.Success("Success");
-            logger.Failure("Failure");
-
+            _logger.Heading("Heading");
+            _logger.Action("Action");
+            _logger.Information("Information");
+            _logger.Detail("Detail");
+            _logger.Debug("Debug");
+            _logger.Warning("Warning");
+            _logger.Success("Success");
+            _logger.Failure("Failure");
+            
             if (Debugger.IsAttached)
             {
                 Console.ReadLine();
             }
+
+            return 0;
+        }
+
+        private static void ShowHelp(IEnumerable<string> help)
+        {
+            _logger.Information("Available commandline options:");
+            _logger.Detail(help);
+        }
+
+        private static void ShowErrors(IEnumerable<string> errors)
+        {
+            _logger.Failure(errors);
         }
     }
 }
