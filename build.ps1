@@ -8,12 +8,21 @@ properties {
     $srcDir = resolve-path $baseDir\src
 }
 
+## ----------------------------------------------------------------------------------------------------
+##   Targets 
+## ----------------------------------------------------------------------------------------------------
+## Top level targets used to run builds
+
 Task Integration.Build -Depends Generate.VersionInfo, Debug.Build, Compile.Assembly, Unit.Tests
 
 Task Formal.Build -Depends Release.Build, Generate.Version, Compile.Assembly, Unit.Tests, Compile.NuGet
 
 Task CI.Build -Depends Debug.Build, Generate.Version, Compile.Assembly, Unit.Tests, Compile.NuGet
 
+## ----------------------------------------------------------------------------------------------------
+##   Core Tasks 
+## ----------------------------------------------------------------------------------------------------
+## The key build tasks themselves (see below for supporting tasks)
 
 Task Compile.Assembly -Depends Requires.BuildType, Requires.MSBuild, Requires.BuildDir, Generate.VersionInfo {
 
@@ -37,7 +46,7 @@ Task Compile.NuGet -Depends Requires.NuGet, Requires.BuildType, Requires.BuildDi
 Task Unit.Tests -Depends Requires.XUnitConsole, Compile.Assembly {
 
     exec {
-        & $xunitExe .\build\Niche.CommandLine.Tests\Debug\Niche.CommandLine.Tests.dll
+        & $xunitExe .\build\Niche.CommandLine.Tests\$buildType\Niche.CommandLine.Tests.dll
     }
 }
 
@@ -59,8 +68,6 @@ Task Debug.Build {
     $script:buildType = "Debug"
     Write-Host "Debug build configured"
 }
-
-
 
 ## ----------------------------------------------------------------------------------------------------
 ##   Generate 
@@ -124,18 +131,28 @@ Task Generate.VersionInfo -Depends Generate.Version {
 ## ----------------------------------------------------------------------------------------------------
 ## Tasks for finding or creating folders that are needed
 
-Task Configure.xUnitResultFolder {
+Task Configure.xUnitResultFolder -Depends Requires.BuildDir {
 
     $script:xUnitResultFolder = join-path $buildDir xUnit.results
+    Write-Host "XUnit results folder: $xUnitResultFolder"
+
     if (test-path $xUnitResultFolder) {
-        Write-Host "Found XUnit results folder: $xUnitResultFolder"
+        remove-item $xUnitResultFolder -recurse -force -erroraction silentlycontinue    
     }
-    else {
-        mkdir $xUnitResultFolder -erroraction silentlycontinue | Out-Null
-        Write-Host "Created XUnit results folder: $xUnitResultFolder"
-    }
+
+    mkdir $xUnitResultFolder | Out-Null    
 }
 
+Task Configure.PackagesFolder -Depends Requires.BuildDir {
+
+    $script:packagesFolder = join-path $buildDir packages
+    Write-Host "Packaging folder: $packagesFolder"
+    if (test-path $packagesFolder) {
+        remove-item $packagesFolder -recurse -force -erroraction silentlycontinue    
+    }
+
+    mkdir $packagesFolder | Out-Null    
+}
 
 ## ----------------------------------------------------------------------------------------------------
 ##   Requires 
@@ -157,13 +174,13 @@ Task Requires.MSBuild {
 }
 
 Task Requires.BuildDir {
-    if (!(test-path $buildDir))
+    if (test-path $buildDir)
     {
-        Write-Host "Creating build folder $buildDir"
-        mkdir $buildDir > $null
+        Write-Host "Build folder is: $buildDir"
     }
     else {
-        Write-Host "Build folder is: $buildDir"
+        Write-Host "Creating build folder $buildDir"
+        mkdir $buildDir | out-null
     }
 }
 
