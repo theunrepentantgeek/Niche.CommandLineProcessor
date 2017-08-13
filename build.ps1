@@ -10,9 +10,9 @@ properties {
 
 Task Integration.Build -Depends Generate.VersionInfo, Debug.Build, Compile.Assembly, Unit.Tests
 
-Task Formal.Build -Depends Release.Build, Generate.Version, Compile.Assembly, Compile.NuGet, Unit.Tests
+Task Formal.Build -Depends Release.Build, Generate.Version, Compile.Assembly, Unit.Tests, Compile.NuGet
 
-Task CI.Build -Depends Debug.Build, Generate.Version, Compile.Assembly, Unit.Tests
+Task CI.Build -Depends Debug.Build, Generate.Version, Compile.Assembly, Unit.Tests, Compile.NuGet
 
 
 Task Compile.Assembly -Depends Requires.BuildType, Requires.MSBuild, Requires.BuildDir, Generate.VersionInfo {
@@ -22,10 +22,15 @@ Task Compile.Assembly -Depends Requires.BuildType, Requires.MSBuild, Requires.Bu
     }
 }  
 
-Task Compile.NuGet -Depends Requires.NuGet, Requires.BuildType, Compile.Assembly {
+Task Compile.NuGet -Depends Requires.NuGet, Requires.BuildType, Requires.BuildDir, Compile.Assembly, Configure.PackagesFolder {
+
+    $nugetFolder = join-path $packagesFolder Niche.CommandLine
+    mkdir $nugetFolder | Out-Null
+
+    $csprojFile = resolve-path .\src\Niche.CommandLine\Niche.CommandLine.csproj
 
     exec {
-        & $nugetExe pack $srcDir\Niche.CommandLine\Niche.CommandLine.nuspec -version 2.1.0.0 -outputdirectory $buildDir -basePath $buildDir\Niche.CommandLine\$buildType
+        & $nugetExe pack $csprojFile -version $semver10 -outputdirectory $packagesFolder -basePath $buildDir -properties Configuration=$buildType
     }
 }
 
@@ -81,19 +86,22 @@ Task Generate.Version {
     $commit = git rev-parse --short head
     Write-Host "Current Commit   $commit"
 
-
     if ($branch -eq "master") {
-        $script:semanticVersion = "$version.$patchVersion"
+        $script:semver10 = "$version.$patchVersion"
+        $script:semver20 = "$version.$patchVersion"
     }
     elseif ($branch -eq "develop") {
-        $script:semanticVersion = "$version.$patchVersion-beta.$commit"
+        $script:semver10 = "$version.$patchVersion-beta"
+        $script:semver20 = "$version.$patchVersion-beta.$commit"
     }
     else {
-        $semanticBranch = $branch -replace "[^A-Za-z0-9-]+", "."
-        $script:semanticVersion = "$version.$patchVersion-alpha.$semanticBranch.$commit"
+        $semverBranch = $branch -replace "[^A-Za-z0-9-]+", "."
+        $script:semver10 = "$version.$patchVersion-alpha"
+        $script:semver20 = "$version.$patchVersion-alpha.$semverBranch.$commit"
     }
 
-    Write-Host "Semantic version $semanticVersion"
+    Write-Host "Semver 1.0:      $semver10"
+    Write-Host "Semver 2.0:      $semver20"
 }
 
 # Generate a VersionInfo.cs file for this build
@@ -101,11 +109,12 @@ Task Generate.VersionInfo -Depends Generate.Version {
 
     foreach($assemblyInfo in (get-childitem $srcDir\AssemblyInfo.cs -recurse)) {
         $versionInfo = Join-Path $assemblyInfo.Directory "VersionInfo.cs"
-        set-content $versionInfo "// Generated file - do not modify",
+        set-content $versionInfo -encoding UTF8 `
+            "// Generated file - do not modify",
             "using System.Reflection;",
             "[assembly: AssemblyVersion(`"$version`")]",
             "[assembly: AssemblyFileVersion(`"$version.$patchVersion`")]",
-            "[assembly: AssemblyInformationalVersion(`"$semanticVersion`")]"
+            "[assembly: AssemblyInformationalVersion(`"$semver20`")]"
         Write-Host "Generated $versionInfo"
     }
 }

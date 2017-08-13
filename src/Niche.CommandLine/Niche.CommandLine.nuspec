@@ -5,14 +5,13 @@
     <version>$version$</version>
     <authors>bevan@nichesoftware.co.nz</authors>
     <owners>bevan@nichesoftware.co.nz</owners>
-    <!--
-    <licenseUrl>http://LICENSE_URL_HERE_OR_DELETE_THIS_LINE</licenseUrl>
-    <iconUrl>http://ICON_URL_HERE_OR_DELETE_THIS_LINE</iconUrl>
-    -->
     <projectUrl>https://github.com/theunrepentantgeek/Niche.CommandLineProcessor</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Convention based argument handling for console applications</description>
-    <copyright>Copyright 2014</copyright>
-    <tags>command line command-line option</tags>
+    <copyright>Copyright 2017</copyright>
+    <tags>command line command-line option parser args arguments</tags>
   </metadata>
+  <files>
+    <file src="..\docs\ReadMe.txt" target="."/>
+  </files>
 </package>
