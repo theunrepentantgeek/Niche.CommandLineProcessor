@@ -45,15 +45,29 @@ namespace Niche.CommandLine.Tests
 
         public class TryActivate : CommandLineParameterTests
         {
+            private readonly MethodInfo _method;
+
+            public TryActivate()
+            {
+                _method = _driver.GetType().GetMethod("Find");
+            }
+
             [Fact]
             public void TryActivate_GivenNull_ThrowsException()
             {
-                var method = _driver.GetType().GetMethod("Find");
-                var commandLineParameter = new CommandLineParameter<string>(_driver, method);
+                var commandLineParameter = new CommandLineParameter<string>(_driver, _method);
                 var exception =
                     Assert.Throws<ArgumentNullException>(
                         () => commandLineParameter.TryActivate(null));
                 exception.ParamName.Should().Be("arguments");
+            }
+
+            [Fact]
+            public void TryActivate_GivenEmptyArguments_ReturnsFalse()
+            {
+                var commandLineParameter = new CommandLineParameter<string>(_driver, _method);
+                var queue = new Queue<string>();
+                commandLineParameter.TryActivate(queue).Should().BeFalse();
             }
         }
 

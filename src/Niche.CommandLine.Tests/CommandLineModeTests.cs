@@ -21,6 +21,13 @@ namespace Niche.CommandLine.Tests
         public class Constructor : CommandLineModeTests
         {
             [Fact]
+            public void GivenNullType_ThrowsException()
+            {
+                Assert.Throws<ArgumentNullException>(
+                    () => new CommandLineMode(null, _driver, _method));
+            }
+
+            [Fact]
             public void GivenNullInstance_ThrowsException()
             {
                 Assert.Throws<ArgumentNullException>(
