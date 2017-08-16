@@ -17,7 +17,7 @@ Task Integration.Build -Depends Generate.VersionInfo, Debug.Build, Compile.Assem
 
 Task Formal.Build -Depends Release.Build, Generate.Version, Compile.Assembly, Unit.Tests, Compile.NuGet
 
-Task CI.Build -Depends Debug.Build, Generate.Version, Compile.Assembly, Unit.Tests, Compile.NuGet
+Task CI.Build -Depends Debug.Build, Generate.Version, Compile.Assembly, Coverage.Report
 
 ## ----------------------------------------------------------------------------------------------------
 ##   Core Tasks 
@@ -45,14 +45,36 @@ Task Compile.NuGet -Depends Requires.NuGet, Requires.BuildType, Requires.BuildDi
 
 Task Unit.Tests -Depends Requires.XUnitConsole, Compile.Assembly {
 
+    $htmlReport = join-path $testResultsFolder Niche.CommandLine.Tests.html
     exec {
-        & $xunitExe .\build\Niche.CommandLine.Tests\$buildType\Niche.CommandLine.Tests.dll
+        & $xunitExe .\build\Niche.CommandLine.Tests\$buildType\Niche.CommandLine.Tests.dll -html $htmlReport
     }
 }
 
-Task Coverage.Tests -Depends Requires.OpenCover, Compile.Assembly {
+Task Coverage.Tests -Depends Requires.OpenCover, Configure.TestResultsFolder, Compile.Assembly {
 
+    $testFolder = resolve-path "$buildDir\Niche.CommandLine.Tests\$buildType"
+    $xmlOutput = join-path $testResultsFolder "Niche.CommandLine.Tests.xunit.xml"
+    $htmlOutput = join-path $testResultsFolder "Niche.CommandLine.Tests.xunit.html"
+    $coverageOutput = join-path $testResultsFolder "Niche.CommandLine.Tests.opencover.xml"
+
+    exec {
+        & $opencoverExe -target:"$xunitExe" -targetargs:"$testFolder\Niche.CommandLine.Tests.dll -xml $xmlOutput -html $htmlOutput" -targetdir:"$testFolder" -register:user -output:"$coverageOutput" -filter:"+[Niche.*]* -[*Tests]*"
+    }
+
+#        & $openCoverExe -target:"$xUnitExe" -targetargs:"$test -xml $xmlOutput -html $htmlOutput" -targetdir:"$testFolder" -register:user "-filter:+[Document.*]* -[*Tests]*" "-output:$coverageOutput"
 }
+
+Task Coverage.Report -Depends Requires.ReportGenerator, Configure.OpenCoverReportFolder, Coverage.Tests {
+
+    exec {
+        & $reportGeneratorExe -reports:$testResultsFolder\*.opencover.xml -targetdir:$openCoverReportFolder
+    }
+
+    $openCoverIndex = resolve-path $openCoverReportFolder\index.htm
+    & $openCoverIndex
+}
+
 
 ## ----------------------------------------------------------------------------------------------------
 ##   Specifiers 
@@ -131,16 +153,28 @@ Task Generate.VersionInfo -Depends Generate.Version {
 ## ----------------------------------------------------------------------------------------------------
 ## Tasks for finding or creating folders that are needed
 
-Task Configure.xUnitResultFolder -Depends Requires.BuildDir {
+Task Configure.TestResultsFolder -Depends Requires.BuildDir {
 
-    $script:xUnitResultFolder = join-path $buildDir xUnit.results
-    Write-Host "XUnit results folder: $xUnitResultFolder"
+    $script:testResultsFolder = join-path $buildDir testing.results
+    Write-Host "Test results folder: $testResultsFolder"
 
-    if (test-path $xUnitResultFolder) {
-        remove-item $xUnitResultFolder -recurse -force -erroraction silentlycontinue    
+    if (test-path $testResultsFolder) {
+        remove-item $testResultsFolder -recurse -force -erroraction silentlycontinue    
     }
 
-    mkdir $xUnitResultFolder | Out-Null    
+    mkdir $testResultsFolder | Out-Null    
+}
+
+Task Configure.OpenCoverReportFolder -Depends Requires.BuildDir {
+
+    $script:OpenCoverReportFolder = join-path $buildDir opencover.report
+    Write-Host "OpenCover report folder: $OpenCoverReportFolder"
+
+    if (test-path $OpenCoverReportFolder) {
+        remove-item $OpenCoverReportFolder -recurse -force -erroraction silentlycontinue    
+    }
+
+    mkdir $OpenCoverReportFolder | Out-Null    
 }
 
 Task Configure.PackagesFolder -Depends Requires.BuildDir {
@@ -232,6 +266,19 @@ Task Requires.OpenCover {
     Write-Host "Found OpenCover here: $opencoverExe"
 }
 
+Task Requires.ReportGenerator {
+
+    $script:reportGeneratorExe =
+        resolve-path ".\packages\ReportGenerator.*\tools\ReportGenerator.exe"
+
+    if ($reportGeneratorExe -eq $null)
+    {
+        throw "Failed to find ReportGenerator.exe"
+    }
+
+    Write-Host "Found Report Generator here: $reportGeneratorExe"
+}
+
 ## ----------------------------------------------------------------------------------------------------
 ##   Utility Methods
 ## ----------------------------------------------------------------------------------------------------
@@ -241,6 +288,7 @@ formatTaskName {
     
     $divider = "-" * 70
 
-    return "`r`n" + $divider + "`r`n" + $taskName + "`r`n" + $divider
+    # return "`r`n" + $divider + "`r`n" + $taskName + "`r`n" + $divider
+    return "`r`n$divider`r`n$taskName`r`n$divider"
 } 
 
