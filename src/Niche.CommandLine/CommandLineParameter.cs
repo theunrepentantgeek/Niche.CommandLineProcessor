@@ -66,6 +66,7 @@ namespace Niche.CommandLine
         {
             _instance = instance ?? throw new ArgumentNullException(nameof(instance));
 
+            Debug.Assert(method.DeclaringType != null);
             if (!method.DeclaringType.IsInstanceOfType(instance))
             {
                 throw new ArgumentException(

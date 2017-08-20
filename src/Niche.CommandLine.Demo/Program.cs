@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Niche.ConsoleLogging;
 
 namespace Niche.CommandLine.Demo
 {
@@ -17,7 +18,7 @@ namespace Niche.CommandLine.Demo
 
             var processor = new CommandLineProcessor(args);
             var exitCode = processor.Parse<ProgramOptions>()
-                .Execute(Main);
+                .Execute(MainCore);
 
             processor.WhenHelpRequired(ShowHelp)
                 .WhenErrors(ShowErrors);
@@ -25,7 +26,7 @@ namespace Niche.CommandLine.Demo
             return exitCode;
         }
 
-        private static int Main(ProgramOptions options)
+        private static int MainCore(ProgramOptions options)
         {
             _logger.Information("Configured foreground: {0}", options.ForegroundColor);
 

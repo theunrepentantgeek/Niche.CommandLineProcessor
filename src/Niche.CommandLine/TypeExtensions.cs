@@ -13,7 +13,12 @@ namespace Niche.CommandLine
         /// <returns>Results of the test. True if it implements IEnumerable&lt;T&gt;; false otherwise.</returns>
         public static bool IsIEnumerable(this Type type)
         {
-            if (type.IsGenericType == false)
+            if (type == null)
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
+
+            if (!type.IsGenericType)
             {
                 return false;
             }
@@ -37,7 +42,12 @@ namespace Niche.CommandLine
         /// <returns>Item type if type is enumerable, null otherwise.</returns>
         public static Type GetIEnumerableItemType(this Type type)
         {
-            if (type.IsGenericType == false)
+            if (type == null)
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
+
+            if (!type.IsGenericType)
             {
                 return null;
             }
@@ -49,7 +59,7 @@ namespace Niche.CommandLine
 
             var interfaces = type.GetInterfaces();
             var enumerableType
-                = interfaces.FirstOrDefault(
+                = interfaces.First(
                     i => i.IsGenericType
                     && i.GetGenericTypeDefinition() == typeof(IEnumerable<>));
 
@@ -64,7 +74,7 @@ namespace Niche.CommandLine
         /// <returns>True if the type is a KeyValue type</returns>
         public static bool IsKeyValuePair(this Type type)
         {
-            if (type.IsGenericType == false)
+            if (!type.IsGenericType)
             {
                 return false;
             }
@@ -79,7 +89,7 @@ namespace Niche.CommandLine
         /// <returns>Extracted type value.</returns>
         public static Type GetKeyValueKeyType(this Type type)
         {
-            if (type.IsKeyValuePair() == false)
+            if (!type.IsKeyValuePair())
             {
                 return null;
             }
@@ -95,7 +105,7 @@ namespace Niche.CommandLine
         /// <returns>Extracted type value.</returns>
         public static Type GetKeyValueValueType(this Type type)
         {
-            if (type.IsKeyValuePair() == false)
+            if (!type.IsKeyValuePair())
             {
                 return null;
             }

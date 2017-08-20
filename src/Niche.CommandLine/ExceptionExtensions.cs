@@ -31,7 +31,7 @@ namespace Niche.CommandLine
         /// <returns>A sequence of strings</returns>
         public static IEnumerable<string> AsStrings(this Exception exception)
         {
-            yield return string.Format("{0} ({1})", exception.Message, exception.GetType().Name);
+            yield return $"{exception.Message} ({exception.GetType().Name})";
 
             // Better safe than sorry
             // R# says this can never be null, but "CLR via C#" (Jeffrey Richter) says otherwise.
@@ -39,10 +39,9 @@ namespace Niche.CommandLine
             {
                 foreach (DictionaryEntry p in exception.Data)
                 {
-                    yield return string.Format("{0}: {1}", p.Key, p.Value);
+                    yield return $"{p.Key}: {p.Value}";
                 }
             }
         }
-
     }
 }

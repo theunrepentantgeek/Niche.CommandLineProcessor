@@ -42,6 +42,7 @@ namespace Niche.CommandLine
             _instance = instance ?? throw new ArgumentNullException(nameof(instance));
             _method = method ?? throw new ArgumentNullException(nameof(method));
 
+            Debug.Assert(method.DeclaringType != null);
             if (!method.DeclaringType.IsInstanceOfType(instance))
             {
                 throw new ArgumentException("Expect method to be callable on instance", nameof(method));
@@ -68,7 +69,7 @@ namespace Niche.CommandLine
         /// <returns>True if the names match, false if not.</returns>
         public bool HasName(string name)
         {
-            return string.Equals(Name, name, StringComparison.Ordinal);
+            return string.Equals(Name, name, StringComparison.OrdinalIgnoreCase);
         }
 
         /// <summary>
