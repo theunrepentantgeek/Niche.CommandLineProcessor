@@ -2,7 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 
-namespace Niche.CommandLine
+namespace Niche.ConsoleLogging
 {
     public class ConsoleLogger : ILogger
     {

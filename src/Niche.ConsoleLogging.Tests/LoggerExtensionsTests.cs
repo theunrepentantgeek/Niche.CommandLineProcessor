@@ -1,11 +1,11 @@
-﻿using NSubstitute;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
+using NSubstitute;
 using Xunit;
 
-namespace Niche.CommandLine.Tests
+namespace Niche.ConsoleLogging.Tests
 {
     public class LoggerExtensionsTests
     {
@@ -40,41 +40,45 @@ namespace Niche.CommandLine.Tests
             {
                 var original = new List<string> { "alpha\tbeta\tgamma", "one\ttwo\tthree" };
                 var result = LoggerExtensions.Tablefy(original);
-                var expected = new List<string> { "alpha   beta   gamma", "one     two    three" };
+                var expected = new List<string>
+                {
+                    "alpha   beta   gamma",
+                    "one     two    three"
+                };
+
                 result.Should().BeEquivalentTo(expected);
             }
         }
 
         public class Failure : LoggerExtensionsTests
         {
+            private readonly ILogger _logger = Substitute.For<ILogger>();
+
             [Fact]
             public void GivenSimpleException_logsOneMessage()
             {
-                var logger = Substitute.For<ILogger>();
                 var ex = new Exception("This is an exception.");
-                logger.Failure(ex);
-                logger.Received(1).Failure(Arg.Any<string>());
+                _logger.Failure(ex);
+                _logger.Received(1).Failure(Arg.Any<string>());
             }
 
             [Fact]
             public void GivenNestedException_logsExpectedMessageCount()
             {
-                var logger = Substitute.For<ILogger>();
                 var inner = new InvalidOperationException();
                 var ex = new Exception("This is an exception.", inner);
-                logger.Failure(ex);
-                logger.Received(2).Failure(Arg.Any<string>());
+                _logger.Failure(ex);
+                _logger.Received(2).Failure(Arg.Any<string>());
             }
 
             [Fact]
             public void GivenSimpleExceptionWithData_logsExpectedMessageCount()
             {
-                var logger = Substitute.For<ILogger>();
                 var ex = new Exception("This is an exception.");
                 ex.Data["name"] = "George";
                 ex.Data["repetitions"] = 45;
-                logger.Failure(ex);
-                logger.Received(3).Failure(Arg.Any<string>());
+                _logger.Failure(ex);
+                _logger.Received(3).Failure(Arg.Any<string>());
             }
         }
     }

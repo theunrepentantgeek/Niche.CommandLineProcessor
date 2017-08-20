@@ -1,13 +1,17 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26430.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Niche.CommandLine", "src\Niche.CommandLine\Niche.CommandLine.csproj", "{D1409C8E-5FC9-4455-8DBB-06EE509BD313}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Niche.CommandLine.Tests", "src\Niche.CommandLine.Tests\Niche.CommandLine.Tests.csproj", "{D7ADFA05-1E88-4122-B70F-4E161376637E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Niche.CommandLine.Demo", "src\Niche.CommandLine.Demo\Niche.CommandLine.Demo.csproj", "{82DB94B3-F29B-4A57-9ECC-8665F9EEB9E7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Niche.ConsoleLogging", "src\Niche.ConsoleLogging\Niche.ConsoleLogging.csproj", "{942C8466-1260-4421-97DB-30365BA287CE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Niche.ConsoleLogging.Tests", "src\Niche.ConsoleLogging.Tests\Niche.ConsoleLogging.Tests.csproj", "{BD4AC0E5-AAC5-4651-8316-5C8335E808FA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -34,6 +38,18 @@ Global
 		{82DB94B3-F29B-4A57-9ECC-8665F9EEB9E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{82DB94B3-F29B-4A57-9ECC-8665F9EEB9E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{82DB94B3-F29B-4A57-9ECC-8665F9EEB9E7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{942C8466-1260-4421-97DB-30365BA287CE}.Analysis|Any CPU.ActiveCfg = Debug|Any CPU
+		{942C8466-1260-4421-97DB-30365BA287CE}.Analysis|Any CPU.Build.0 = Debug|Any CPU
+		{942C8466-1260-4421-97DB-30365BA287CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{942C8466-1260-4421-97DB-30365BA287CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{942C8466-1260-4421-97DB-30365BA287CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{942C8466-1260-4421-97DB-30365BA287CE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BD4AC0E5-AAC5-4651-8316-5C8335E808FA}.Analysis|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD4AC0E5-AAC5-4651-8316-5C8335E808FA}.Analysis|Any CPU.Build.0 = Debug|Any CPU
+		{BD4AC0E5-AAC5-4651-8316-5C8335E808FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD4AC0E5-AAC5-4651-8316-5C8335E808FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD4AC0E5-AAC5-4651-8316-5C8335E808FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD4AC0E5-AAC5-4651-8316-5C8335E808FA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
