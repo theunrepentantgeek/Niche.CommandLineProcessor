@@ -4,6 +4,9 @@ using System.Collections.Generic;
 
 namespace Niche.CommandLine
 {
+    /// <summary>
+    /// Extension methods for working with Exceptions
+    /// </summary>
     public static class ExceptionExtensions
     {
         /// <summary>

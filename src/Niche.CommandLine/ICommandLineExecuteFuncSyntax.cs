@@ -3,6 +3,10 @@ using System.Collections.Generic;
 
 namespace Niche.CommandLine
 {
+    /// <summary>
+    /// Syntax for invoking an action after an options instance has been parsed
+    /// </summary>
+    /// <typeparam name="T">Type of options instance just configured.</typeparam>
     public interface ICommandLineExecuteFuncSyntax<out T>
     {
         /// <summary>
@@ -28,6 +32,10 @@ namespace Niche.CommandLine
     {
         private readonly int _exitCode;
 
+        /// <summary>
+        /// Initializes a new instance of <see cref="NullCommandLineExecuteFuncSyntax{T}"/>
+        /// </summary>
+        /// <param name="exitCode">Exit code to return.</param>
         public NullCommandLineExecuteFuncSyntax(int exitCode)
         {
             _exitCode = exitCode;
@@ -43,6 +51,11 @@ namespace Niche.CommandLine
             return _exitCode;
         }
 
+        /// <summary>
+        /// Do nothing useful with a properly configured option and any extra arguments provided
+        /// </summary>
+        /// <param name="func">Function to not invoke.</param>
+        /// <remarks>Returns the int returned by <paramref name="func"/>.</remarks>
         public int Execute(Func<T, IEnumerable<string>, int> func)
         {
             return _exitCode;

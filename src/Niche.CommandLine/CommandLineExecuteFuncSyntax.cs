@@ -4,6 +4,10 @@ using System.Linq;
 
 namespace Niche.CommandLine
 {
+    /// <summary>
+    /// Implementation of <see cref="ICommandLineExecuteFuncSyntax{T}"/>.
+    /// </summary>
+    /// <typeparam name="T">Type of the configured options instance.</typeparam>
     public class CommandLineExecuteFuncSyntax<T> : ICommandLineExecuteFuncSyntax<T>
         where T : class
     {

@@ -6,6 +6,9 @@ using System.Reflection;
 
 namespace Niche.CommandLine
 {
+    /// <summary>
+    /// A disctinct operational mode for the application
+    /// </summary>
     [DebuggerDisplay("Mode: {" + nameof(Name) + "}")]
     public class CommandLineMode
     {
@@ -58,6 +61,11 @@ namespace Niche.CommandLine
             Name = CamelCase.ToDashedName(method.Name);
         }
 
+        /// <summary>
+        /// Test to see if ths mode has the specified name
+        /// </summary>
+        /// <param name="name">Name to check for.</param>
+        /// <returns>True if the names match, false if not.</returns>
         public bool HasName(string name)
         {
             return string.Equals(Name, name, StringComparison.Ordinal);

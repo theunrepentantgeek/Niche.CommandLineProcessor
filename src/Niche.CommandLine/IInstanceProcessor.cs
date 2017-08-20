@@ -2,6 +2,9 @@ using System.Collections.Generic;
 
 namespace Niche.CommandLine
 {
+    /// <summary>
+    /// Functionality interface used to allow different generic instances to be kept in the same list
+    /// </summary>
     public interface IInstanceProcessor
     {
         /// <summary>

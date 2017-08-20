@@ -33,6 +33,11 @@ namespace Niche.CommandLine
         /// </summary>
         public string LongName { get; }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CommandLineSwitch"/> class
+        /// </summary>
+        /// <param name="instance">Instance we're configuring with this switch.</param>
+        /// <param name="method">Method to invoke if this switch is present.</param>
         public CommandLineSwitch(object instance, MethodInfo method)
             : base(method)
         {
@@ -57,6 +62,7 @@ namespace Niche.CommandLine
         /// <summary>
         /// Activate this switch when found
         /// </summary>
+        /// <param name="arguments">Arguments from the command line.</param>
         public override bool TryActivate(Queue<string> arguments)
         {
             if (arguments == null)

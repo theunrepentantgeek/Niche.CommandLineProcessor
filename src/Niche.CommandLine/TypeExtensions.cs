@@ -33,8 +33,8 @@ namespace Niche.CommandLine
         /// Gets the type of the argument to IEnumerable{T} 
         /// or null if the type does not implement IEnumerable{T}
         /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
+        /// <param name="type">Possible <see cref="IEnumerable{T}"/> type.</param>
+        /// <returns>Item type if type is enumerable, null otherwise.</returns>
         public static Type GetIEnumerableItemType(this Type type)
         {
             if (type.IsGenericType == false)
@@ -57,7 +57,8 @@ namespace Niche.CommandLine
         }
 
         /// <summary>
-        /// Test to see if the passed Type is a KeyValuePair<K,V> for any K, V
+        /// Test to see if the passed Type is a <see cref="KeyValuePair{TKey,TValue}"/> for any 
+        /// <c>TKey</c>, <c>TValue</c>
         /// </summary>
         /// <param name="type">Type to test</param>
         /// <returns>True if the type is a KeyValue type</returns>

@@ -2,6 +2,10 @@ using System;
 
 namespace Niche.CommandLine
 {
+    /// <summary>
+    /// Syntax for invoking an action after an options instance has been parsed
+    /// </summary>
+    /// <typeparam name="T">Type of options instance just configured.</typeparam>
     public interface ICommandLineExecuteActionSyntax<out T>
     {
         /// <summary>

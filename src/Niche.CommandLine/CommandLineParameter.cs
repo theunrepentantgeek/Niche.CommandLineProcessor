@@ -56,6 +56,11 @@ namespace Niche.CommandLine
         /// </summary>
         public IEnumerable<V> Values => _values;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CommandLineParameter{V}"/> class
+        /// </summary>
+        /// <param name="instance">Instance that we're configuring with this parameter.</param>
+        /// <param name="method">Method to invoke if this parameter is used.</param>
         public CommandLineParameter(object instance, MethodInfo method)
             : base(method)
         {
