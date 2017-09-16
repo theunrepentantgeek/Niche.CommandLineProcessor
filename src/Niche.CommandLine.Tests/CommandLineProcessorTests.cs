@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
 using FluentAssertions;
 using Xunit;
 
@@ -170,7 +168,7 @@ namespace Niche.CommandLine.Tests
             }
         }
 
-        public class WhenHelpRequired : CommandLineProcessorTests
+        public class WithHelpAction : CommandLineProcessorTests
         {
             [Fact]
             public void WhenGivenNullAction_ThrowsException()
@@ -178,7 +176,7 @@ namespace Niche.CommandLine.Tests
                 var processor = CreateProcessor();
                 var exception =
                     Assert.Throws<ArgumentNullException>(
-                        () => processor.WhenHelpRequired(null));
+                        () => processor.WithHelpAction(null));
                 exception.ParamName.Should().Be("displayAction");
             }
 
@@ -187,7 +185,7 @@ namespace Niche.CommandLine.Tests
             {
                 var called = false;
                 var processor = CreateProcessor("--help");
-                processor.WhenHelpRequired(help => called = true);
+                processor.WithHelpAction(help => called = true);
                 called.Should().BeTrue();
             }
 
@@ -196,12 +194,12 @@ namespace Niche.CommandLine.Tests
             {
                 var called = false;
                 var processor = CreateProcessor();
-                processor.WhenHelpRequired(help => called = true);
+                processor.WithHelpAction(help => called = true);
                 called.Should().BeFalse();
             }
         }
 
-        public class WhenErrors : CommandLineProcessorTests
+        public class WithErrorAction : CommandLineProcessorTests
         {
             [Fact]
             public void WhenGivenNullAction_ThrowsException()
@@ -209,7 +207,7 @@ namespace Niche.CommandLine.Tests
                 var processor = CreateProcessor();
                 var exception =
                     Assert.Throws<ArgumentNullException>(
-                        () => processor.WhenErrors(null));
+                        () => processor.WithErrorAction(null));
                 exception.ParamName.Should().Be("displayAction");
             }
 
@@ -219,7 +217,7 @@ namespace Niche.CommandLine.Tests
                 var called = false;
                 var processor = CreateProcessor("--repeat nine");
                 processor.Parse(new SampleDriver()).Execute(Execute);
-                processor.WhenErrors(errors => called = true);
+                processor.WithErrorAction(errors => called = true);
                 called.Should().BeTrue();
             }
 
@@ -229,7 +227,7 @@ namespace Niche.CommandLine.Tests
                 var called = false;
                 var processor = CreateProcessor("--find", "term");
                 processor.Parse(new SampleDriver()).Execute(Execute);
-                processor.WhenErrors(errors => called = true);
+                processor.WithErrorAction(errors => called = true);
                 called.Should().BeFalse();
             }
 
@@ -238,6 +236,5 @@ namespace Niche.CommandLine.Tests
                 return -1;
             }
         }
-
     }
 }

@@ -142,7 +142,7 @@ namespace Niche.CommandLine
         /// </summary>
         /// <param name="displayAction"></param>
         /// <returns></returns>
-        public CommandLineProcessor WhenHelpRequired(Action<IEnumerable<string>> displayAction)
+        public CommandLineProcessor WithHelpAction(Action<IEnumerable<string>> displayAction)
         {
             var action = displayAction ?? throw new ArgumentNullException(nameof(displayAction));
             if (ShowHelp)
@@ -158,7 +158,7 @@ namespace Niche.CommandLine
         /// </summary>
         /// <param name="displayAction"></param>
         /// <returns></returns>
-        public CommandLineProcessor WhenErrors(Action<IEnumerable<string>> displayAction)
+        public CommandLineProcessor WithErrorAction(Action<IEnumerable<string>> displayAction)
         {
             var action = displayAction ?? throw new ArgumentNullException(nameof(displayAction));
             if (Errors.Any())
