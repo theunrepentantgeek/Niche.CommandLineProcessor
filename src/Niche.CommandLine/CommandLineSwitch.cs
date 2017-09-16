@@ -47,7 +47,7 @@ namespace Niche.CommandLine
             }
 
             Debug.Assert(method.DeclaringType != null);
-            if (!method.DeclaringType.IsInstanceOfType(instance))
+            if (!method.DeclaringType.GetTypeInfo().IsInstanceOfType(instance))
             {
                 throw new ArgumentException("Expect method to be callable on instance", nameof(method));
             }

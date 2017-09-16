@@ -65,7 +65,7 @@ namespace Niche.CommandLine
                 throw new ArgumentNullException(nameof(method));
             }
 
-            return typeof(T).IsAssignableFrom(method.ReturnType)
+            return typeof(T).GetTypeInfo().IsAssignableFrom(method.ReturnType)
                 && !method.GetParameters().Any()
                 && method.GetCustomAttribute<DescriptionAttribute>() != null;
         }
@@ -82,7 +82,7 @@ namespace Niche.CommandLine
                 throw new ArgumentNullException(nameof(instance));
             }
 
-            var methods = instance.GetType().GetMethods();
+            var methods = instance.GetType().GetTypeInfo().GetMethods();
 
             var switches
                 = methods.Where(IsSwitch)
@@ -104,7 +104,7 @@ namespace Niche.CommandLine
                 throw new ArgumentNullException(nameof(instance));
             }
 
-            var methods = instance.GetType().GetMethods()
+            var methods = instance.GetType().GetTypeInfo().GetMethods()
                 .Where(IsParameter);
 
             var result = new List<CommandLineOptionBase>();
@@ -141,7 +141,7 @@ namespace Niche.CommandLine
                 throw new ArgumentNullException(nameof(instance));
             }
 
-            var methods = instance.GetType().GetMethods();
+            var methods = instance.GetType().GetTypeInfo().GetMethods();
 
             var modes
                 = methods.Where(IsMode<T>)

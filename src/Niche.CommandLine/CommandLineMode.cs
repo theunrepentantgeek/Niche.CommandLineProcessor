@@ -43,12 +43,12 @@ namespace Niche.CommandLine
             _method = method ?? throw new ArgumentNullException(nameof(method));
 
             Debug.Assert(method.DeclaringType != null);
-            if (!method.DeclaringType.IsInstanceOfType(instance))
+            if (!method.DeclaringType.GetTypeInfo().IsInstanceOfType(instance))
             {
                 throw new ArgumentException("Expect method to be callable on instance", nameof(method));
             }
 
-            if (!driverType.IsAssignableFrom(method.ReturnType))
+            if (!driverType.GetTypeInfo().IsAssignableFrom(method.ReturnType))
             {
                 var message
                     = string.Format(

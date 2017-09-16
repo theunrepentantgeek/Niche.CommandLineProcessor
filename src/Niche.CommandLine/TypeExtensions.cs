@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace Niche.CommandLine
 {
@@ -18,7 +19,7 @@ namespace Niche.CommandLine
                 throw new ArgumentNullException(nameof(type));
             }
 
-            if (!type.IsGenericType)
+            if (!type.GetTypeInfo().IsGenericType)
             {
                 return false;
             }
@@ -28,9 +29,9 @@ namespace Niche.CommandLine
                 return true;
             }
 
-            var interfaces = type.GetInterfaces();
+            var interfaces = type.GetTypeInfo().GetInterfaces();
             return interfaces.Any(
-                i => i.IsGenericType
+                i => i.GetTypeInfo().IsGenericType
                     && i.GetGenericTypeDefinition() == typeof(IEnumerable<>));
         }
 
@@ -47,23 +48,23 @@ namespace Niche.CommandLine
                 throw new ArgumentNullException(nameof(type));
             }
 
-            if (!type.IsGenericType)
+            if (!type.GetTypeInfo().IsGenericType)
             {
                 return null;
             }
 
             if (type.GetGenericTypeDefinition() == typeof(IEnumerable<>))
             {
-                return type.GetGenericArguments().Single();
+                return type.GetTypeInfo().GetGenericArguments().Single();
             }
 
-            var interfaces = type.GetInterfaces();
+            var interfaces = type.GetTypeInfo().GetInterfaces();
             var enumerableType
                 = interfaces.First(
-                    i => i.IsGenericType
+                    i => i.GetTypeInfo().IsGenericType
                     && i.GetGenericTypeDefinition() == typeof(IEnumerable<>));
 
-            return enumerableType.GetGenericArguments().Single();
+            return enumerableType.GetTypeInfo().GetGenericArguments().Single();
         }
 
         /// <summary>
@@ -74,7 +75,7 @@ namespace Niche.CommandLine
         /// <returns>True if the type is a KeyValue type</returns>
         public static bool IsKeyValuePair(this Type type)
         {
-            if (!type.IsGenericType)
+            if (!type.GetTypeInfo().IsGenericType)
             {
                 return false;
             }
@@ -94,7 +95,7 @@ namespace Niche.CommandLine
                 return null;
             }
 
-            var arguments = type.GetGenericArguments();
+            var arguments = type.GetTypeInfo().GetGenericArguments();
             return arguments[0];
         }
 
@@ -110,7 +111,7 @@ namespace Niche.CommandLine
                 return null;
             }
 
-            var arguments = type.GetGenericArguments();
+            var arguments = type.GetTypeInfo().GetGenericArguments();
             return arguments[1];
         }
     }

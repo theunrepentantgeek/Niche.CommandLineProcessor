@@ -67,7 +67,7 @@ namespace Niche.CommandLine
             _instance = instance ?? throw new ArgumentNullException(nameof(instance));
 
             Debug.Assert(method.DeclaringType != null);
-            if (!method.DeclaringType.IsInstanceOfType(instance))
+            if (!method.DeclaringType.GetTypeInfo().IsInstanceOfType(instance))
             {
                 throw new ArgumentException(
                     "Expect method to be callable on instance", nameof(method));
@@ -137,7 +137,7 @@ namespace Niche.CommandLine
                     LongName,
                     ShortName,
                     Description,
-                    _parameterInfo.Name.ToLower(CultureInfo.CurrentCulture));
+                    _parameterInfo.Name.ToLower());
 
             yield return text;
         }
