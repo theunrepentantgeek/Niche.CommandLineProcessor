@@ -4,6 +4,10 @@
     <TargetFramework>netstandard1.5</TargetFramework>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Desktop.Analyzers" Version="1.1.0" />
     <PackageReference Include="Microsoft.AnalyzerPowerPack" Version="1.1.0" />
