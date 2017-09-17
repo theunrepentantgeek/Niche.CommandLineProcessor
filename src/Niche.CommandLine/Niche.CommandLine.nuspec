@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<package >
+<package>
   <metadata>
     <id>Niche.CommandLineProcessor</id>
     <version>$version$</version>
@@ -9,9 +9,14 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Convention based argument handling for console applications</description>
     <copyright>Copyright 2017</copyright>
-    <tags>command line command-line option parser args arguments</tags>
+    <tags>command line command-line commandline option parameter argument parser parse </tags>
+    <dependencies>
+      <dependency id="System.ValueTuple" version="4.3.1"/>
+    </dependencies>
   </metadata>
   <files>
-    <file src="..\docs\ReadMe.txt" target="."/>
+    <file src="Niche.CommandLine.dll" target="lib\net452\Niche.CommandLine.dll"/>
+    <file src="Niche.CommandLine.pdb" target="lib\net452\Niche.CommandLine.pdb"/>
   </files>
+    <file src="Readme.txt" target="Readme.txt"/>
 </package>
