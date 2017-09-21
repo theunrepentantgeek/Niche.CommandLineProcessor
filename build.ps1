@@ -1,6 +1,6 @@
-#
-# PSake build script for Niche Commandline library
-#
+## ==================================================================================================== 
+##   PSake build script for Niche Commandline library
+## ==================================================================================================== 
 
 properties {
     $baseDir = resolve-path .\
@@ -22,12 +22,12 @@ Task CI.Build -Depends Debug.Build, Generate.Version, Compile.Assembly, Coverage
 ## ----------------------------------------------------------------------------------------------------
 ##   Core Tasks 
 ## ----------------------------------------------------------------------------------------------------
-## The key build tasks themselves (see below for supporting tasks)
+## The key build tasks themselves (see below for supporting tasks, listed in order of execution)
 
-Task Compile.Assembly -Depends Requires.BuildType, Requires.MSBuild, Requires.BuildDir, Generate.VersionInfo {
+Task Compile.Assembly -Depends Requires.BuildType, Requires.MSBuild, Requires.BuildDir {
 
     exec { 
-        & $msbuildExe /p:Configuration=$buildType /verbosity:minimal /fileLogger /flp:verbosity=detailed`;logfile=$buildDir\Niche.CommandLine.txt .\Niche.CommandLine.sln 
+        & $msbuildExe /p:Configuration=$buildType /verbosity:minimal /fileLogger /flp:verbosity=detailed`;logfile=$buildDir\Niche.CommandLine.msbuild.log .\Niche.CommandLine.sln /p:Version=$semver20
     }
 }  
 
@@ -43,15 +43,27 @@ Task Compile.NuGet -Depends Requires.NuGet, Requires.BuildType, Requires.BuildDi
     }
 }
 
-Task Unit.Tests -Depends Requires.XUnitConsole, Compile.Assembly {
+Task Unit.Tests -Depends Requires.dotNet, Configure.TestResultsFolder, Compile.Assembly {
 
-    $htmlReport = join-path $testResultsFolder Niche.CommandLine.Tests.html
-    exec {
-        & $xunitExe .\build\Niche.CommandLine.Tests\$buildType\Niche.CommandLine.Tests.dll -html $htmlReport
-    }
+    $testProjects = Get-ChildItem -Path $srcDir\*.Tests\*.Tests.csproj
+    foreach($testProject in $testProjects) 
+    {
+        Write-Header $testProject.Name
+
+        $reportFile = [System.IO.Path]::ChangeExtension($testProject.Name, ".xunit.xml")
+        $reportPath = join-path $testResultsFolder $reportFile
+
+        Write-Host "Test report: $reportPath"
+
+        pushd $testProject.Directory.FullName
+        exec {
+            & $dotnetExe xunit -nobuild -configuration $buildType -xml $reportPath
+        }
+        popd 
+    }    
 }
 
-Task Coverage.Tests -Depends Requires.OpenCover, Configure.TestResultsFolder, Compile.Assembly {
+Task Coverage.Tests -Depends Requires.OpenCover, Requires.XUnitConsole, Configure.TestResultsFolder, Compile.Assembly {
 
     $testFolder = resolve-path "$buildDir\Niche.CommandLine.Tests\$buildType"
     $xmlOutput = join-path $testResultsFolder "Niche.CommandLine.Tests.xunit.xml"
@@ -61,8 +73,6 @@ Task Coverage.Tests -Depends Requires.OpenCover, Configure.TestResultsFolder, Co
     exec {
         & $opencoverExe -target:"$xunitExe" -targetargs:"$testFolder\Niche.CommandLine.Tests.dll -xml $xmlOutput -html $htmlOutput" -targetdir:"$testFolder" -register:user -output:"$coverageOutput" -filter:"+[Niche.*]* -[*Tests]*"
     }
-
-#        & $openCoverExe -target:"$xUnitExe" -targetargs:"$test -xml $xmlOutput -html $htmlOutput" -targetdir:"$testFolder" -register:user "-filter:+[Document.*]* -[*Tests]*" "-output:$coverageOutput"
 }
 
 Task Coverage.Report -Depends Requires.ReportGenerator, Configure.OpenCoverReportFolder, Coverage.Tests {
@@ -74,7 +84,6 @@ Task Coverage.Report -Depends Requires.ReportGenerator, Configure.OpenCoverRepor
     $openCoverIndex = resolve-path $openCoverReportFolder\index.htm
     & $openCoverIndex
 }
-
 
 ## ----------------------------------------------------------------------------------------------------
 ##   Specifiers 
@@ -194,19 +203,6 @@ Task Configure.PackagesFolder -Depends Requires.BuildDir {
 ## Tasks for finding required resources that must already be available.
 ## This includes executables and other tools
 
-Task Requires.MSBuild {
-
-    $script:msbuildExe = 
-        resolve-path "C:\Program Files (x86)\Microsoft Visual Studio\*\*\MSBuild\*\Bin\MSBuild.exe"
-
-    if ($msbuildExe -eq $null)
-    {
-        throw "Failed to find MSBuild"
-    }
-
-    Write-Host "Found MSBuild here: $msbuildExe"
-}
-
 Task Requires.BuildDir {
     if (test-path $buildDir)
     {
@@ -216,18 +212,6 @@ Task Requires.BuildDir {
         Write-Host "Creating build folder $buildDir"
         mkdir $buildDir | out-null
     }
-}
-
-Task Requires.XUnitConsole {
-
-    $script:xunitExe =
-        resolve-path ".\packages\xunit.runner.console.*\tools\xunit.console.exe"
-
-    if ($xunitExe -eq $null) {
-        throw "Failed to find XUnit.Console.exe"
-    }
-
-    Write-Host "Found XUnit.Console here: $xunitExe"
 }
 
 Task Requires.BuildType {
@@ -240,6 +224,30 @@ Task Requires.BuildType {
     Write-Host "$buildType build confirmed"
 }
 
+Task Requires.DotNet {
+    $script:dotnetExe = (get-command dotnet).Source
+
+    if ($dotnetExe -eq $null) {
+        
+        throw "Failed to find dotnet.exe"
+    }
+
+    Write-Host "Found dotnet here: $dotnetExe"
+}
+
+Task Requires.MSBuild {
+    
+    $script:msbuildExe = 
+        resolve-path "C:\Program Files (x86)\Microsoft Visual Studio\*\*\MSBuild\*\Bin\MSBuild.exe"
+    
+    if ($msbuildExe -eq $null)
+    {
+        throw "Failed to find MSBuild"
+    }
+    
+    Write-Host "Found MSBuild here: $msbuildExe"
+}
+    
 Task Requires.NuGet { 
 
     $script:nugetExe =
@@ -279,6 +287,18 @@ Task Requires.ReportGenerator {
     Write-Host "Found Report Generator here: $reportGeneratorExe"
 }
 
+Task Requires.XUnitConsole {
+    
+        $script:xunitExe =
+            resolve-path ".\packages\xunit.runner.console.*\tools\xunit.console.exe"
+    
+        if ($xunitExe -eq $null) {
+            throw "Failed to find XUnit.Console.exe"
+        }
+    
+        Write-Host "Found XUnit.Console here: $xunitExe"
+    }
+    
 ## ----------------------------------------------------------------------------------------------------
 ##   Utility Methods
 ## ----------------------------------------------------------------------------------------------------
@@ -286,9 +306,40 @@ Task Requires.ReportGenerator {
 formatTaskName { 
 	param($taskName) 
     
-    $divider = "-" * 70
+    $width = 70
+$hostWidth = (get-host).UI.RawUI.WindowSize.Width
+if ($hostWidth -ne $null) {
+    $width = $hostWidth - 2
+}
 
-    # return "`r`n" + $divider + "`r`n" + $taskName + "`r`n" + $divider
-    return "`r`n$divider`r`n$taskName`r`n$divider"
+    $divider = "-" * $width
+    
+    $now = get-date
+    $nowString = $now.ToString("HH:mm:ss").PadLeft($width - $taskName.Length - 5)
+
+    if ($lastTaskStart -ne $null) {
+        $duration = Format-Duration($now - $lastTaskStart)
+        $duration = $duration.PadLeft($width - 2)
+    }
+
+    $script:lastTaskStart = $now
+
+    return "$duration`r`n$divider`r`n  $taskName $nowString`r`n$divider`r`n"
 } 
 
+function Write-Header($message) {
+    $divider = "-" * ($message.Length + 4)
+    Write-Host "`r`n  $message`r`n$divider`r`n"
+}
+
+function Format-Duration($duration) {
+    if ($duration.TotalMinutes -ge 60) {
+        return "{0}h {1}m" -f $duration.Hours, $duration.Minutes
+    }
+    
+    if ($duration.TotalSeconds -ge 60) {
+        return "{0}m {1}s" -f $duration.Minutes, $duration.Seconds
+    }
+    
+    return "{0:N3}s" -f $duration.TotalSeconds
+}
