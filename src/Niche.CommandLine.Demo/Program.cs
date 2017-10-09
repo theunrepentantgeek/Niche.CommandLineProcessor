@@ -5,25 +5,23 @@ using Niche.ConsoleLogging;
 
 namespace Niche.CommandLine.Demo
 {
-    class Program
+    public static class Program
     {
         private static ConsoleLogger _logger;
 
-        static int Main(string[] args)
+        public static int Main(string[] args)
         {
             _logger = new ConsoleLogger(
                 ConsoleLoggerOptions.DisplayBanner
                 | ConsoleLoggerOptions.UseLabels
                 | ConsoleLoggerOptions.ShowTime);
 
-            var processor = new CommandLineProcessor(args);
-            var exitCode = processor.Parse<ProgramOptions>()
+            var processor = new CommandLineProcessor(args)
+                .WithErrorAction(ShowErrors)
+                .WithHelpAction(ShowHelp);
+
+            return processor.Parse<ProgramOptions>()
                 .Execute(MainCore);
-
-            processor.WithHelpAction(ShowHelp)
-                .WithErrorAction(ShowErrors);
-
-            return exitCode;
         }
 
         private static int MainCore(ProgramOptions options)
@@ -38,7 +36,7 @@ namespace Niche.CommandLine.Demo
             _logger.Warning("Warning");
             _logger.Success("Success");
             _logger.Failure("Failure");
-            
+
             if (Debugger.IsAttached)
             {
                 Console.ReadLine();

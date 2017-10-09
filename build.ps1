@@ -78,7 +78,7 @@ Task Coverage.Tests -Depends Requires.OpenCover, Requires.XUnitConsole, Configur
 Task Coverage.Report -Depends Requires.ReportGenerator, Configure.OpenCoverReportFolder, Coverage.Tests {
 
     exec {
-        & $reportGeneratorExe -reports:$testResultsFolder\*.opencover.xml -targetdir:$openCoverReportFolder
+        & $reportGeneratorExe -reports:$testResultsFolder\*.cover.xml -targetdir:$openCoverReportFolder -historydir:$baseDir\history\coverage
     }
 
     $openCoverIndex = resolve-path $openCoverReportFolder\index.htm
