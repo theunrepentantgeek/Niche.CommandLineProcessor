@@ -276,8 +276,9 @@ Task Requires.OpenCover {
 
 Task Requires.ReportGenerator {
 
+    $toNatural = { [regex]::Replace($_, '\d+', { $args[0].Value.PadLeft(20) }) }
     $script:reportGeneratorExe =
-        resolve-path ".\packages\ReportGenerator.*\tools\ReportGenerator.exe"
+        resolve-path $env:userprofile\.nuget\packages\reportgenerator\*\tools\ReportGenerator.exe | sort-object $toNatural | select-object -last 1
 
     if ($reportGeneratorExe -eq $null)
     {
