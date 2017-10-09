@@ -20,8 +20,8 @@ namespace Niche.CommandLine.Demo
             var exitCode = processor.Parse<ProgramOptions>()
                 .Execute(MainCore);
 
-            processor.WhenHelpRequired(ShowHelp)
-                .WhenErrors(ShowErrors);
+            processor.WithHelpAction(ShowHelp)
+                .WithErrorAction(ShowErrors);
 
             return exitCode;
         }
