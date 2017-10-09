@@ -9,20 +9,20 @@
   <ItemGroup>
     <PackageReference Include="FluentAssertions" Version="4.19.4" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.3.0" />
-    <PackageReference Include="NSubstitute" Version="2.0.3" />
+    <PackageReference Include="NSubstitute" Version="3.0.1" />
     <PackageReference Include="OpenCover" Version="4.6.519" />
     <PackageReference Include="psake" Version="4.6.0" />
-    <PackageReference Include="ReportGenerator" Version="2.5.11" />
+    <PackageReference Include="ReportGenerator" Version="3.0.1" />
     <PackageReference Include="System.ComponentModel.TypeConverter" Version="4.3.0" />
-    <PackageReference Include="xunit" Version="2.3.0-beta3-build3705" />
+    <PackageReference Include="xunit" Version="2.3.0" />
     <PackageReference Include="xunit.abstractions" Version="2.0.1" />
     <PackageReference Include="xunit.analyzers" Version="0.7.0" />
-    <PackageReference Include="xunit.assert" Version="2.3.0-beta3-build3705" />
-    <PackageReference Include="xunit.core" Version="2.3.0-beta3-build3705" />
-    <PackageReference Include="xunit.extensibility.core" Version="2.3.0-beta3-build3705" />
-    <PackageReference Include="xunit.extensibility.execution" Version="2.3.0-beta3-build3705" />
-    <PackageReference Include="xunit.runner.console" Version="2.2.0" developmentDependency="true" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.3.0-beta3-build3705" developmentDependency="true" />
+    <PackageReference Include="xunit.assert" Version="2.3.0" />
+    <PackageReference Include="xunit.core" Version="2.3.0" />
+    <PackageReference Include="xunit.extensibility.core" Version="2.3.0" />
+    <PackageReference Include="xunit.extensibility.execution" Version="2.3.0" />
+    <PackageReference Include="xunit.runner.console" Version="2.3.0" developmentDependency="true" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.3.0" developmentDependency="true" />
     <DotNetCliToolReference Include="dotnet-xunit" Version="2.3.0-beta4-build3742" />
   </ItemGroup>
   <ItemGroup>

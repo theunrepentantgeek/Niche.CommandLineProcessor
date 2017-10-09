@@ -12,7 +12,7 @@
     <PackageReference Include="Desktop.Analyzers" Version="1.1.0" />
     <PackageReference Include="Microsoft.AnalyzerPowerPack" Version="1.1.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="1.1.0" />
-    <PackageReference Include="Roslynator.Analyzers" Version="1.4.0" />
+    <PackageReference Include="Roslynator.Analyzers" Version="1.5.0" />
     <PackageReference Include="System.Security.Cryptography.Hashing.Algorithms.Analyzers" Version="1.1.0" />
   </ItemGroup>
 

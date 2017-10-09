@@ -49,7 +49,7 @@
     <PackageReference Include="Desktop.Analyzers" Version="1.1.0" developmentDependency="true" />
     <PackageReference Include="Microsoft.AnalyzerPowerPack" Version="1.1.0" developmentDependency="true" />
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="1.1.0" />
-    <PackageReference Include="Roslynator.Analyzers" Version="1.4.0" developmentDependency="true" />
+    <PackageReference Include="Roslynator.Analyzers" Version="1.5.0" developmentDependency="true" />
     <PackageReference Include="System.ComponentModel.TypeConverter" Version="4.3.0" />
     <PackageReference Include="System.Runtime.Analyzers" Version="1.1.0" developmentDependency="true" />
     <PackageReference Include="System.Runtime.InteropServices.Analyzers" Version="1.1.0" developmentDependency="true" />
