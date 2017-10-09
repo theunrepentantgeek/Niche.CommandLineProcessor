@@ -63,15 +63,23 @@ Task Unit.Tests -Depends Requires.dotNet, Configure.TestResultsFolder, Compile.A
     }    
 }
 
-Task Coverage.Tests -Depends Requires.OpenCover, Requires.XUnitConsole, Configure.TestResultsFolder, Compile.Assembly {
+Task Coverage.Tests -Depends Requires.OpenCover, Requires.dotNet, Configure.TestResultsFolder, Compile.Assembly {
 
-    $testFolder = resolve-path "$buildDir\Niche.CommandLine.Tests\$buildType"
-    $xmlOutput = join-path $testResultsFolder "Niche.CommandLine.Tests.xunit.xml"
-    $htmlOutput = join-path $testResultsFolder "Niche.CommandLine.Tests.xunit.html"
-    $coverageOutput = join-path $testResultsFolder "Niche.CommandLine.Tests.opencover.xml"
+    $filter = "+[*]* -[xunit.*]* -[Fluent*]* -[*.Tests]*"
+    $logLevel = "info"
 
-    exec {
-        & $opencoverExe -target:"$xunitExe" -targetargs:"$testFolder\Niche.CommandLine.Tests.dll -xml $xmlOutput -html $htmlOutput" -targetdir:"$testFolder" -register:user -output:"$coverageOutput" -filter:"+[Niche.*]* -[*Tests]*"
+    foreach ($project in (resolve-path $srcDir\*.Tests\*.csproj)){
+    
+        $projectName = split-path $project -Leaf
+        $projectFolder = split-path $project
+
+        Write-Host "Testing $projectName"
+
+        pushd $projectFolder
+        exec {
+            & $openCoverExe -oldStyle "-target:$dotnetExe" "-targetargs:xunit" -register:user "-filter:$filter" -log:$loglevel -output:$testResultsFolder\$projectName.cover.xml
+        }
+        popd
     }
 }
 
