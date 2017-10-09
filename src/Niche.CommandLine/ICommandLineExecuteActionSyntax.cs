@@ -27,6 +27,11 @@ namespace Niche.CommandLine
         /// <param name="action">Action to ignore.</param>
         public void Execute(Action<T> action)
         {
+            if (action == null)
+            {
+                throw new ArgumentNullException(nameof(action));
+            }
+
             // Nothing
         }
     }
