@@ -119,13 +119,14 @@ namespace Niche.CommandLine
                 || AlternateShortName.Equals(arg, StringComparison.CurrentCultureIgnoreCase)
                 || LongName.Equals(arg, StringComparison.CurrentCultureIgnoreCase))
             {
-                if (arguments.Count < 2)
+                arguments.Dequeue();
+
+                if (arguments.Count < 1)
                 {
                     _valueMissing = true;
-                    return false;
+                    return true;
                 }
 
-                arguments.Dequeue();
                 var value = arguments.Dequeue().As<V>();
                 _values.Add(value);
                 return true;

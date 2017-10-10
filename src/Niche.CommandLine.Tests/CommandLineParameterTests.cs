@@ -88,19 +88,20 @@ namespace Niche.CommandLine.Tests
             }
 
             [Fact]
-            public void WhenParameterIsMissingArgument_ReturnsFalse()
+            public void WhenParameterIsMissingValue_ReturnsTrue()
             {
                 var commandLineParameter = new CommandLineParameter<string>(_driver, _method);
                 var queue = CreateQueue("--find");
-                commandLineParameter.TryActivate(queue).Should().BeFalse();
+                commandLineParameter.TryActivate(queue).Should().BeTrue();
             }
 
             [Fact]
-            public void WhenParameterIsMissingArgument_CreatesError()
+            public void WhenParameterIsMissingValue_ConsumesParameter()
             {
                 var commandLineParameter = new CommandLineParameter<string>(_driver, _method);
                 var queue = CreateQueue("--find");
                 commandLineParameter.TryActivate(queue);
+                queue.Should().BeEmpty();
             }
 
             private static Queue<string> CreateQueue(params string[] values)
