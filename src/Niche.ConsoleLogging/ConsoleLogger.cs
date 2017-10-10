@@ -28,13 +28,13 @@ namespace Niche.ConsoleLogging
 
             if (_options.HasFlag(ConsoleLoggerOptions.UseLabels))
             {
-                _successMarker = "[succ]";
-                _failureMarker = "[fail]";
-                _actionMarker = "[actn]";
-                _warningMarker = "[warn]";
-                _informationMarker = "[info]";
-                _detailMarker = "[detl]";
-                _debugMarker = "[dbug]";
+                _successMarker = "[suc]";
+                _failureMarker = "[ftl]";
+                _actionMarker = "[act]";
+                _warningMarker = "[wrn]";
+                _informationMarker = "[inf]";
+                _detailMarker = "[dtl]";
+                _debugMarker = "[dbg]";
             }
 
             if (options.HasFlag(ConsoleLoggerOptions.DisplayBanner))
