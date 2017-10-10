@@ -159,12 +159,23 @@ namespace Niche.CommandLine.Tests
         public class Errors : CommandLineParameterTests
         {
             [Fact]
-            public void Errors_ForInvalidParameter_ListsContent()
+            public void ForInvalidParameter_ListsInvalidParameter()
             {
-                var arguments = new List<string> { "--not-an-option" };
+                var parameter = "--not-an-option";
+                var arguments = new List<string> { parameter };
                 var processor = new CommandLineProcessor(arguments);
                 processor.Parse(new BaseDriver()).Execute(options => -1);
-                processor.Errors.Should().NotBeEmpty();
+                processor.Errors.Should().Contain(e => e.Contains(parameter));
+            }
+
+            [Fact]
+            public void WhenValidParameterIsMissingValue_ListsInvalidParameter()
+            {
+                var parameter = "--find";
+                var arguments = new List<string> { parameter };
+                var processor = new CommandLineProcessor(arguments);
+                processor.Parse(new SampleDriver()).Execute(options => -1);
+                processor.Errors.Should().Contain(e => e.Contains(parameter));
             }
         }
 

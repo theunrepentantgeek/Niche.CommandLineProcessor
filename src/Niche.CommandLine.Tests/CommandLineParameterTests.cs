@@ -69,6 +69,50 @@ namespace Niche.CommandLine.Tests
                 var queue = new Queue<string>();
                 commandLineParameter.TryActivate(queue).Should().BeFalse();
             }
+
+            [Fact]
+            public void GivenArguments_ShouldConfigureInstance()
+            {
+                var commandLineParameter = new CommandLineParameter<string>(_driver, _method);
+                var queue = CreateQueue("--find", "term");
+                commandLineParameter.TryActivate(queue).Should().BeTrue();
+            }
+
+            [Fact]
+            public void GivenArguments_ShouldCallMethodOnInstance()
+            {
+                var commandLineParameter = new CommandLineParameter<string>(_driver, _method);
+                var queue = CreateQueue("--find", "term");
+                commandLineParameter.TryActivate(queue);
+                commandLineParameter.Values.Should().BeEquivalentTo("term");
+            }
+
+            [Fact]
+            public void WhenParameterIsMissingArgument_ReturnsFalse()
+            {
+                var commandLineParameter = new CommandLineParameter<string>(_driver, _method);
+                var queue = CreateQueue("--find");
+                commandLineParameter.TryActivate(queue).Should().BeFalse();
+            }
+
+            [Fact]
+            public void WhenParameterIsMissingArgument_CreatesError()
+            {
+                var commandLineParameter = new CommandLineParameter<string>(_driver, _method);
+                var queue = CreateQueue("--find");
+                commandLineParameter.TryActivate(queue);
+            }
+
+            private static Queue<string> CreateQueue(params string[] values)
+            {
+                var result = new Queue<string>();
+                foreach (var v in values)
+                {
+                    result.Enqueue(v);
+                }
+
+                return result;
+            }
         }
 
         public class ConfigureParameters : CommandLineParameterTests

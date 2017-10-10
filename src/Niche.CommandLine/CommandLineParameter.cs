@@ -14,6 +14,9 @@ namespace Niche.CommandLine
     [DebuggerDisplay("Parameter: {" + nameof(LongName) + "}")]
     public sealed class CommandLineParameter<V> : CommandLineOptionBase
     {
+        // Flag used to record when were activated but no parameter was available
+        private bool _valueMissing;
+
         // Information about the method we call to set this paraemeter
         private readonly MethodInfo _method;
 
@@ -102,22 +105,28 @@ namespace Niche.CommandLine
             }
 
             var arg = arguments.Peek();
-            if (ShortName.Equals(arg, StringComparison.CurrentCultureIgnoreCase)
-                || AlternateShortName.Equals(arg, StringComparison.CurrentCultureIgnoreCase)
-                || LongName.Equals(arg, StringComparison.CurrentCultureIgnoreCase))
-            {
-                arguments.Dequeue();
-                var value = arguments.Dequeue().As<V>();
-                _values.Add(value);
-                return true;
-            }
-
             if (arg.StartsWith(ShortName + ":", StringComparison.CurrentCultureIgnoreCase)
                 || arg.StartsWith(AlternateShortName + ":", StringComparison.CurrentCultureIgnoreCase)
                 || arg.StartsWith(LongName + ":", StringComparison.CurrentCultureIgnoreCase))
             {
                 arguments.Dequeue();
                 var value = arg.After(":").As<V>();
+                _values.Add(value);
+                return true;
+            }
+
+            if (ShortName.Equals(arg, StringComparison.CurrentCultureIgnoreCase)
+                || AlternateShortName.Equals(arg, StringComparison.CurrentCultureIgnoreCase)
+                || LongName.Equals(arg, StringComparison.CurrentCultureIgnoreCase))
+            {
+                if (arguments.Count < 2)
+                {
+                    _valueMissing = true;
+                    return false;
+                }
+
+                arguments.Dequeue();
+                var value = arguments.Dequeue().As<V>();
                 _values.Add(value);
                 return true;
             }
@@ -156,8 +165,15 @@ namespace Niche.CommandLine
             if (IsRequired && !_values.Any())
             {
                 // Mandatory but not provided: create error
-                var message
-                    = string.Format(CultureInfo.CurrentCulture, "{0}:\t{1}", LongName, "Required parameter not supplied.");
+                var message = $"{LongName}:\tRequired parameter not supplied.";
+                errors.Add(message);
+                return;
+            }
+
+            if (_valueMissing)
+            {
+                // Used, but no value supplied
+                var message = $"{LongName}:\tNo value provided.";
                 errors.Add(message);
                 return;
             }
