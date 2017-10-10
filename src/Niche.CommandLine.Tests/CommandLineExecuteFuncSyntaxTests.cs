@@ -174,7 +174,7 @@ namespace Niche.CommandLine.Tests
             [Fact]
             public void WhenOptionsPresent_CollectsErrors()
             {
-                // Reminder - Options start with -- or - or /
+                // Reminder - Options start with '--' or '-' or '/'
                 _arguments.Add("--option");
                 _syntax.Execute(_func);
                 _errors.Should().NotBeEmpty();
