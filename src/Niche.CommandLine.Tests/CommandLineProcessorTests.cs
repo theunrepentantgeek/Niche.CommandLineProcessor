@@ -116,7 +116,7 @@ namespace Niche.CommandLine.Tests
             }
         }
 
-        public class OptionHelp : CommandLineParameterTests
+        public class OptionHelp : CommandLineProcessorTests
         {
             [Fact]
             public void ForValidDriver_ReturnsText()
@@ -144,7 +144,7 @@ namespace Niche.CommandLine.Tests
             }
         }
 
-        public class Help : CommandLineParameterTests
+        public class Help : CommandLineProcessorTests
         {
             [Fact]
             public void ForValidDriver_SetsShowHelp()
@@ -156,7 +156,7 @@ namespace Niche.CommandLine.Tests
             }
         }
 
-        public class Errors : CommandLineParameterTests
+        public class Errors : CommandLineProcessorTests
         {
             [Fact]
             public void ForInvalidParameter_ListsInvalidParameter()
