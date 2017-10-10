@@ -247,5 +247,32 @@ namespace Niche.CommandLine.Tests
                 return -1;
             }
         }
+
+        public class ExecuteMethod : CommandLineProcessorTests
+        {
+            [Fact]
+            public void WhenNoErrorsEncountered_ActionIsCalled()
+            {
+                var processor = CreateProcessor("--find", "term");
+                var result = processor.Parse<SampleDriver>().Execute(d => 42);
+                result.Should().Be(42);
+            }
+
+            [Fact]
+            public void WhenErrorsEncountered_ActionIsNotCalled()
+            {
+                var processor = CreateProcessor("--find");
+                var result = processor.Parse<SampleDriver>().Execute(d => 42);
+                result.Should().NotBe(42);
+            }
+
+            [Fact]
+            public void WhenHelpRequested_ActionIsNotCalled()
+            {
+                var processor = CreateProcessor("--help", "--find", "term");
+                var result = processor.Parse<SampleDriver>().Execute(d => 42);
+                result.Should().NotBe(42);
+            }
+        }
     }
 }

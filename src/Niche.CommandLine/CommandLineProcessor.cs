@@ -129,7 +129,7 @@ namespace Niche.CommandLine
             processor.Parse(_arguments, _errors);
             _processors.Add(processor);
 
-            if (_errors.Any())
+            if (_errors.Any() || ShowHelp)
             {
                 return new NullCommandLineExecuteFuncSyntax<T>(-1);
             }
