@@ -167,7 +167,6 @@ namespace Niche.CommandLine.Tests
                 errors.Should().BeEmpty();
             }
 
-
             [Fact]
             public void WhenRequiredParameterSupplied_ConfiguresValue()
             {
@@ -188,6 +187,17 @@ namespace Niche.CommandLine.Tests
                 var errors = new List<string>();
                 commandLineParameter.Completed(errors);
                 commandLineParameter.Values.Should().BeEquivalentTo(new List<string> { "search" });
+            }
+
+            [Fact]
+            public void WhenParameterIsMissingValue_CreatesError()
+            {
+                var commandLineParameter = new CommandLineParameter<string>(_driver, _findMethod);
+                var queue = CreateArguments("--find");
+                commandLineParameter.TryActivate(queue);
+                var errors = new List<string>();
+                commandLineParameter.Completed(errors);
+                errors.Should().NotBeEmpty();
             }
 
             [Fact]
