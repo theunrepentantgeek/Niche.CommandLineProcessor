@@ -11,6 +11,12 @@ namespace Niche.CommandLine.Tests
     {
         private readonly SampleDriver _driver = new SampleDriver();
         private readonly MethodInfo _findMethod = typeof(SampleDriver).GetMethod("Find");
+        private readonly MethodInfo _uploadMethod = typeof(SampleDriver).GetMethod("Upload");
+
+        private Queue<string> CreateArguments(params string[] arguments)
+        {
+            return new Queue<string>(arguments);
+        }
 
         public class Constructor : CommandLineParameterTests
         {
@@ -45,17 +51,14 @@ namespace Niche.CommandLine.Tests
 
         public class TryActivate : CommandLineParameterTests
         {
-            private readonly MethodInfo _method;
-
             public TryActivate()
             {
-                _method = _driver.GetType().GetMethod("Find");
             }
 
             [Fact]
             public void TryActivate_GivenNull_ThrowsException()
             {
-                var commandLineParameter = new CommandLineParameter<string>(_driver, _method);
+                var commandLineParameter = new CommandLineParameter<string>(_driver, _findMethod);
                 var exception =
                     Assert.Throws<ArgumentNullException>(
                         () => commandLineParameter.TryActivate(null));
@@ -65,7 +68,7 @@ namespace Niche.CommandLine.Tests
             [Fact]
             public void TryActivate_GivenEmptyArguments_ReturnsFalse()
             {
-                var commandLineParameter = new CommandLineParameter<string>(_driver, _method);
+                var commandLineParameter = new CommandLineParameter<string>(_driver, _findMethod);
                 var queue = new Queue<string>();
                 commandLineParameter.TryActivate(queue).Should().BeFalse();
             }
@@ -73,16 +76,16 @@ namespace Niche.CommandLine.Tests
             [Fact]
             public void GivenArguments_ShouldConfigureInstance()
             {
-                var commandLineParameter = new CommandLineParameter<string>(_driver, _method);
-                var queue = CreateQueue("--find", "term");
+                var commandLineParameter = new CommandLineParameter<string>(_driver, _findMethod);
+                var queue = CreateArguments("--find", "term");
                 commandLineParameter.TryActivate(queue).Should().BeTrue();
             }
 
             [Fact]
             public void GivenArguments_ShouldCallMethodOnInstance()
             {
-                var commandLineParameter = new CommandLineParameter<string>(_driver, _method);
-                var queue = CreateQueue("--find", "term");
+                var commandLineParameter = new CommandLineParameter<string>(_driver, _findMethod);
+                var queue = CreateArguments("--find", "term");
                 commandLineParameter.TryActivate(queue);
                 commandLineParameter.Values.Should().BeEquivalentTo("term");
             }
@@ -90,29 +93,18 @@ namespace Niche.CommandLine.Tests
             [Fact]
             public void WhenParameterIsMissingValue_ReturnsTrue()
             {
-                var commandLineParameter = new CommandLineParameter<string>(_driver, _method);
-                var queue = CreateQueue("--find");
+                var commandLineParameter = new CommandLineParameter<string>(_driver, _findMethod);
+                var queue = CreateArguments("--find");
                 commandLineParameter.TryActivate(queue).Should().BeTrue();
             }
 
             [Fact]
             public void WhenParameterIsMissingValue_ConsumesParameter()
             {
-                var commandLineParameter = new CommandLineParameter<string>(_driver, _method);
-                var queue = CreateQueue("--find");
+                var commandLineParameter = new CommandLineParameter<string>(_driver, _findMethod);
+                var queue = CreateArguments("--find");
                 commandLineParameter.TryActivate(queue);
                 queue.Should().BeEmpty();
-            }
-
-            private static Queue<string> CreateQueue(params string[] values)
-            {
-                var result = new Queue<string>();
-                foreach (var v in values)
-                {
-                    result.Enqueue(v);
-                }
-
-                return result;
             }
         }
 
@@ -139,6 +131,8 @@ namespace Niche.CommandLine.Tests
 
         public class Completed : CommandLineParameterTests
         {
+            private readonly List<string> _errors = new List<string>();
+
             [Fact]
             public void WithNoErrorList_ThrowsException()
             {
@@ -151,9 +145,8 @@ namespace Niche.CommandLine.Tests
             public void WhenRequiredParameterOmitted_GeneratesError()
             {
                 var commandLineParameter = new CommandLineParameter<string>(_driver, _findMethod);
-                var errors = new List<string>();
-                commandLineParameter.Completed(errors);
-                errors.Should().NotBeEmpty();
+                commandLineParameter.Completed(_errors);
+                _errors.Should().NotBeEmpty();
             }
 
             [Fact]
@@ -162,9 +155,8 @@ namespace Niche.CommandLine.Tests
                 var commandLineParameter = new CommandLineParameter<string>(_driver, _findMethod);
                 var arguments = CreateArguments("-f", "search");
                 commandLineParameter.TryActivate(arguments);
-                var errors = new List<string>();
-                commandLineParameter.Completed(errors);
-                errors.Should().BeEmpty();
+                commandLineParameter.Completed(_errors);
+                _errors.Should().BeEmpty();
             }
 
             [Fact]
@@ -173,8 +165,7 @@ namespace Niche.CommandLine.Tests
                 var commandLineParameter = new CommandLineParameter<string>(_driver, _findMethod);
                 var arguments = CreateArguments("-f", "search");
                 commandLineParameter.TryActivate(arguments);
-                var errors = new List<string>();
-                commandLineParameter.Completed(errors);
+                commandLineParameter.Completed(_errors);
                 commandLineParameter.Values.Should().BeEquivalentTo(new List<string> { "search" });
             }
 
@@ -184,30 +175,26 @@ namespace Niche.CommandLine.Tests
                 var commandLineParameter = new CommandLineParameter<string>(_driver, _findMethod);
                 var arguments = CreateArguments("-f:search");
                 commandLineParameter.TryActivate(arguments);
-                var errors = new List<string>();
-                commandLineParameter.Completed(errors);
+                commandLineParameter.Completed(_errors);
                 commandLineParameter.Values.Should().BeEquivalentTo(new List<string> { "search" });
             }
 
             [Fact]
-            public void WhenParameterIsMissingValue_CreatesError()
+            public void WhenOptionalParameterIsMissingValue_CreatesError()
             {
-                var commandLineParameter = new CommandLineParameter<string>(_driver, _findMethod);
-                var queue = CreateArguments("--find");
+                var commandLineParameter = new CommandLineParameter<string>(_driver, _uploadMethod);
+                var queue = CreateArguments("--upload");
                 commandLineParameter.TryActivate(queue);
-                var errors = new List<string>();
-                commandLineParameter.Completed(errors);
-                errors.Should().NotBeEmpty();
+                commandLineParameter.Completed(_errors);
+                _errors.Should().NotBeEmpty();
             }
 
             [Fact]
             public void WhenOptionalParameterOmitted_GeneratesNoErrors()
             {
-                var uploadMethod = typeof(SampleDriver).GetMethod("Upload");
-                var commandLineParameter = new CommandLineParameter<string>(_driver, uploadMethod);
-                var errors = new List<string>();
-                commandLineParameter.Completed(errors);
-                errors.Should().BeEmpty();
+                var commandLineParameter = new CommandLineParameter<string>(_driver, _uploadMethod);
+                commandLineParameter.Completed(_errors);
+                _errors.Should().BeEmpty();
             }
 
             [Fact]
@@ -216,42 +203,32 @@ namespace Niche.CommandLine.Tests
                 var arguments = CreateArguments("-f", "search");
                 var commandLineParameter = new CommandLineParameter<string>(_driver, _findMethod);
                 commandLineParameter.TryActivate(arguments);
-                var errors = new List<string>();
-                commandLineParameter.Completed(errors);
+                commandLineParameter.Completed(_errors);
                 _driver.TextSearch.Should().Be("search");
             }
 
             [Fact]
             public void WhenSingleValuedParameterProvidedTwice_createsError()
             {
-                var method = _driver.GetType().GetMethod("Find");
                 var arguments = CreateArguments("-f", "alpha", "-f", "beta");
-                var commandLineParameter = new CommandLineParameter<string>(_driver, method);
+                var commandLineParameter = new CommandLineParameter<string>(_driver, _findMethod);
                 commandLineParameter.TryActivate(arguments);
                 commandLineParameter.TryActivate(arguments);
-                var errors = new List<string>();
-                commandLineParameter.Completed(errors);
-                errors.Should().NotBeEmpty();
+                commandLineParameter.Completed(_errors);
+                _errors.Should().NotBeEmpty();
             }
 
             [Fact]
             public void WhenMultiValuedParameterProvided_CallsMethod()
             {
-                var method = _driver.GetType().GetMethod("Upload");
                 var arguments = CreateArguments("--upload", "alpha", "-u", "beta", "/u", "gamma");
-                var commandLineParameter = new CommandLineParameter<string>(_driver, method);
+                var commandLineParameter = new CommandLineParameter<string>(_driver, _uploadMethod);
                 commandLineParameter.TryActivate(arguments);
                 commandLineParameter.TryActivate(arguments);
                 commandLineParameter.TryActivate(arguments);
-                var errors = new List<string>();
-                commandLineParameter.Completed(errors);
+                commandLineParameter.Completed(_errors);
                 _driver.FilesToUpload.Should().BeEquivalentTo(new List<string> { "alpha", "beta", "gamma" });
             }
-        }
-
-        private Queue<string> CreateArguments(params string[] arguments)
-        {
-            return new Queue<string>(arguments);
         }
     }
 }
