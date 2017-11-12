@@ -51,10 +51,6 @@ namespace Niche.CommandLine.Tests
 
         public class TryActivate : CommandLineParameterTests
         {
-            public TryActivate()
-            {
-            }
-
             [Fact]
             public void TryActivate_GivenNull_ThrowsException()
             {
