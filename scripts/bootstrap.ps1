@@ -14,7 +14,12 @@ function TryLoad-Psake($path) {
 	$toNatural = { [regex]::Replace($_, '\d+', { $args[0].Value.PadLeft(20) }) }
 
     # Resolve the path we were given; in the case of multiple matches, take the "latest" one
-    $psakePath = resolve-path $path\psake.psm1 -ErrorAction SilentlyContinue | Sort-Object $toNatural | select-object -last 1
+    $psakePath = resolve-path $path\psake*\tools\psake.psm1 -ErrorAction SilentlyContinue | Sort-Object $toNatural | select-object -last 1
+
+    if ($psakePath -eq $null) {
+        # Try NuGet 3.0 style
+        $psakePath = resolve-path $path\psake\*\tools\psake.psm1 -ErrorAction SilentlyContinue | Sort-Object $toNatural | select-object -last 1
+    }
 
     if ($psakePath -eq $null) {
         Write-Output "[!] Psake not found at $path"
@@ -38,19 +43,24 @@ if ($psakeModule -eq $null) {
     import-module psake -ErrorAction SilentlyContinue
 }
 
+if ($psakeModule -eq $null) {
+    # Not yet loaded, try to load it from the packages folder
+    TryLoad-Psake ".\packages\"
+}
+
 if ($env:USERPROFILE -ne $null) {
     # Still don't  have psake loaded, try to load it from the Nuget cache in the users profile folder on Windows
-    TryLoad-Psake "$env:USERPROFILE\.nuget\psake\*"
+    TryLoad-Psake "$env:USERPROFILE\.nuget\"
 }
 
 if ($env:HOME -ne $null) {
     # Still don't  have psake loaded, try to load it from the users profile folder on Linux
-    TryLoad-Psake "$env:HOME\.nuget\packages\psake\*\tools"
+    TryLoad-Psake "$env:HOME\.nuget\packages\"
 }
 
 if ($env:NugetMachineInstallRoot-ne $null) {
     # Still don't  have psake loaded, try to load it from the NuGet machine cache on Windows
-    TryLoad-Psake "$env:NugetMachineInstallRoot\.nuget\psake\*\psake.psm1"
+    TryLoad-Psake "$env:NugetMachineInstallRoot\.nuget\"
 }
 
 $psakeModule = get-module psake
