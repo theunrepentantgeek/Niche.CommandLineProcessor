@@ -1,4 +1,4 @@
-﻿namespace Niche.CommandLine
+﻿namespace Niche.ConsoleLogging
 {
     public interface ILogger
     {

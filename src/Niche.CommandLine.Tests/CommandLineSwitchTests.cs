@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using FluentAssertions;
 using Xunit;
 
@@ -44,6 +45,26 @@ namespace Niche.CommandLine.Tests
 
         public class TryActivate : CommandLineSwitchTests
         {
+            [Fact]
+            public void GivenNullArguments_ThrowsException()
+            {
+                var method = _driver.GetType().GetMethod("Debug");
+                var commandLineSwitch = new CommandLineSwitch(_driver, method);
+                var exception =
+                    Assert.Throws<ArgumentNullException>(
+                        () => commandLineSwitch.TryActivate(null));
+                exception.ParamName.Should().Be("arguments");
+            }
+
+            [Fact]
+            public void GivenEmptyArguments_ReturnsFalse()
+            {
+                var method = _driver.GetType().GetMethod("Debug");
+                var commandLineSwitch = new CommandLineSwitch(_driver, method);
+                var arguments = new Queue<string>();
+                commandLineSwitch.TryActivate(arguments).Should().BeFalse();
+            }
+
             [Fact]
             public void WhenConfigured_CallsMethod()
             {

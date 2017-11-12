@@ -9,41 +9,41 @@ namespace Niche.CommandLine
     /// </summary>
     public static class CamelCase
     {
-        /// <summary>
-        /// Convert a camelCaseName into a dashed-format-name.
-        /// </summary>
-        /// <param name="camelCase">Name to convert</param>
-        /// <returns>Converted name.</returns>
-        public static string ToDashedName(string camelCase)      // --to-dashed-name  
+/// <summary>
+/// Convert a camelCaseName into a dashed-format-name.
+/// </summary>
+/// <param name="camelCase">Name to convert</param>
+/// <returns>Converted name.</returns>
+public static string ToDashedName(string camelCase)      // --to-dashed-name  
+{
+    if (camelCase == null)
+    {
+        throw new ArgumentNullException(nameof(camelCase));
+    }
+
+    var result = new StringBuilder();
+
+    for (int i = 0; i < camelCase.Length; i++)
+    {
+        var thisChar = camelCase[i];
+        if (i > 0 && i < camelCase.Length - 1)
         {
-            if (camelCase == null)
+            var nextChar = camelCase[i + 1];
+            var lastChar = camelCase[i - 1];
+            if (Char.IsUpper(thisChar))
             {
-                throw new ArgumentNullException(nameof(camelCase));
-            }
-
-            var result = new StringBuilder();
-
-            for (int i = 0; i < camelCase.Length; i++)
-            {
-                var thisChar = camelCase[i];
-                if (i > 0 && i < camelCase.Length - 1)
+                if (Char.IsLower(lastChar) || Char.IsLower(nextChar))
                 {
-                    var nextChar = camelCase[i + 1];
-                    var lastChar = camelCase[i - 1];
-                    if (Char.IsUpper(thisChar))
-                    {
-                        if (Char.IsLower(lastChar) || Char.IsLower(nextChar))
-                        {
-                            result.Append("-");
-                        }
-                    }
+                    result.Append("-");
                 }
-
-                result.Append(Char.ToLower(thisChar, CultureInfo.InvariantCulture));
             }
-
-            return result.ToString();
         }
+
+        result.Append(Char.ToLower(thisChar));
+    }
+
+    return result.ToString();
+}
 
         /// <summary>
         /// Convert a camelCaseName into a short format name (ccn)
@@ -71,13 +71,13 @@ namespace Niche.CommandLine
                         if (Char.IsLower(lastChar)
                             || Char.IsLower(nextChar))
                         {
-                            result.Append(Char.ToLower(thisChar, CultureInfo.InvariantCulture));
+                            result.Append(Char.ToLower(thisChar));
                         }
                     }
                 }
                 else if (i == 0)
                 {
-                    result.Append(Char.ToLower(thisChar, CultureInfo.InvariantCulture));
+                    result.Append(Char.ToLower(thisChar));
                 }
             }
 

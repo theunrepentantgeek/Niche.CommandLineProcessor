@@ -2,7 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 
-namespace Niche.CommandLine
+namespace Niche.ConsoleLogging
 {
     public class ConsoleLogger : ILogger
     {
@@ -28,13 +28,18 @@ namespace Niche.CommandLine
 
             if (_options.HasFlag(ConsoleLoggerOptions.UseLabels))
             {
-                _successMarker = "[succ]";
-                _failureMarker = "[fail]";
-                _actionMarker = "[actn]";
-                _warningMarker = "[warn]";
-                _informationMarker = "[info]";
-                _detailMarker = "[detl]";
-                _debugMarker = "[dbug]";
+                _successMarker = "[suc]";
+                _failureMarker = "[ftl]";
+                _actionMarker = "[act]";
+                _warningMarker = "[wrn]";
+                _informationMarker = "[inf]";
+                _detailMarker = "[dtl]";
+                _debugMarker = "[dbg]";
+            }
+
+            if (options.HasFlag(ConsoleLoggerOptions.DisplayBanner))
+            {
+                this.ConsoleBanner();
             }
         }
 
@@ -189,6 +194,7 @@ namespace Niche.CommandLine
     /// <summary>
     /// Options for configuration of a ConsoleLogger
     /// </summary>
+    [Flags]
     public enum ConsoleLoggerOptions
     {
         // Do nothing special
@@ -200,5 +206,7 @@ namespace Niche.CommandLine
         // Use labels to show the severity of each line instead of symbols
         UseLabels = 2,
 
+        // Show a banner on startup
+        DisplayBanner = 4
     }
 }

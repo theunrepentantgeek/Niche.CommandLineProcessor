@@ -1,18 +1,17 @@
 <?xml version="1.0"?>
-<package >
+<package>
   <metadata>
     <id>Niche.CommandLineProcessor</id>
     <version>$version$</version>
     <authors>bevan@nichesoftware.co.nz</authors>
     <owners>bevan@nichesoftware.co.nz</owners>
-    <!--
-    <licenseUrl>http://LICENSE_URL_HERE_OR_DELETE_THIS_LINE</licenseUrl>
-    <iconUrl>http://ICON_URL_HERE_OR_DELETE_THIS_LINE</iconUrl>
-    -->
     <projectUrl>https://github.com/theunrepentantgeek/Niche.CommandLineProcessor</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Convention based argument handling for console applications</description>
-    <copyright>Copyright 2014</copyright>
-    <tags>command line command-line option</tags>
+    <copyright>Copyright 2017</copyright>
+    <tags>command line command-line commandline option parameter argument parser parse </tags>
   </metadata>
+  <files>
+    <file src="..\docs\Readme.txt" target="Readme.txt"/>
+  </files>
 </package>

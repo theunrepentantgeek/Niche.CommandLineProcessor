@@ -1,36 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
 using System.Linq;
+using System.Threading;
 
 namespace Niche.CommandLine
 {
     /// <summary>
-    /// Utility class used to parse command line parameters and populate a driver instance
+    /// Utility class used to parse command line parameters and populate a options instance
     /// </summary>
-    /// <typeparam name="T">Type of the driver instances to support</typeparam>
-    public class CommandLineProcessor<T>
-        where T : class
+    public class CommandLineProcessor
     {
         // List of unprocessed arguments
-        private readonly List<string> _arguments = new List<string>();
+        private readonly Queue<string> _arguments;
 
         // List of errors encountered so far
         private readonly List<string> _errors = new List<string>();
 
         // Help text on available parameters
-        private readonly List<string> _optionHelp = new List<string>();
+        private readonly Lazy<List<string>> _optionHelp;
 
-        // The driver object we are configuring
-        private readonly T _driver;
+        // A list of all the processors we've used
+        private readonly List<IInstanceProcessor> _processors = new List<IInstanceProcessor>();
 
-        // A flag for whether to show help
-        private bool _showHelp;
-
-        // A list of all the modes we support
-        private readonly IEnumerable<CommandLineMode> _modes;
+        // Standard options supplied for all programs
+        private readonly StandardOptions _standardOptions = new StandardOptions();
 
         /// <summary>
         /// Gets the list of arguments not already processed
@@ -43,11 +37,6 @@ namespace Niche.CommandLine
         public bool HasErrors => _errors.Any();
 
         /// <summary>
-        /// Gets a value indicating whether we should should help
-        /// </summary>
-        public bool ShowHelp => _showHelp;
-
-        /// <summary>
         /// Gets the sequence of the errors already encountered
         /// </summary>
         public IEnumerable<string> Errors => _errors;
@@ -55,153 +44,195 @@ namespace Niche.CommandLine
         /// <summary>
         /// Gets a list of help text for display
         /// </summary>
-        public IEnumerable<string> OptionHelp
-        {
-            get
-            {
-                if (!_optionHelp.Any())
-                {
-                    CreateHelp();
-                }
-
-                return _optionHelp;
-            }
-        }
+        public IEnumerable<string> OptionHelp => _optionHelp.Value;
 
         /// <summary>
-        /// Gets a reference to the driver instance we've configured from the command line
+        /// Gets a value indicating whether we should should help
         /// </summary>
-        public T Driver => _driver;
+        public bool ShowHelp => _standardOptions.ShowHelp;
 
         /// <summary>
         /// Initializes a new instance of the CommandLineProcessor class
         /// </summary>
         /// <param name="arguments">Command line arguments to process</param>
-        /// <param name="driver">Driver instance to configure from the command line</param>
         [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
-        public CommandLineProcessor(IEnumerable<string> arguments, T driver)
+        public CommandLineProcessor(IEnumerable<string> arguments)
         {
-            if (arguments == null)
+            _arguments = new Queue<string>(arguments ?? throw new ArgumentNullException(nameof(arguments)));
+            var instanceProcessor = new InstanceProcessor<StandardOptions>(_standardOptions);
+            instanceProcessor.Parse(_arguments, _errors);
+            _processors.Add(instanceProcessor);
+            _optionHelp = new Lazy<List<string>>(CreateHelp, LazyThreadSafetyMode.ExecutionAndPublication);
+        }
+
+        /// <summary>
+        /// Configure a options instance, populating it from the command line
+        /// </summary>
+        /// <typeparam name="T">Type of options instance to configure.</typeparam>
+        /// <remarks>Any command line arguments that address the options will be consumed; the 
+        /// remaining arguments will be retained in original order.</remarks>
+        /// <returns>Instance of <see cref="ICommandLineExecuteActionSyntax{T}"/>.</returns>
+        public ICommandLineExecuteActionSyntax<T> ParseGlobal<T>()
+            where T : class, new()
+        {
+            return ParseGlobal(new T());
+        }
+
+        /// <summary>
+        /// Configure some global options from the command line
+        /// </summary>
+        /// <typeparam name="T">Type of options instance to configure.</typeparam>
+        /// <remarks>Any command line arguments that address the options will be consumed; the 
+        /// remaining arguments will be retained in original order.</remarks>
+        /// <param name="options">Driver instance to populate</param>
+        /// <returns>Instance of <see cref="ICommandLineExecuteActionSyntax{T}"/>.</returns>
+        public ICommandLineExecuteActionSyntax<T> ParseGlobal<T>(T options)
+            where T : class
+        {
+            var processor = FindLeafProcessor(options ?? throw new ArgumentNullException(nameof(options)));
+            processor.Parse(_arguments, _errors);
+            _processors.Add(processor);
+
+            if (_errors.Any())
             {
-                throw new ArgumentNullException(nameof(arguments));
+                return new NullCommandLineExecuteActionSyntax<T>();
             }
 
-            if (driver == null)
+            return new CommandLineExecuteActionSyntax<T>(options, _errors);
+        }
+
+        /// <summary>
+        /// Configure some program options from the command line
+        /// </summary>
+        /// <typeparam name="T">Type of options instance to configure.</typeparam>
+        /// <remarks>Any command line arguments that address the options will be consumed; the 
+        /// remaining arguments will be retained in original order.</remarks>
+        /// <returns>Instance of <see cref="ICommandLineExecuteActionSyntax{T}"/>.</returns>
+        public ICommandLineExecuteFuncSyntax<T> Parse<T>()
+            where T : class, new()
+        {
+            return Parse(new T());
+        }
+
+        /// <summary>
+        /// Configure some program options from the command line
+        /// </summary>
+        /// <typeparam name="T">Type of options instance to configure.</typeparam>
+        /// <remarks>Any command line arguments that address the options will be consumed; the 
+        /// remaining arguments will be retained in original order.</remarks>
+        /// <param name="options">Driver instance to populate</param>
+        /// <returns>Instance of <see cref="ICommandLineExecuteActionSyntax{T}"/>.</returns>
+        public ICommandLineExecuteFuncSyntax<T> Parse<T>(T options)
+            where T : class
+        {
+            var processor = FindLeafProcessor(options ?? throw new ArgumentNullException(nameof(options)));
+            processor.Parse(_arguments, _errors);
+            _processors.Add(processor);
+
+            if (_errors.Any() || ShowHelp)
             {
-                throw new ArgumentNullException(nameof(driver));
+                return new NullCommandLineExecuteFuncSyntax<T>(-1);
             }
 
-            var queue = new Queue<string>(arguments);
-            var selectedDriver = driver;
-            _modes = CommandLineOptionFactory.CreateModes(selectedDriver);
-            while (queue.Any())
+            return new CommandLineExecuteFuncSyntax<T>(options, _arguments.ToList(), _errors, -1);
+        }
+
+        /// <summary>
+        /// Display help if it's requested
+        /// </summary>
+        /// <param name="displayAction"></param>
+        /// <returns></returns>
+        public CommandLineProcessor WithHelpAction(Action<IEnumerable<string>> displayAction)
+        {
+            var action = displayAction ?? throw new ArgumentNullException(nameof(displayAction));
+            if (ShowHelp)
             {
-                var modeName = queue.Peek();
-                var mode = _modes.SingleOrDefault(m => m.HasName(modeName));
+                action(OptionHelp);
+            }
+
+            return this;
+        }
+
+        /// <summary>
+        /// Display help if it's requested
+        /// </summary>
+        /// <param name="displayAction"></param>
+        /// <returns></returns>
+        public CommandLineProcessor WithErrorAction(Action<IEnumerable<string>> displayAction)
+        {
+            var action = displayAction ?? throw new ArgumentNullException(nameof(displayAction));
+            if (Errors.Any())
+            {
+                action(OptionHelp);
+            }
+
+            return this;
+        }
+
+        private InstanceProcessor<T> FindLeafProcessor<T>(T driver)
+            where T : class
+        {
+            var processor = new InstanceProcessor<T>(driver);
+            while (_arguments.Any())
+            {
+                var modeName = _arguments.Peek();
+                var mode = processor.Modes.SingleOrDefault(m => m.HasName(modeName));
                 if (mode == null)
                 {
                     break;
                 }
 
-                selectedDriver = (T)mode.Activate();
-                _modes = CommandLineOptionFactory.CreateModes(selectedDriver);
-                queue.Dequeue();
+                var newDriver = (T)mode.Activate();
+                processor = new InstanceProcessor<T>(newDriver);
+                _arguments.Dequeue();
             }
 
-            _driver = selectedDriver;
-
-            // Default switches
-            _switches.AddRange(CommandLineOptionFactory.CreateSwitches(this));
-
-            // Create options for our driver
-            _parameters.AddRange(CommandLineOptionFactory.CreateParameters(_driver));
-            _switches.AddRange(CommandLineOptionFactory.CreateSwitches(_driver));
-
-            _arguments.Clear();
-            while (queue.Count > 0)
-            {
-                var activatedSwitch = _switches.FirstOrDefault(m => m.TryActivate(queue));
-                if (activatedSwitch != null)
-                {
-                    continue;
-                }
-
-                var activatedParameter = _parameters.FirstOrDefault(p => p.TryActivate(queue));
-                if (activatedParameter != null)
-                {
-                    continue;
-                }
-
-                var arg = queue.Dequeue();
-                if (IsOption(arg))
-                {
-                    var message = string.Format(CultureInfo.CurrentCulture, "{0}\twas not expected.", arg);
-                    _errors.Add(message);
-                    continue;
-                }
-
-                _arguments.Add(arg);
-            }
-
-            foreach (var o in _switches)
-            {
-                o.Completed(_errors);
-            }
-
-            foreach (var o in _parameters)
-            {
-                o.Completed(_errors);
-            }
-        }
-
-        [Description("Show this help")]
-        public void Help()
-        {
-            _showHelp = true;
-        }
-
-        /// <summary>
-        /// Test to see if the passed argument is an option
-        /// </summary>
-        /// <param name="argument">Argument to test</param>
-        /// <returns>True if the argument is an option, false otherwise.</returns>
-        private static bool IsOption(string argument)
-        {
-            return argument.StartsWith("-", StringComparison.Ordinal)
-                || argument.StartsWith("/", StringComparison.Ordinal);
+            return processor;
         }
 
         /// <summary>
         /// Create help text
         /// </summary>
-        private void CreateHelp()
+        private List<string> CreateHelp()
         {
-            var modeHelp = _modes.SelectMany(m => m.CreateHelp()).OrderBy(l => l).ToList();
-            if (modeHelp.Any())
-            {
-                _optionHelp.AddRange(modeHelp);
-                _optionHelp.Add(string.Empty);
-            }
+            var helpText = new List<string>();
 
-            var switchHelp = _switches.SelectMany(o => o.CreateHelp()).OrderBy(l => l).ToList();
-            _optionHelp.AddRange(switchHelp);
+            var modeHelp =
+                from processor in _processors
+                from commandMode in processor.Modes
+                from line in commandMode.CreateHelp()
+                orderby line
+                select line;
+            AddHelp(modeHelp);
 
-            var parameterHelp = _parameters.SelectMany(o => o.CreateHelp()).OrderBy(l => l).ToList();
-            if (parameterHelp.Any())
+            var switchHelp = (
+                from processor in _processors
+                from commandSwitch in processor.Switches
+                from line in commandSwitch.CreateHelp()
+                orderby line
+                select line).ToList();
+            AddHelp(switchHelp);
+
+            var parameterHelp = (
+                from processor in _processors
+                from commandParameter in processor.Parameters
+                from line in commandParameter.CreateHelp()
+                orderby line
+                select line).ToList();
+            AddHelp(parameterHelp);
+
+            return helpText;
+
+            void AddHelp(IEnumerable<string> lines)
             {
-                _optionHelp.Add(string.Empty);
-                _optionHelp.AddRange(parameterHelp);
+                var text = lines.ToList();
+                if (helpText.Any() && text.Any())
+                {
+                    helpText.Add(string.Empty);
+                }
+
+                helpText.AddRange(text);
             }
         }
-
-        /// <summary>
-        /// Storage for all our switches
-        /// </summary>
-        private readonly List<CommandLineOptionBase> _switches = new List<CommandLineOptionBase>();
-
-        /// <summary>
-        /// Storage for all our parameters
-        /// </summary>
-        private readonly List<CommandLineOptionBase> _parameters = new List<CommandLineOptionBase>();
     }
 }

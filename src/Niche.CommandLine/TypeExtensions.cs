@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace Niche.CommandLine
 {
@@ -13,7 +14,12 @@ namespace Niche.CommandLine
         /// <returns>Results of the test. True if it implements IEnumerable&lt;T&gt;; false otherwise.</returns>
         public static bool IsIEnumerable(this Type type)
         {
-            if (type.IsGenericType == false)
+            if (type == null)
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
+
+            if (!type.GetTypeInfo().IsGenericType)
             {
                 return false;
             }
@@ -23,9 +29,9 @@ namespace Niche.CommandLine
                 return true;
             }
 
-            var interfaces = type.GetInterfaces();
+            var interfaces = type.GetTypeInfo().GetInterfaces();
             return interfaces.Any(
-                i => i.IsGenericType
+                i => i.GetTypeInfo().IsGenericType
                     && i.GetGenericTypeDefinition() == typeof(IEnumerable<>));
         }
 
@@ -33,37 +39,43 @@ namespace Niche.CommandLine
         /// Gets the type of the argument to IEnumerable{T} 
         /// or null if the type does not implement IEnumerable{T}
         /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
+        /// <param name="type">Possible <see cref="IEnumerable{T}"/> type.</param>
+        /// <returns>Item type if type is enumerable, null otherwise.</returns>
         public static Type GetIEnumerableItemType(this Type type)
         {
-            if (type.IsGenericType == false)
+            if (type == null)
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
+
+            if (!type.GetTypeInfo().IsGenericType)
             {
                 return null;
             }
 
             if (type.GetGenericTypeDefinition() == typeof(IEnumerable<>))
             {
-                return type.GetGenericArguments().Single();
+                return type.GetTypeInfo().GetGenericArguments().Single();
             }
 
-            var interfaces = type.GetInterfaces();
+            var interfaces = type.GetTypeInfo().GetInterfaces();
             var enumerableType
-                = interfaces.FirstOrDefault(
-                    i => i.IsGenericType
+                = interfaces.First(
+                    i => i.GetTypeInfo().IsGenericType
                     && i.GetGenericTypeDefinition() == typeof(IEnumerable<>));
 
-            return enumerableType.GetGenericArguments().Single();
+            return enumerableType.GetTypeInfo().GetGenericArguments().Single();
         }
 
         /// <summary>
-        /// Test to see if the passed Type is a KeyValuePair<K,V> for any K, V
+        /// Test to see if the passed Type is a <see cref="KeyValuePair{TKey,TValue}"/> for any 
+        /// <c>TKey</c>, <c>TValue</c>
         /// </summary>
         /// <param name="type">Type to test</param>
         /// <returns>True if the type is a KeyValue type</returns>
         public static bool IsKeyValuePair(this Type type)
         {
-            if (type.IsGenericType == false)
+            if (!type.GetTypeInfo().IsGenericType)
             {
                 return false;
             }
@@ -78,12 +90,12 @@ namespace Niche.CommandLine
         /// <returns>Extracted type value.</returns>
         public static Type GetKeyValueKeyType(this Type type)
         {
-            if (type.IsKeyValuePair() == false)
+            if (!type.IsKeyValuePair())
             {
                 return null;
             }
 
-            var arguments = type.GetGenericArguments();
+            var arguments = type.GetTypeInfo().GetGenericArguments();
             return arguments[0];
         }
 
@@ -94,12 +106,12 @@ namespace Niche.CommandLine
         /// <returns>Extracted type value.</returns>
         public static Type GetKeyValueValueType(this Type type)
         {
-            if (type.IsKeyValuePair() == false)
+            if (!type.IsKeyValuePair())
             {
                 return null;
             }
 
-            var arguments = type.GetGenericArguments();
+            var arguments = type.GetTypeInfo().GetGenericArguments();
             return arguments[1];
         }
     }

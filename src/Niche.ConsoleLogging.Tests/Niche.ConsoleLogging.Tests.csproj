@@ -1,32 +1,26 @@
-﻿<Project Sdk="Microsoft.Net.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
-  
+
   <ItemGroup>
     <PackageReference Include="FluentAssertions" Version="4.19.4" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.5.0" />
     <PackageReference Include="NSubstitute" Version="3.1.0" />
-    <PackageReference Include="OpenCover" Version="4.6.519" />
-    <PackageReference Include="psake" Version="4.6.0" />
-    <PackageReference Include="ReportGenerator" Version="3.0.2" />
     <PackageReference Include="System.ComponentModel.TypeConverter" Version="4.3.0" />
     <PackageReference Include="xunit" Version="2.3.1" />
     <PackageReference Include="xunit.abstractions" Version="2.0.1" />
     <PackageReference Include="xunit.analyzers" Version="0.7.0" />
     <PackageReference Include="xunit.assert" Version="2.3.1" />
     <PackageReference Include="xunit.core" Version="2.3.1" />
-    <PackageReference Include="xunit.extensibility.core" Version="2.3.1" />
-    <PackageReference Include="xunit.extensibility.execution" Version="2.3.1" />
-    <PackageReference Include="xunit.runner.console" Version="2.3.1" developmentDependency="true" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.3.1" developmentDependency="true" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.3.1" />
     <DotNetCliToolReference Include="dotnet-xunit" Version="2.3.0-beta4-build3742" />
   </ItemGroup>
+
   <ItemGroup>
-    <ProjectReference Include="..\Niche.CommandLine\Niche.CommandLine.csproj" />
+    <ProjectReference Include="..\Niche.ConsoleLogging\Niche.ConsoleLogging.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Analyzer Include="..\..\packages\xunit.analyzers.0.6.1\analyzers\dotnet\cs\xunit.analyzers.dll" />
-  </ItemGroup>
+
 </Project>

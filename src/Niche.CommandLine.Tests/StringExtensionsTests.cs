@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using FluentAssertions;
 using Xunit;
@@ -21,13 +20,6 @@ namespace Niche.CommandLine.Tests
         {
             var sample = "42";
             sample.As<int>().Should().Be(42);
-        }
-
-        [Fact]
-        public void AsColor_GivenColor_ReturnsColor()
-        {
-            var sample = "Red";
-            sample.As<Color>().Should().Be(Color.Red);
         }
 
         [Fact]

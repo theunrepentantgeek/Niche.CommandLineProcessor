@@ -7,7 +7,7 @@ namespace Niche.CommandLine.Demo
     /// <summary>
     /// Command line interface for the demo
     /// </summary>
-    public class Driver
+    public class ProgramOptions
     {
         private readonly List<string> _searchTerms = new List<string>();
 
@@ -36,7 +36,7 @@ namespace Niche.CommandLine.Demo
         }
 
         [Description("Sample Mode (recursive!)")]
-        public Driver RecursiveMode()
+        public ProgramOptions RecursiveMode()
         {
             return this;
         }

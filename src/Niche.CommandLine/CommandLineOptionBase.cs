@@ -24,6 +24,7 @@ namespace Niche.CommandLine
         /// <summary>
         /// Initializes a new instance of the CommandLineOptionBase class
         /// </summary>
+        /// <param name="method">Method to use for this option.</param>
         protected CommandLineOptionBase(MethodInfo method)
         {
             Method = method ?? throw new ArgumentNullException(nameof(method));
@@ -48,6 +49,11 @@ namespace Niche.CommandLine
         /// <param name="errors">List used to gather any reported errors.</param>
         public abstract void Completed(IList<string> errors);
 
+        /// <summary>
+        /// Find the configured description for a specified method
+        /// </summary>
+        /// <param name="info">Method for which a description is requested.</param>
+        /// <returns>Description for the method, if configured; empty string otherwise.</returns>
         protected internal static string FindDescription(MemberInfo info)
         {
             var attribute = info.GetCustomAttribute<DescriptionAttribute>();

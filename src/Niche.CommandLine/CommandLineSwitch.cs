@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Reflection;
 
@@ -8,6 +9,7 @@ namespace Niche.CommandLine
     /// <summary>
     ///  Wrapper class that handles a simple switch - something without a value
     /// </summary>
+    [DebuggerDisplay("Parameter: {" + nameof(LongName) + "}")]
     public class CommandLineSwitch : CommandLineOptionBase
     {
         // The instance we're configuring
@@ -31,6 +33,11 @@ namespace Niche.CommandLine
         /// </summary>
         public string LongName { get; }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CommandLineSwitch"/> class
+        /// </summary>
+        /// <param name="instance">Instance we're configuring with this switch.</param>
+        /// <param name="method">Method to invoke if this switch is present.</param>
         public CommandLineSwitch(object instance, MethodInfo method)
             : base(method)
         {
@@ -39,12 +46,8 @@ namespace Niche.CommandLine
                 throw new ArgumentNullException(nameof(instance));
             }
 
-            if (method == null)
-            {
-                throw new ArgumentNullException(nameof(method));
-            }
-
-            if (!method.DeclaringType.IsInstanceOfType(instance))
+            Debug.Assert(method.DeclaringType != null);
+            if (!method.DeclaringType.GetTypeInfo().IsInstanceOfType(instance))
             {
                 throw new ArgumentException("Expect method to be callable on instance", nameof(method));
             }
@@ -60,6 +63,7 @@ namespace Niche.CommandLine
         /// <summary>
         /// Activate this switch when found
         /// </summary>
+        /// <param name="arguments">Arguments from the command line.</param>
         public override bool TryActivate(Queue<string> arguments)
         {
             if (arguments == null)

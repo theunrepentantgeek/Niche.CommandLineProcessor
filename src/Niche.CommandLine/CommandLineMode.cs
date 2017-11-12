@@ -1,10 +1,15 @@
-﻿using System;
+﻿ using System;
 using System.Collections.Generic;
-using System.Globalization;
+ using System.Diagnostics;
+ using System.Globalization;
 using System.Reflection;
 
 namespace Niche.CommandLine
 {
+    /// <summary>
+    /// A disctinct operational mode for the application
+    /// </summary>
+    [DebuggerDisplay("Mode: {" + nameof(Name) + "}")]
     public class CommandLineMode
     {
         private readonly object _instance;
@@ -34,22 +39,16 @@ namespace Niche.CommandLine
                 throw new ArgumentNullException(nameof(driverType));
             }
 
-            if (instance == null)
-            {
-                throw new ArgumentNullException(nameof(instance));
-            }
+            _instance = instance ?? throw new ArgumentNullException(nameof(instance));
+            _method = method ?? throw new ArgumentNullException(nameof(method));
 
-            if (method == null)
-            {
-                throw new ArgumentNullException(nameof(method));
-            }
-
-            if (!method.DeclaringType.IsInstanceOfType(instance))
+            Debug.Assert(method.DeclaringType != null);
+            if (!method.DeclaringType.GetTypeInfo().IsInstanceOfType(instance))
             {
                 throw new ArgumentException("Expect method to be callable on instance", nameof(method));
             }
 
-            if (!driverType.IsAssignableFrom(method.ReturnType))
+            if (!driverType.GetTypeInfo().IsAssignableFrom(method.ReturnType))
             {
                 var message
                     = string.Format(
@@ -59,16 +58,18 @@ namespace Niche.CommandLine
                 throw new ArgumentException(message, nameof(method));
             }
 
-            _instance = instance;
-            _method = method;
             Description = CommandLineOptionBase.FindDescription(method);
-
             Name = CamelCase.ToDashedName(method.Name);
         }
 
+        /// <summary>
+        /// Test to see if ths mode has the specified name
+        /// </summary>
+        /// <param name="name">Name to check for.</param>
+        /// <returns>True if the names match, false if not.</returns>
         public bool HasName(string name)
         {
-            return string.Equals(Name, name, StringComparison.Ordinal);
+            return string.Equals(Name, name, StringComparison.OrdinalIgnoreCase);
         }
 
         /// <summary>

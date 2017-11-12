@@ -17,7 +17,12 @@ namespace Niche.CommandLine.Tests
 
         public SampleDriver()
         {
-            //
+        }
+
+        [Description("This is the 'activate' mode")]
+        public SampleDriver Activate()
+        {
+            return this;
         }
 
         /// <summary>
@@ -25,13 +30,13 @@ namespace Niche.CommandLine.Tests
         /// </summary>
         /// <param name="term"></param>
         [Required]
-        [Description("Find")]
+        [Description("This is the 'find' parameter")]
         public void Find(string term)
         {
             TextSearch = term;
         }
 
-        [Description("Upload file")]
+        [Description("Upload file")]    
         public void Upload(IEnumerable<string> files)
         {
             FilesToUpload = files.ToList();

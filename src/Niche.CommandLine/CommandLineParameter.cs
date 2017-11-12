@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
@@ -10,8 +11,12 @@ namespace Niche.CommandLine
     /// Wrapper class that handles a simple parameter - something that takes a value
     /// </summary>
     /// <typeparam name="V">Type of value expected by the parameter</typeparam>
+    [DebuggerDisplay("Parameter: {" + nameof(LongName) + "}")]
     public sealed class CommandLineParameter<V> : CommandLineOptionBase
     {
+        // Flag used to record when were activated but no parameter was available
+        private bool _valueMissing;
+
         // Information about the method we call to set this paraemeter
         private readonly MethodInfo _method;
 
@@ -54,21 +59,23 @@ namespace Niche.CommandLine
         /// </summary>
         public IEnumerable<V> Values => _values;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CommandLineParameter{V}"/> class
+        /// </summary>
+        /// <param name="instance">Instance that we're configuring with this parameter.</param>
+        /// <param name="method">Method to invoke if this parameter is used.</param>
         public CommandLineParameter(object instance, MethodInfo method)
             : base(method)
         {
-            if (instance == null)
-            {
-                throw new ArgumentNullException(nameof(instance));
-            }
+            _instance = instance ?? throw new ArgumentNullException(nameof(instance));
 
-            if (!method.DeclaringType.IsInstanceOfType(instance))
+            Debug.Assert(method.DeclaringType != null);
+            if (!method.DeclaringType.GetTypeInfo().IsInstanceOfType(instance))
             {
                 throw new ArgumentException(
                     "Expect method to be callable on instance", nameof(method));
             }
 
-            _instance = instance;
             _method = method;
             _parameterInfo = method.GetParameters().Single();
 
@@ -84,6 +91,7 @@ namespace Niche.CommandLine
         /// <summary>
         /// Activate this parameter when found
         /// </summary>
+        /// <param name="arguments">Arguments to process.</param>
         public override bool TryActivate(Queue<string> arguments)
         {
             if (arguments == null)
@@ -97,22 +105,29 @@ namespace Niche.CommandLine
             }
 
             var arg = arguments.Peek();
-            if (ShortName.Equals(arg, StringComparison.CurrentCultureIgnoreCase)
-                || AlternateShortName.Equals(arg, StringComparison.CurrentCultureIgnoreCase)
-                || LongName.Equals(arg, StringComparison.CurrentCultureIgnoreCase))
-            {
-                arguments.Dequeue();
-                var value = arguments.Dequeue().As<V>();
-                _values.Add(value);
-                return true;
-            }
-
             if (arg.StartsWith(ShortName + ":", StringComparison.CurrentCultureIgnoreCase)
                 || arg.StartsWith(AlternateShortName + ":", StringComparison.CurrentCultureIgnoreCase)
                 || arg.StartsWith(LongName + ":", StringComparison.CurrentCultureIgnoreCase))
             {
                 arguments.Dequeue();
                 var value = arg.After(":").As<V>();
+                _values.Add(value);
+                return true;
+            }
+
+            if (ShortName.Equals(arg, StringComparison.CurrentCultureIgnoreCase)
+                || AlternateShortName.Equals(arg, StringComparison.CurrentCultureIgnoreCase)
+                || LongName.Equals(arg, StringComparison.CurrentCultureIgnoreCase))
+            {
+                arguments.Dequeue();
+
+                if (arguments.Count < 1)
+                {
+                    _valueMissing = true;
+                    return true;
+                }
+
+                var value = arguments.Dequeue().As<V>();
                 _values.Add(value);
                 return true;
             }
@@ -132,7 +147,7 @@ namespace Niche.CommandLine
                     LongName,
                     ShortName,
                     Description,
-                    _parameterInfo.Name.ToLower(CultureInfo.CurrentCulture));
+                    _parameterInfo.Name.ToLower());
 
             yield return text;
         }
@@ -151,8 +166,15 @@ namespace Niche.CommandLine
             if (IsRequired && !_values.Any())
             {
                 // Mandatory but not provided: create error
-                var message
-                    = string.Format(CultureInfo.CurrentCulture, "{0}:\t{1}", LongName, "Required parameter not supplied.");
+                var message = $"{LongName}:\tRequired parameter not supplied.";
+                errors.Add(message);
+                return;
+            }
+
+            if (_valueMissing)
+            {
+                // Used, but no value supplied
+                var message = $"{LongName}:\tNo value provided.";
                 errors.Add(message);
                 return;
             }

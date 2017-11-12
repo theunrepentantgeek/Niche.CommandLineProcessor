@@ -76,15 +76,13 @@ namespace Niche.CommandLine
 
         private static object As(string value, Type convertTo)
         {
-            object result;
-
             // If a string, just return it
             if (convertTo == typeof(string))
             {
                 return value;
             }
 
-            if (TryConvention(convertTo, value, out result))
+            if (TryConvention(convertTo, value, out object result))
             {
                 return result;
             }
@@ -136,7 +134,7 @@ namespace Niche.CommandLine
         private static bool TryConstructor(Type convertTo, string value, out object result)
         {
             // Look for a constructor that takes a single string parameter
-            var constructor = convertTo.GetConstructor(new[] { typeof(string) });
+            var constructor = convertTo.GetTypeInfo().GetConstructor(new[] { typeof(string) });
             if (constructor != null)
             {
                 result = constructor.Invoke(new[] { value });
@@ -150,24 +148,24 @@ namespace Niche.CommandLine
         private static bool TryConvention(Type convertTo, string value, out object result)
         {
             MethodInfo conversionMethod;
-            if (convertTo.IsGenericType)
+            if (convertTo.GetTypeInfo().IsGenericType)
             {
                 var baseType = convertTo.GetGenericTypeDefinition();
                 var methodName = "As" + baseType.Name.Before("`");
                 conversionMethod
                     = typeof(StringExtensions)
-                        .GetMethod(methodName, BindingFlags.Static | BindingFlags.NonPublic);
+                        .GetTypeInfo().GetMethod(methodName, BindingFlags.Static | BindingFlags.NonPublic);
                 if (conversionMethod != null)
                 {
                     conversionMethod
-                        = conversionMethod.MakeGenericMethod(convertTo.GetGenericArguments());
+                        = conversionMethod.MakeGenericMethod(convertTo.GetTypeInfo().GetGenericArguments());
                 }
             }
             else
             {
                 conversionMethod
                     = typeof(StringExtensions)
-                        .GetMethod("As" + convertTo.Name, BindingFlags.Static | BindingFlags.NonPublic);
+                        .GetTypeInfo().GetMethod("As" + convertTo.Name, BindingFlags.Static | BindingFlags.NonPublic);
             }
 
             if (conversionMethod == null)

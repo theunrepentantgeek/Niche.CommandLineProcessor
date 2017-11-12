@@ -7,7 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 
-namespace Niche.CommandLine
+namespace Niche.ConsoleLogging
 {
     /// <summary>
     /// Extensions for ILogger
@@ -165,7 +165,7 @@ namespace Niche.CommandLine
             }
 
             logger.Failure(exception.Message);
-            if (exception.Data != null && exception.Data.Count > 0)
+            if (exception.Data?.Count > 0)
             {
                 logger.Failure(
                     exception.Data.Cast<DictionaryEntry>()
@@ -177,8 +177,7 @@ namespace Niche.CommandLine
                 Failure(logger, exception.InnerException);
             }
 
-            var aggregateException = exception as AggregateException;
-            if (aggregateException != null)
+            if (exception is AggregateException aggregateException)
             {
                 foreach (var e in aggregateException.InnerExceptions)
                 {
