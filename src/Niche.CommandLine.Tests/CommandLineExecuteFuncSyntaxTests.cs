@@ -179,6 +179,15 @@ namespace Niche.CommandLine.Tests
                 _syntax.Execute(_func);
                 _errors.Should().NotBeEmpty();
             }
+
+            [Fact]
+            public void WhenErrorsPresent_DoesNotCallFunc()
+            {
+                _errors.Add("Died");
+                _arguments.Add("argument");
+                _syntax.Execute(_func);
+                _func.DidNotReceive()(_options, _arguments);
+            }
         }
     }
 }
