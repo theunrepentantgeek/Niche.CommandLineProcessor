@@ -15,7 +15,6 @@ function TryLoad-Psake($path) {
 
     # Resolve the path we were given; in the case of multiple matches, take the "latest" one
     $psakePath = resolve-path $path\psake*\tools\psake.psm1 -ErrorAction SilentlyContinue | Sort-Object $toNatural | select-object -last 1
-
     if ($psakePath -eq $null) {
         # Try NuGet 3.0 style
         $psakePath = resolve-path $path\psake\*\tools\psake.psm1 -ErrorAction SilentlyContinue | Sort-Object $toNatural | select-object -last 1
@@ -29,42 +28,36 @@ function TryLoad-Psake($path) {
     }
 }
 
-$psake = get-module psake
-if ($psake -ne $null) {
-    $psakePath = $psake.Path
-    Write-Output "[+] Psake already loaded from $psakePath"
-}
-
 # Try to load a local copy first (so we can ensure a particular version is used)
 TryLoad-Psake .\lib\psake
 
-if ($psakeModule -eq $null) {
+if ((get-module psake) -eq $null) {
     # Don't have psake loaded, try to load it from PowerShell's default module location
     import-module psake -ErrorAction SilentlyContinue
 }
 
-if ($psakeModule -eq $null) {
+if ((get-module psake) -eq $null) {
     # Not yet loaded, try to load it from the packages folder
     TryLoad-Psake ".\packages\"
 }
 
-if ($env:USERPROFILE -ne $null) {
-    # Still don't  have psake loaded, try to load it from the Nuget cache in the users profile folder on Windows
-    TryLoad-Psake "$env:USERPROFILE\.nuget\"
+if ((get-module psake) -eq $null) {
+    # Still not loaded, let's try the variout NuGet caches
+    $locals = nuget locals all -list
+    foreach($local in $locals)
+    {
+        $index = $local.IndexOf(":")
+        $folder = $local.Substring($index + 2)
+        TryLoad-Psake $folder
+    }
 }
 
-if ($env:HOME -ne $null) {
-    # Still don't  have psake loaded, try to load it from the users profile folder on Linux
-    TryLoad-Psake "$env:HOME\.nuget\packages\"
+$psake = get-module psake
+if ($psake -ne $null) {
+    $psakePath = $psake.Path
+    Write-Output "[+] Psake loaded from $psakePath"
 }
-
-if ($env:NugetMachineInstallRoot-ne $null) {
-    # Still don't  have psake loaded, try to load it from the NuGet machine cache on Windows
-    TryLoad-Psake "$env:NugetMachineInstallRoot\.nuget\"
-}
-
-$psakeModule = get-module psake
-if ($psakeModule -eq $null) {
+else {
     throw "Unable to load psake"
 }
 
