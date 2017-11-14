@@ -316,10 +316,10 @@ formatTaskName {
 	param($taskName) 
     
     $width = 70
-$hostWidth = (get-host).UI.RawUI.WindowSize.Width
-if ($hostWidth -ne $null) {
-    $width = $hostWidth - 2
-}
+    $hostWidth = (get-host).UI.RawUI.WindowSize.Width
+    if ($hostWidth -ne $null) {
+        $width = $hostWidth - 2
+    }
 
     $divider = "-" * $width
     
