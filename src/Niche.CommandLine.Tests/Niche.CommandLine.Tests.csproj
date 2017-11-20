@@ -14,7 +14,7 @@
     <PackageReference Include="System.ComponentModel.TypeConverter" Version="4.3.0" />
     <PackageReference Include="xunit" Version="2.3.1" />
     <PackageReference Include="xunit.abstractions" Version="2.0.1" />
-    <PackageReference Include="xunit.analyzers" Version="0.7.0" />
+    <PackageReference Include="xunit.analyzers" Version="0.8.0" />
     <PackageReference Include="xunit.assert" Version="2.3.1" />
     <PackageReference Include="xunit.core" Version="2.3.1" />
     <PackageReference Include="xunit.extensibility.core" Version="2.3.1" />
@@ -25,8 +25,5 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Niche.CommandLine\Niche.CommandLine.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Analyzer Include="..\..\packages\xunit.analyzers.0.6.1\analyzers\dotnet\cs\xunit.analyzers.dll" />
   </ItemGroup>
 </Project>
