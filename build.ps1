@@ -258,10 +258,10 @@ Task Requires.MSBuild {
     
 Task Requires.NuGet { 
 
-    $script:nugetExe = (get-command nuget).Source -ErrorAction SilentlyContinue
+    $script:nugetExe = (get-command nuget -ErrorAction SilentlyContinue).Source
 
     if ($nugetExe -eq $null) {
-        resolve-path ".\packages\NuGet.CommandLine.*\tools\nuget.exe" -ErrorAction SilentlyContinue
+        $script:nugetExe = resolve-path ".\packages\NuGet.CommandLine.*\tools\nuget.exe" -ErrorAction SilentlyContinue
     }
 
     if ($nugetExe -eq $null)
