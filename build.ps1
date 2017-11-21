@@ -318,9 +318,9 @@ Task Requires.XUnitConsole {
 formatTaskName { 
 	param($taskName) 
     
-    $width = 70
+    $width = 100
     $hostWidth = (get-host).UI.RawUI.WindowSize.Width
-    if ($hostWidth -ne $null) {
+    if ($hostWidth -ne $null -and $hostWidth -le $width) {
         $width = $hostWidth - 2
     }
 
