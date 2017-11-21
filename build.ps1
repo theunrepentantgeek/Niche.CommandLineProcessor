@@ -29,14 +29,16 @@ Task Compile.Assembly -Depends Requires.BuildType, Requires.MSBuild, Requires.Bu
     exec { 
         & $msbuildExe /p:Configuration=$buildType /verbosity:minimal /fileLogger /flp:verbosity=detailed`;logfile=$buildDir\Niche.CommandLine.msbuild.log .\Niche.CommandLine.sln /p:Version=$semver20
     }
-}  
+}
 
-Task Compile.NuGet -Depends Requires.NuGet, Requires.BuildType, Requires.BuildDir, Compile.Assembly, Configure.PackagesFolder {
+Task Compile.NuGet -Depends Requires.DotNet, Requires.BuildType, Requires.BuildDir, Compile.Assembly, Configure.PackagesFolder {
 
     $nugetFolder = join-path $packagesFolder Niche.CommandLine
     mkdir $nugetFolder | Out-Null
 
     $csprojFile = resolve-path .\src\Niche.CommandLine\Niche.CommandLine.csproj
+
+    & $dotnetExe --version
 
     exec {
         & $nugetExe pack $csprojFile -version $semver10 -outputdirectory $packagesFolder -basePath $buildDir -properties Configuration=$buildType
