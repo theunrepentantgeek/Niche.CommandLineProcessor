@@ -48,8 +48,6 @@ Task Compile.NuGet -Depends Requires.DotNet, Requires.BuildType, Requires.BuildD
 
     $csprojFile = resolve-path .\src\Niche.CommandLine\Niche.CommandLine.csproj
 
-    & $dotnetExe --version
-
     exec {
         & $dotnetExe pack $csprojFile /property:PackageVersion=$semver20 --output $packagesFolder /property:Configuration=$buildType /fileLogger /flp:verbosity=detailed`;logfile=$buildDir\Niche.CommandLine.nuget.log
     }
@@ -69,7 +67,7 @@ Task Unit.Tests -Depends Requires.dotNet, Configure.TestResultsFolder, Compile.A
 
         pushd $testProject.Directory.FullName
         exec {
-            & $dotnetExe test $testProject.Name --no-build  # -configuration $buildType # -xml $reportPath
+            & $dotnetExe test $testProject.Name --no-build  --configuration $buildType # -xml $reportPath
         }
         popd 
     }    
