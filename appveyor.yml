@@ -20,7 +20,6 @@ assembly_info:
 
 build:
   project: Niche.CommandLine.sln
-  publish_nuget: true             # package projects with .nuspec files and push to artifacts
   
 deploy:
   - provider: NuGet

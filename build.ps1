@@ -13,25 +13,35 @@ properties {
 ## ----------------------------------------------------------------------------------------------------
 ## Top level targets used to run builds
 
-Task Integration.Build -Depends Generate.VersionInfo, Debug.Build, Compile.Assembly, Unit.Tests
+Task Integration.Build -Depends Clean, Generate.VersionInfo, Debug.Build, Compile.Assembly, Unit.Tests
 
-Task Formal.Build -Depends Release.Build, Generate.Version, Compile.Assembly, Unit.Tests, Compile.NuGet
+Task Formal.Build -Depends Clean, Release.Build, Generate.Version, Compile.Assembly, Unit.Tests, Compile.NuGet
 
-Task CI.Build -Depends Debug.Build, Generate.Version, Compile.Assembly, Coverage.Report
+Task CI.Build -Depends Clean, Debug.Build, Generate.Version, Compile.Assembly, Coverage.Report
 
 ## ----------------------------------------------------------------------------------------------------
 ##   Core Tasks 
 ## ----------------------------------------------------------------------------------------------------
 ## The key build tasks themselves (see below for supporting tasks, listed in order of execution)
 
+
+Task Clean {
+    
+    remove-item $buildDir -recurse -force -erroraction silentlycontinue
+    
+    if (!(test-path $buildDir)) { 
+        $quiet = mkdir $buildDir 
+    }   
+}
+
 Task Compile.Assembly -Depends Requires.BuildType, Requires.MSBuild, Requires.BuildDir {
 
     exec { 
         & $msbuildExe /p:Configuration=$buildType /verbosity:minimal /fileLogger /flp:verbosity=detailed`;logfile=$buildDir\Niche.CommandLine.msbuild.log .\Niche.CommandLine.sln /p:Version=$semver20
     }
-}  
+}
 
-Task Compile.NuGet -Depends Requires.NuGet, Requires.BuildType, Requires.BuildDir, Compile.Assembly, Configure.PackagesFolder {
+Task Compile.NuGet -Depends Requires.DotNet, Requires.BuildType, Requires.BuildDir, Compile.Assembly, Configure.PackagesFolder {
 
     $nugetFolder = join-path $packagesFolder Niche.CommandLine
     mkdir $nugetFolder | Out-Null
@@ -39,7 +49,7 @@ Task Compile.NuGet -Depends Requires.NuGet, Requires.BuildType, Requires.BuildDi
     $csprojFile = resolve-path .\src\Niche.CommandLine\Niche.CommandLine.csproj
 
     exec {
-        & $nugetExe pack $csprojFile -version $semver10 -outputdirectory $packagesFolder -basePath $buildDir -properties Configuration=$buildType
+        & $dotnetExe pack $csprojFile /property:PackageVersion=$semver20 --output $packagesFolder /property:Configuration=$buildType /fileLogger /flp:verbosity=detailed`;logfile=$buildDir\Niche.CommandLine.nuget.log
     }
 }
 
@@ -57,7 +67,7 @@ Task Unit.Tests -Depends Requires.dotNet, Configure.TestResultsFolder, Compile.A
 
         pushd $testProject.Directory.FullName
         exec {
-            & $dotnetExe xunit -nobuild -configuration $buildType -xml $reportPath
+            & $dotnetExe test $testProject.Name --no-build  --configuration $buildType # -xml $reportPath
         }
         popd 
     }    
@@ -71,15 +81,12 @@ Task Coverage.Tests -Depends Requires.OpenCover, Requires.dotNet, Configure.Test
     foreach ($project in (resolve-path $srcDir\*.Tests\*.csproj)){
     
         $projectName = split-path $project -Leaf
-        $projectFolder = split-path $project
+   
+        Write-Host "Testing $project"
 
-        Write-Host "Testing $projectName"
-
-        pushd $projectFolder
         exec {
-            & $openCoverExe -oldStyle "-target:$dotnetExe" "-targetargs:xunit" -register:user "-filter:$filter" -log:$loglevel -output:$testResultsFolder\$projectName.cover.xml
+            & $openCoverExe -oldStyle "-target:$dotnetExe" "-targetargs:test $project --no-build --configuration $buildType" -register:user "-filter:$filter" -log:$loglevel -output:$testResultsFolder\$projectName.cover.xml
         }
-        popd
     }
 }
 
@@ -258,8 +265,11 @@ Task Requires.MSBuild {
     
 Task Requires.NuGet { 
 
-    $script:nugetExe =
-        resolve-path ".\packages\NuGet.CommandLine.*\tools\nuget.exe"
+    $script:nugetExe = (get-command nuget -ErrorAction SilentlyContinue).Source
+
+    if ($nugetExe -eq $null) {
+        $script:nugetExe = resolve-path ".\packages\NuGet.CommandLine.*\tools\nuget.exe" -ErrorAction SilentlyContinue
+    }
 
     if ($nugetExe -eq $null)
     {
@@ -315,11 +325,11 @@ Task Requires.XUnitConsole {
 formatTaskName { 
 	param($taskName) 
     
-    $width = 70
-$hostWidth = (get-host).UI.RawUI.WindowSize.Width
-if ($hostWidth -ne $null) {
-    $width = $hostWidth - 2
-}
+    $width = 100
+    $hostWidth = (get-host).UI.RawUI.WindowSize.Width
+    if ($hostWidth -ne $null -and $hostWidth -le $width) {
+        $width = $hostWidth - 2
+    }
 
     $divider = "-" * $width
     
@@ -338,7 +348,7 @@ if ($hostWidth -ne $null) {
 
 function Write-Header($message) {
     $divider = "-" * ($message.Length + 4)
-    Write-Host "`r`n  $message`r`n$divider`r`n"
+    Write-Output "`r`n$divider`r`n  $message`r`n$divider`r`n"
 }
 
 function Format-Duration($duration) {
