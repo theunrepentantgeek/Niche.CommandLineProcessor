@@ -341,7 +341,7 @@ formatTaskName {
 
 function Write-Header($message) {
     $divider = "-" * ($message.Length + 4)
-    Write-Host "`r`n  $message`r`n$divider`r`n"
+    Write-Output "`r`n$divider`r`n  $message`r`n$divider`r`n"
 }
 
 function Format-Duration($duration) {
