@@ -13,11 +13,11 @@ properties {
 ## ----------------------------------------------------------------------------------------------------
 ## Top level targets used to run builds
 
-Task Integration.Build -Depends Generate.VersionInfo, Debug.Build, Compile.Assembly, Unit.Tests
+Task Integration.Build -Depends Clean, Generate.VersionInfo, Debug.Build, Compile.Assembly, Unit.Tests
 
-Task Formal.Build -Depends Release.Build, Generate.Version, Compile.Assembly, Unit.Tests, Compile.NuGet
+Task Formal.Build -Depends Clean, Release.Build, Generate.Version, Compile.Assembly, Unit.Tests, Compile.NuGet
 
-Task CI.Build -Depends Debug.Build, Generate.Version, Compile.Assembly, Coverage.Report
+Task CI.Build -Depends Clean, Debug.Build, Generate.Version, Compile.Assembly, Coverage.Report
 
 ## ----------------------------------------------------------------------------------------------------
 ##   Core Tasks 
