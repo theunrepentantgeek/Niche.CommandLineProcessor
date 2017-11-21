@@ -24,6 +24,16 @@ Task CI.Build -Depends Debug.Build, Generate.Version, Compile.Assembly, Coverage
 ## ----------------------------------------------------------------------------------------------------
 ## The key build tasks themselves (see below for supporting tasks, listed in order of execution)
 
+
+Task Clean {
+    
+    remove-item $buildDir -recurse -force -erroraction silentlycontinue
+    
+    if (!(test-path $buildDir)) { 
+        $quiet = mkdir $buildDir 
+    }   
+}
+
 Task Compile.Assembly -Depends Requires.BuildType, Requires.MSBuild, Requires.BuildDir {
 
     exec { 
@@ -41,7 +51,7 @@ Task Compile.NuGet -Depends Requires.DotNet, Requires.BuildType, Requires.BuildD
     & $dotnetExe --version
 
     exec {
-        & $nugetExe pack $csprojFile -version $semver10 -outputdirectory $packagesFolder -basePath $buildDir -properties Configuration=$buildType
+        & $dotnetExe pack $csprojFile /property:PackageVersion=$semver20 --output $packagesFolder /property:Configuration=$buildType /fileLogger /flp:verbosity=detailed`;logfile=$buildDir\Niche.CommandLine.nuget.log
     }
 }
 
@@ -59,7 +69,7 @@ Task Unit.Tests -Depends Requires.dotNet, Configure.TestResultsFolder, Compile.A
 
         pushd $testProject.Directory.FullName
         exec {
-            & $dotnetExe xunit -nobuild -configuration $buildType -xml $reportPath
+            & $dotnetExe test $testProject.Name --no-build  # -configuration $buildType # -xml $reportPath
         }
         popd 
     }    
@@ -73,15 +83,12 @@ Task Coverage.Tests -Depends Requires.OpenCover, Requires.dotNet, Configure.Test
     foreach ($project in (resolve-path $srcDir\*.Tests\*.csproj)){
     
         $projectName = split-path $project -Leaf
-        $projectFolder = split-path $project
-
+   
         Write-Host "Testing $projectName"
 
-        pushd $projectFolder
         exec {
             & $openCoverExe -oldStyle "-target:$dotnetExe" "-targetargs:xunit" -register:user "-filter:$filter" -log:$loglevel -output:$testResultsFolder\$projectName.cover.xml
         }
-        popd
     }
 }
 
