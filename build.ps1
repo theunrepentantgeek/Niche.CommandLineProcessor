@@ -84,10 +84,10 @@ Task Coverage.Tests -Depends Requires.OpenCover, Requires.dotNet, Configure.Test
     
         $projectName = split-path $project -Leaf
    
-        Write-Host "Testing $projectName"
+        Write-Host "Testing $project"
 
         exec {
-            & $openCoverExe -oldStyle "-target:$dotnetExe" "-targetargs:xunit" -register:user "-filter:$filter" -log:$loglevel -output:$testResultsFolder\$projectName.cover.xml
+            & $openCoverExe -oldStyle "-target:$dotnetExe" "-targetargs:test $project --no-build --configuration $buildType" -register:user "-filter:$filter" -log:$loglevel -output:$testResultsFolder\$projectName.cover.xml
         }
     }
 }
