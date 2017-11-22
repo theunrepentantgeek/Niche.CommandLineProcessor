@@ -177,7 +177,7 @@ namespace Niche.ConsoleLogging
             {
                 if (_options.HasFlag(ConsoleLoggerOptions.ShowTime))
                 {
-                    Console.ForegroundColor = ConsoleColor.DarkGray;
+                    Console.ForegroundColor = ConsoleColor.Gray;
                     Console.Write($"[{DateTimeOffset.Now:HH:mm:ss.fff}] ");
                 }
 
