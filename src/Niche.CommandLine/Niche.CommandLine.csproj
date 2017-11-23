@@ -10,6 +10,8 @@
     <Description>Convention based argument handling for console applications.</Description>
     <Authors>TheUnrepentantGeek</Authors>
     <PackageTags>command;line;commandline;command-line;option;console;arguments;option;parser;parsing</PackageTags>
+    <projectUrl>https://github.com/theunrepentantgeek/Niche.CommandLineProcessor</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="ReadMe.txt" PackagePath=".\">
