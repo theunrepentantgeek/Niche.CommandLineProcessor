@@ -159,7 +159,9 @@ namespace Niche.ConsoleLogging
             WriteMessage(ConsoleColor.DarkGray, _debugMarker, message);
         }
 
-        [SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "Niche.CommandLine.ConsoleLogger.WriteMessage(System.ConsoleColor,System.String)")]
+        [SuppressMessage(
+            "Microsoft.Globalization", 
+            "CA1303:Do not pass literals as localized parameters")]
         private void WriteMessage(ConsoleColor color, string prefix, string message)
         {
             if (message == null)
@@ -177,7 +179,7 @@ namespace Niche.ConsoleLogging
             {
                 if (_options.HasFlag(ConsoleLoggerOptions.ShowTime))
                 {
-                    Console.ForegroundColor = ConsoleColor.DarkGray;
+                    Console.ForegroundColor = ConsoleColor.Gray;
                     Console.Write($"[{DateTimeOffset.Now:HH:mm:ss.fff}] ");
                 }
 
