@@ -22,34 +22,50 @@ static int Main(string[] args)
 ```
 For a complete working demo, see https://github.com/theunrepentantgeek/Niche.CommandLineProcessor/blob/master/src/Niche.CommandLine.Demo/Program.cs
 
-Switches
---------
-A switch is defined by a method with no return, no parameters, and a [Description] attribute for documentation.
+Options
+-------
+To configure the options available, follow the following conventions:
 
 ``` csharp
-// This switch can be used as `--help`, `-h` or `/h`
-[Description("Show help listing all available options")]
-public void Help();
+// A switch
+// (void method with no parameters)
+// --verbose
+// -v
+[Description("Verbose output")]
+public void Verbose() ...
 ```
+
 See https://github.com/theunrepentantgeek/Niche.CommandLineProcessor/wiki/Conventions#switches for more.
 
-Parameters
-----------
-A parameter is defined by a method with no return, one parameter, and a [Description] attribute for documentation.
-
 ``` csharp
-// This parameter can be used as `--find <wildcard>`, `-f <wildcard>` or `/f <wildcard>`
-[Description("Find files that match a wildcard")]
-public void Find(string wildcard);
+// A parameter with a single value
+// (void method with single parameter)
+// --output-file
+// -of
+[Description("Destination file for output")]
+public void OutputFile(string file) ...
 ```
+
 See https://github.com/theunrepentantgeek/Niche.CommandLineProcessor/wiki/Conventions#parameters for more.
 
-Modes
------
-A mode is defined by a method returning a new options instance, with no parameters and a [Description] attribute for documentation.
+``` csharp
+// A parameter with multiple values
+// (void method with IEnumerable parameter)
+// --input-file
+// -if
+[Description("Input files to consume")]
+public void InputFile(IEnumerable<string> files)
+```
 
 ``` csharp
-[Description("Compare the results of two compilers between systems")]
-public CompilerDriver TestCompiler();
+// A distinct program mode
+// (method with no parameter returning a new options instance)
+// render
+[Description("Render documents")]
+public RenderOptions Render()
+{
+    return new RenderOptions();
+}
 ```
+
 See https://github.com/theunrepentantgeek/Niche.CommandLineProcessor/wiki/Mode-Support for more.
