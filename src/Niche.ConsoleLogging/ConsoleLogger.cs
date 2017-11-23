@@ -159,7 +159,9 @@ namespace Niche.ConsoleLogging
             WriteMessage(ConsoleColor.DarkGray, _debugMarker, message);
         }
 
-        [SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "Niche.CommandLine.ConsoleLogger.WriteMessage(System.ConsoleColor,System.String)")]
+        [SuppressMessage(
+            "Microsoft.Globalization", 
+            "CA1303:Do not pass literals as localized parameters")]
         private void WriteMessage(ConsoleColor color, string prefix, string message)
         {
             if (message == null)
