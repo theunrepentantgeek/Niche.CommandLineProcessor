@@ -4,21 +4,42 @@
     <DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
+  <PropertyGroup>
+    <PackageId>Niche.CommandLineProcessor</PackageId>
+    <Title>Niche CommandLine Processor</Title>
+    <Description>Convention based argument handling for console applications.</Description>
+    <Authors>TheUnrepentantGeek</Authors>
+    <PackageTags>command;line;commandline;command-line;option;console;arguments;option;parser;parsing</PackageTags>
+  </PropertyGroup>
   <ItemGroup>
-    <Content Include="ReadMe.txt">
+    <Content Include="ReadMe.txt" PackagePath=".\">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Desktop.Analyzers" Version="1.1.0" developmentDependency="true" />
-    <PackageReference Include="Microsoft.AnalyzerPowerPack" Version="1.1.0" developmentDependency="true" />
-    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="1.1.0" />
-    <PackageReference Include="Roslynator.Analyzers" Version="1.5.0" developmentDependency="true" />
+    <PackageReference Include="Desktop.Analyzers" Version="1.1.0" developmentDependency="true">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.AnalyzerPowerPack" Version="1.1.0" developmentDependency="true">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="1.1.0" >
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Roslynator.Analyzers" Version="1.5.0" developmentDependency="true">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <PackageReference Include="System.ComponentModel.TypeConverter" Version="4.3.0" />
-    <PackageReference Include="System.Runtime.Analyzers" Version="1.1.0" developmentDependency="true" />
-    <PackageReference Include="System.Runtime.InteropServices.Analyzers" Version="1.1.0" developmentDependency="true" />
-    <PackageReference Include="System.Security.Cryptography.Hashing.Algorithms.Analyzers" version="1.1.0" developmentDependency="true" />
+    <PackageReference Include="System.Runtime.Analyzers" Version="1.1.0" developmentDependency="true" >
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="System.Runtime.InteropServices.Analyzers" Version="1.1.0" developmentDependency="true">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="System.Security.Cryptography.Hashing.Algorithms.Analyzers" version="1.1.0" developmentDependency="true">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <PackageReference Include="System.ValueTuple" Version="4.4.0" />
   </ItemGroup>
 </Project>
