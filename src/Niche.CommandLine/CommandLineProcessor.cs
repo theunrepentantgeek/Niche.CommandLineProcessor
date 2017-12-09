@@ -140,7 +140,7 @@ namespace Niche.CommandLine
                 return new NullCommandLineExecuteFuncSyntax<T>(-1);
             }
 
-            return new CommandLineExecuteFuncSyntax<T>(options, _arguments.ToList(), _errors, -1);
+            return new CommandLineExecuteFuncSyntax<T>(processor.Instance, _arguments.ToList(), _errors, -1);
         }
 
         /// <summary>
