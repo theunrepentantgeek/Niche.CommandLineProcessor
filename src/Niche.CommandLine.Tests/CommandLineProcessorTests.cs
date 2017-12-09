@@ -195,8 +195,11 @@ namespace Niche.CommandLine.Tests
             public void WhenHelpRequested_ActionIsCalled()
             {
                 var called = false;
-                var processor = CreateProcessor("--help");
-                processor.WithHelpAction(help => called = true);
+                using (var processor = CreateProcessor("--help"))
+                {
+                    processor.WithHelpAction(help => called = true);
+                }
+
                 called.Should().BeTrue();
             }
 
@@ -226,9 +229,12 @@ namespace Niche.CommandLine.Tests
             public void WhenErrorsEncountered_ActionIsCalled()
             {
                 var called = false;
-                var processor = CreateProcessor("--repeat nine");
-                processor.Parse(new SampleDriver()).Execute(Execute);
-                processor.WithErrorAction(errors => called = true);
+                using (var processor = CreateProcessor("--repeat nine"))
+                {
+                    processor.Parse(new SampleDriver()).Execute(Execute);
+                    processor.WithErrorAction(errors => called = true);
+                }
+
                 called.Should().BeTrue();
             }
 
