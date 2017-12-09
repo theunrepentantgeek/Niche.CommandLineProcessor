@@ -172,9 +172,9 @@ namespace Niche.CommandLine
                 _displayHelpAction?.Invoke(OptionHelp);
             }
 
-            if (Errors.Any())
+            if (HasErrors)
             {
-                _displayErrorsAction?.Invoke(OptionHelp);
+                _displayErrorsAction?.Invoke(Errors);
             }
         }
 
