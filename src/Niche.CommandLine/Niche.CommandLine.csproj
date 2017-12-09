@@ -8,9 +8,11 @@
     <PackageId>Niche.CommandLineProcessor</PackageId>
     <Title>Niche CommandLine Processor</Title>
     <Description>Convention based argument handling for console applications.</Description>
+    <Copyright>Niche Software, New Zealand, 2017</Copyright>
     <Authors>TheUnrepentantGeek</Authors>
     <PackageTags>command;line;commandline;command-line;option;console;arguments;option;parser;parsing</PackageTags>
-    <projectUrl>https://github.com/theunrepentantgeek/Niche.CommandLineProcessor</projectUrl>
+    <PackageProjectUrl>https://github.com/theunrepentantgeek/Niche.CommandLineProcessor</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/theunrepentantgeek/Niche.CommandLineProcessor</RepositoryUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
   </PropertyGroup>
   <ItemGroup>
