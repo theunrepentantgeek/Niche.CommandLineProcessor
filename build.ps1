@@ -24,7 +24,6 @@ Task CI.Build -Depends Clean, Debug.Build, Generate.Version, Compile.Assembly, C
 ## ----------------------------------------------------------------------------------------------------
 ## The key build tasks themselves (see below for supporting tasks, listed in order of execution)
 
-
 Task Clean {
     
     remove-item $buildDir -recurse -force -erroraction silentlycontinue
@@ -49,7 +48,7 @@ Task Compile.NuGet -Depends Requires.DotNet, Requires.BuildType, Requires.BuildD
     $csprojFile = resolve-path .\src\Niche.CommandLine\Niche.CommandLine.csproj
 
     exec {
-        & $dotnetExe pack $csprojFile /property:PackageVersion=$semver20 --output $packagesFolder /property:Configuration=$buildType /fileLogger /flp:verbosity=detailed`;logfile=$buildDir\Niche.CommandLine.nuget.log
+        & $dotnetExe pack $csprojFile /property:PackageVersion=$semver20 --output $packagesFolder /property:Configuration=$buildType /property:Version=$semver20 /fileLogger /flp:verbosity=detailed`;logfile=$buildDir\Niche.CommandLine.nuget.log
     }
 }
 

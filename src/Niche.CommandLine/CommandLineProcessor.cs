@@ -9,7 +9,7 @@ namespace Niche.CommandLine
     /// <summary>
     /// Utility class used to parse command line parameters and populate a options instance
     /// </summary>
-    public class CommandLineProcessor
+    public class CommandLineProcessor : IDisposable
     {
         // List of unprocessed arguments
         private readonly Queue<string> _arguments;
@@ -25,6 +25,12 @@ namespace Niche.CommandLine
 
         // Standard options supplied for all programs
         private readonly StandardOptions _standardOptions = new StandardOptions();
+
+        // An optional action to take when showing help is needed
+        private Action<IEnumerable<string>> _displayHelpAction;
+
+        // An optional action to use when displaying errors
+        private Action<IEnumerable<string>> _displayErrorsAction;
 
         /// <summary>
         /// Gets the list of arguments not already processed
@@ -144,12 +150,7 @@ namespace Niche.CommandLine
         /// <returns></returns>
         public CommandLineProcessor WithHelpAction(Action<IEnumerable<string>> displayAction)
         {
-            var action = displayAction ?? throw new ArgumentNullException(nameof(displayAction));
-            if (ShowHelp)
-            {
-                action(OptionHelp);
-            }
-
+            _displayHelpAction = displayAction ?? throw new ArgumentNullException(nameof(displayAction));
             return this;
         }
 
@@ -160,13 +161,21 @@ namespace Niche.CommandLine
         /// <returns></returns>
         public CommandLineProcessor WithErrorAction(Action<IEnumerable<string>> displayAction)
         {
-            var action = displayAction ?? throw new ArgumentNullException(nameof(displayAction));
-            if (Errors.Any())
+            _displayErrorsAction = displayAction ?? throw new ArgumentNullException(nameof(displayAction));
+            return this;
+        }
+
+        public void Dispose()
+        {
+            if (ShowHelp)
             {
-                action(OptionHelp);
+                _displayHelpAction?.Invoke(OptionHelp);
             }
 
-            return this;
+            if (Errors.Any())
+            {
+                _displayErrorsAction?.Invoke(OptionHelp);
+            }
         }
 
         private InstanceProcessor<T> FindLeafProcessor<T>(T driver)

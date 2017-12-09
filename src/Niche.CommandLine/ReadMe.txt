@@ -10,14 +10,14 @@ Eliminate most of the boilerplate in Program.cs:
 ``` csharp
 static int Main(string[] args)
 {
-    var processor = new CommandLineProcessor(args);
-    var exitCode = processor.Parse<ProgramOptions>()
-        .Execute(Run);
+    using(var processor = new CommandLineProcessor(args))
+    {
+        processor.WhenHelpRequired(ShowHelp)
+            .WhenErrors(ShowErrors);
 
-    processor.WhenHelpRequired(ShowHelp)
-        .WhenErrors(ShowErrors);
-
-    return exitCode;
+        return processor.Parse<ProgramOptions>()
+            .Execute(Run);
+    }
 }
 ```
 For a complete working demo, see https://github.com/theunrepentantgeek/Niche.CommandLineProcessor/blob/master/src/Niche.CommandLine.Demo/Program.cs

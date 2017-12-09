@@ -42,7 +42,7 @@ if ((get-module psake) -eq $null) {
 }
 
 if ((get-module psake) -eq $null) {
-    # Still not loaded, let's try the variout NuGet caches
+    # Still not loaded, let's try the various NuGet caches
     $locals = nuget locals all -list
     foreach($local in $locals)
     {

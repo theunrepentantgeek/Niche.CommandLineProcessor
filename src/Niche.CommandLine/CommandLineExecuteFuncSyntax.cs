@@ -45,7 +45,7 @@ namespace Niche.CommandLine
         /// Do something useful with a properly configured option
         /// </summary>
         /// <param name="func">Function to invoke.</param>
-        /// <remarks>Returns the int returned by <paramref name="func"/>.</remarks>
+        /// <returns>Returns the int returned by <paramref name="func"/>.</returns>
         public int Execute(Func<T, int> func)
         {
             if (func == null)

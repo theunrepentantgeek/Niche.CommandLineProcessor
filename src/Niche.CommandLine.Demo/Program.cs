@@ -16,12 +16,14 @@ namespace Niche.CommandLine.Demo
                 | ConsoleLoggerOptions.UseLabels
                 | ConsoleLoggerOptions.ShowTime);
 
-            var processor = new CommandLineProcessor(args)
-                .WithErrorAction(ShowErrors)
-                .WithHelpAction(ShowHelp);
+            using (var processor = new CommandLineProcessor(args))
+            {
+                processor.WithErrorAction(ShowErrors)
+                    .WithHelpAction(ShowHelp);
 
-            return processor.Parse<ProgramOptions>()
-                .Execute(MainCore);
+                return processor.Parse<ProgramOptions>()
+                    .Execute(MainCore);
+            }
         }
 
         private static int MainCore(ProgramOptions options)
