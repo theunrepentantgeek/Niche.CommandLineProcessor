@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Niche.CommandLine
 {
@@ -80,6 +81,44 @@ namespace Niche.CommandLine
         }
 
         /// <summary>
+        /// Do something useful with a properly configured option
+        /// </summary>
+        /// <param name="func">Function to invoke.</param>
+        /// <returns>Returns the int returned by <paramref name="func"/>.</returns>
+        public async Task<int> ExecuteAsync(Func<T, Task<int>> func)
+        {
+            if (func == null)
+            {
+                throw new ArgumentNullException(nameof(func));
+            }
+
+            // We may have extra arguments but the user doesn't want to know
+            foreach (var a in _arguments)
+            {
+                _errorsReference.Add($"Unexpected argument: {a}");
+            }
+
+            if (_arguments.Any())
+            {
+                return _errorExitCode;
+            }
+
+            try
+            {
+                return await func(_options);
+            }
+            catch (Exception e)
+            {
+                foreach (var message in e.AsStrings())
+                {
+                    _errorsReference.Add(message);
+                }
+
+                return _errorExitCode;
+            }
+        }
+
+        /// <summary>
         /// Do something useful with a properly configured option and any extra arguments provided
         /// </summary>
         /// <param name="func">Function to invoke.</param>
@@ -105,6 +144,44 @@ namespace Niche.CommandLine
             try
             {
                 return func(_options, _arguments);
+            }
+            catch (Exception e)
+            {
+                foreach (var message in e.AsStrings())
+                {
+                    _errorsReference.Add(message);
+                }
+
+                return _errorExitCode;
+            }
+        }
+
+        /// <summary>
+        /// Do something useful with a properly configured option and any extra arguments provided
+        /// </summary>
+        /// <param name="func">Function to invoke.</param>
+        /// <remarks>Returns the int returned by <paramref name="func"/>.</remarks>
+        public async Task<int> ExecuteAsync(Func<T, IEnumerable<string>, Task<int>> func)
+        {
+            if (func == null)
+            {
+                throw new ArgumentNullException(nameof(func));
+            }
+
+            // Create errors for any extra options
+            foreach (var a in _arguments.Where(IsOption))
+            {
+                _errorsReference.Add($"Unexpected option: {a}");
+            }
+
+            if (_errorsReference.Any())
+            {
+                return _errorExitCode;
+            }
+
+            try
+            {
+                return await func(_options, _arguments);
             }
             catch (Exception e)
             {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Niche.CommandLine
 {
@@ -41,6 +42,30 @@ namespace Niche.CommandLine
             try
             {
                 action(_options);
+            }
+            catch (Exception e)
+            {
+                foreach (var message in e.AsStrings())
+                {
+                    _errorsReference.Add(message);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Do something async and useful with a properly configured option
+        /// </summary>
+        /// <param name="action">Action to invoke.</param>
+        public async Task ExecuteAsync(Func<T, Task> action)
+        {
+            if (action == null)
+            {
+                throw new ArgumentNullException(nameof(action));
+            }
+
+            try
+            {
+                await action(_options);
             }
             catch (Exception e)
             {
