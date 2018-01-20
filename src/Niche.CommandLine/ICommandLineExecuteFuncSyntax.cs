@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Niche.CommandLine
 {
@@ -22,6 +23,20 @@ namespace Niche.CommandLine
         /// <param name="func">Function to invoke.</param>
         /// <remarks>Returns the int returned by <paramref name="func"/>.</remarks>
         int Execute(Func<T, IEnumerable<string>, int> func);
+
+        /// <summary>
+        /// Do something useful with a properly configured option
+        /// </summary>
+        /// <param name="func">Function to invoke.</param>
+        /// <returns>Returns the int returned by <paramref name="func"/>.</returns>
+        Task<int> ExecuteAsync(Func<T, Task<int>> func);
+
+        /// <summary>
+        /// Do something useful with a properly configured option and any extra arguments provided
+        /// </summary>
+        /// <param name="func">Function to invoke.</param>
+        /// <remarks>Returns the int returned by <paramref name="func"/>.</remarks>
+        Task<int> ExecuteAsync(Func<T, IEnumerable<string>, Task<int>> func);
     }
 
     /// <summary>
@@ -59,6 +74,26 @@ namespace Niche.CommandLine
         public int Execute(Func<T, IEnumerable<string>, int> func)
         {
             return _exitCode;
+        }
+
+        /// <summary>
+        /// Do nothing useful with a properly configured option
+        /// </summary>
+        /// <param name="func">Function to invoke.</param>
+        /// <returns>Returns the int returned by <paramref name="func"/>.</returns>
+        public Task<int> ExecuteAsync(Func<T, Task<int>> func)
+        {
+            return Task.FromResult(0);
+        }
+
+        /// <summary>
+        /// Do nothing useful with a properly configured option and any extra arguments provided
+        /// </summary>
+        /// <param name="func">Function to invoke.</param>
+        /// <remarks>Returns the int returned by <paramref name="func"/>.</remarks>
+        public Task<int> ExecuteAsync(Func<T, IEnumerable<string>, Task<int>> func)
+        {
+            return Task.FromResult(0);
         }
     }
 }

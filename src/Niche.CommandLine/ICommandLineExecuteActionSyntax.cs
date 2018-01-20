@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 
 namespace Niche.CommandLine
 {
@@ -13,6 +14,12 @@ namespace Niche.CommandLine
         /// </summary>
         /// <param name="action">Action to invoke.</param>
         void Execute(Action<T> action);
+
+        /// <summary>
+        /// Do something async and useful with a properly configured option
+        /// </summary>
+        /// <param name="action">Action to invoke.</param>
+        Task ExecuteAsync(Func<T, Task> action);
     }
 
     /// <summary>
@@ -33,6 +40,15 @@ namespace Niche.CommandLine
             }
 
             // Nothing
+        }
+
+        /// <summary>
+        /// Do nothing async  useful with a properly configured option
+        /// </summary>
+        /// <param name="action">Action to invoke.</param>
+        public Task ExecuteAsync(Func<T, Task> action)
+        {
+            return Task.FromResult(0);
         }
     }
 }
