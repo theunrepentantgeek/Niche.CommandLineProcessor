@@ -2,6 +2,9 @@ Niche.CommandLine
 =================
 [![Build status](https://ci.appveyor.com/api/projects/status/15gp6ykhvav0g9ip)](https://ci.appveyor.com/project/theunrepentantgeek/niche-commandlineprocessor)
 
+> [!CAUTION]
+> This was an experiment that I've left hanging around in case someone found it interesting. However, it's now been flagged as having a vulnerability and, not having the time to put into maintenance, I'm archiving the project. 
+
 A simple convention based argument handler to make it easy for .NET developers to write console applications.
 
 ## Conventions
